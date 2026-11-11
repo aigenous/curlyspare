@@ -135,7 +135,8 @@ test.describe('identifier screens', () => {
 
   test('IBAN validator accepts a Polish checksum and rejects another country', async ({ page }) => {
     await page.goto('/walidator-iban')
-    await expect(page.locator('.disclaimer')).toContainText('Nie łączy się z bankiem')
+    await expect(page.locator('.disclaimer')).toContainText('wyłącznie do testowania')
+    await expect(page.getByText('Nie łączy się z bankiem')).toBeVisible()
     await page.getByLabel('IBAN').fill('PL61109010140000071219812874')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('status')).toContainText('Format i suma kontrolna poprawne')
@@ -148,18 +149,22 @@ test.describe('identifier screens', () => {
     await expect(page.getByRole('alert')).toHaveText('Wpisz numer.')
   })
 
-  test('NRB generates a spaced account number that validates', async ({ page }) => {
-    test.skip(!screenReady('generator-nrb/GeneratorNrb.vue'), 'NRB screen is not on this branch yet')
+  test('NRB generation lives on the IBAN page and checks a known account', async ({ page }) => {
     const api = await loadIdentifiers()
-    await page.goto('/generator-nrb')
+    await page.goto('/walidator-iban')
     await page.getByRole('button', { name: 'Generuj' }).click()
     const value = (await page.getByLabel('Wynik').inputValue()).trim()
     expect(value).toMatch(/^\d{2}(?: \d{4}){6}$/)
     expect(api.validateNrb(value).valid).toBe(true)
-    await page.getByLabel('NRB lub IBAN PL').fill('09 1010 1010 0075 9122 2300 0000')
+    await page.getByLabel('IBAN lub NRB').fill('09 1010 1010 0075 9122 2300 0000')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toContainText('Poprawny NRB')
+    await expect(page.getByRole('status')).toContainText('Format i suma kontrolna poprawne')
     await expect(page.getByRole('status')).toContainText('10101010')
+  })
+
+  test('the removed NRB route is not a page', async ({ page }) => {
+    const response = await page.goto('/generator-nrb')
+    expect(response?.status()).toBe(404)
   })
 
   test('EAN generator checks a published EAN-13 and rejects a bad digit', async ({ page }) => {
@@ -194,7 +199,7 @@ test.describe('identifier screens', () => {
   test('test-person generator writes a fictional PESEL that validates', async ({ page }) => {
     test.skip(!screenReady('generator-osoby-testowej/GeneratorOsobyTestowej.vue'), 'test-person screen is not on this branch yet')
     const api = await loadIdentifiers()
-    await page.goto('/generator-osoby-testowej')
+    await page.goto('/generator-danych-testowych')
     await expect(page.locator('.disclaimer')).toContainText('wyłącznie do testowania')
     await page.getByRole('button', { name: 'Generuj' }).click()
     const line = await page.getByLabel('Wynik').inputValue()

@@ -5,7 +5,6 @@ import { describe, expect, it } from 'vitest'
 import {
   generatorDisclaimer,
   gtinDisclaimer,
-  ibanValidatorDisclaimer,
   isbnValidatorDisclaimer,
   personTestDisclaimer,
   vatValidatorDisclaimer,
@@ -20,7 +19,7 @@ const sharedDisclaimer = new Set([
   'generator-dowod-osobisty',
   'generator-paszport',
   'generator-krs',
-  'generator-nrb',
+  'walidator-iban',
 ])
 
 describe('generator registry', () => {
@@ -33,12 +32,11 @@ describe('generator registry', () => {
       'generator-dowod-osobisty',
       'generator-paszport',
       'generator-krs',
-      'generator-nrb',
       'generator-ean',
       'walidator-vat-ue',
       'walidator-vin',
       'konwerter-isbn',
-      'generator-osoby-testowej',
+      'generator-danych-testowych',
       'walidator-iban',
     ])
     const own: Record<string, string> = {
@@ -46,8 +44,7 @@ describe('generator registry', () => {
       'walidator-vat-ue': vatValidatorDisclaimer,
       'walidator-vin': vinValidatorDisclaimer,
       'konwerter-isbn': isbnValidatorDisclaimer,
-      'generator-osoby-testowej': personTestDisclaimer,
-      'walidator-iban': ibanValidatorDisclaimer,
+      'generator-danych-testowych': personTestDisclaimer,
     }
     for (const tool of generatorTools) {
       expect(tool.category).toBe('generatory')
@@ -64,7 +61,7 @@ describe('generator registry', () => {
   })
 
   it('keeps the test-person page off fake-identity and registration wording', () => {
-    const tool = generatorTools.find((item) => item.slug === 'generator-osoby-testowej')
+    const tool = generatorTools.find((item) => item.slug === 'generator-danych-testowych')
     expect(tool).toBeDefined()
     if (!tool) return
     const here = dirname(fileURLToPath(import.meta.url))

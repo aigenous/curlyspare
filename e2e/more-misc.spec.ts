@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 test('chmod turns 755 into a symbolic mode and rejects a non-octal digit', async ({ page }) => {
-  await page.goto('/chmod')
+  await page.goto('/kalkulator-chmod')
   await expect(stat(page, 'Ósemkowo')).toHaveText('0755')
   await expect(stat(page, 'Symbolicznie')).toHaveText('rwxr-xr-x')
   await page.getByLabel('Zapis ósemkowy').fill('644')
@@ -23,7 +23,7 @@ test('date span states an age and notices a reversed range', async ({ page }) =>
 })
 
 test('line tool sorts Polish lines and drops duplicates', async ({ page }) => {
-  await page.goto('/linie-tekstu')
+  await page.goto('/sortowanie-alfabetyczne')
   await expect(page.getByLabel('Wynik')).toHaveValue('ala\nAla\nżółć')
 })
 
@@ -39,7 +39,7 @@ test('percent calculator finds a share, a ratio, a change, and rejects zero', as
 })
 
 test('time zone tool converts a Warsaw winter noon to New York', async ({ page }) => {
-  await page.goto('/strefy-czasowe')
+  await page.goto('/konwerter-stref-czasowych')
   await expect(stat(page, 'Europe/Warsaw')).toHaveText('2026-01-15 12:00')
   await expect(stat(page, 'America/New_York')).toHaveText('2026-01-15 06:00')
   await expect(stat(page, 'Przesunięcie')).toHaveText('UTC+01:00 → UTC-05:00')
@@ -50,7 +50,7 @@ test('time zone tool converts a Warsaw winter noon to New York', async ({ page }
 })
 
 test('data units convert kibibytes and reject a negative amount', async ({ page }) => {
-  await page.goto('/jednostki-danych')
+  await page.goto('/kalkulator-bajtow')
   await expect(stat(page, 'B')).toHaveText('1536')
   await expect(stat(page, 'KiB')).toHaveText('1,5')
   await expect(stat(page, 'KB')).toHaveText('1,536')
