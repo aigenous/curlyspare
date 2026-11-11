@@ -30,9 +30,6 @@ function check() {
 
 <template>
   <div class="stack">
-    <p class="muted">
-      Sprawdza ISBN-10 i ISBN-13 oraz przelicza jeden format na drugi. Myślniki są pomijane.
-    </p>
     <label>
       ISBN
       <input

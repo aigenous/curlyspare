@@ -141,7 +141,7 @@ test.describe('identifier screens', () => {
     await expect(page.getByRole('status')).toContainText('Poprawny IBAN')
     await page.getByLabel('IBAN').fill('DE89370400440532013000')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Obsługiwany jest wyłącznie polski IBAN (PL).')
+    await expect(page.getByRole('alert')).toHaveText('Ten kraj nie jest obsługiwany.')
     await page.getByLabel('IBAN').fill('')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('alert')).toHaveText('Wpisz numer.')

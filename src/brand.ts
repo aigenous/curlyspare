@@ -3,7 +3,7 @@ import { site } from './site'
 export const brand = {
   name: site.name,
   workingName: site.workingName,
-  siteUrl: (import.meta.env.VITE_SITE_URL || site.defaultSiteUrl).replace(/\/$/, ''),
+  siteUrl: (import.meta.env?.VITE_SITE_URL || site.defaultSiteUrl).replace(/\/$/, ''),
   storagePrefix: site.storagePrefix,
   operator: site.operator,
 } as const

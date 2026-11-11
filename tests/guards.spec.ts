@@ -28,6 +28,13 @@ function walk(directory: string): string[] {
   return files
 }
 
+function stripLiterals(line: string): string {
+  return line
+    .replace(/`(?:\\.|[^`\\])*`/g, '``')
+    .replace(/'(?:\\.|[^'\\])*'/g, "''")
+    .replace(/"(?:\\.|[^"\\])*"/g, '""')
+}
+
 function hits(files: string[], pattern: RegExp): string[] {
   const found: string[] = []
   for (const file of files) {
@@ -49,8 +56,20 @@ describe('static source guards', () => {
   it('does not make network calls from tool code', () => {
     const files = [...walk(join(root, 'src/tools')), ...walk(join(root, 'src/lib'))]
     expect(files.length).toBeGreaterThan(0)
-    const network =
-      /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bsendBeacon\s*\(|\bEventSource\b|\baxios\b|\bfrom\s+['"]node:(?:https?|net|http2|tls)['"]|import\s*\(\s*['"]https?:/
-    expect(hits(files, network)).toEqual([])
+    // curl-na-fetch prints fetch() and axios snippets. Literals are not calls.
+    const imports =
+      /\bfrom\s+['"](?:axios|node:(?:https?|net|http2|tls))['"]|\brequire\s*\(\s*['"]axios['"]|import\s*\(\s*['"]https?:/
+    const calls =
+      /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bsendBeacon\s*\(|\bEventSource\b|\baxios\s*\(|\baxios\s*\.\s*[A-Za-z_$]/
+    const found: string[] = []
+    for (const file of files) {
+      const lines = readFileSync(file, 'utf8').split(/\r?\n/)
+      lines.forEach((line, index) => {
+        if (imports.test(line) || calls.test(stripLiterals(line))) {
+          found.push(`${relative(root, file)}:${index + 1}`)
+        }
+      })
+    }
+    expect(found).toEqual([])
   })
 })
