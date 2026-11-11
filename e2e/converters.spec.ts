@@ -216,6 +216,28 @@ test.describe('converter screens', () => {
     await page.getByRole('button', { name: 'Rozłóż' }).click()
     await expect(page.locator('.message-error')).toHaveText('Wklej adres URL albo parametry zapytania.')
   })
+
+  test('JSON Schema accepts a matching object and lists the missing field', async ({ page }) => {
+    test.skip(!converterReady('walidator-json-schema/WalidatorJsonSchema.vue'), 'JSON Schema screen is not on this branch yet')
+    const schema = JSON.stringify({
+      type: 'object',
+      additionalProperties: false,
+      required: ['a'],
+      properties: { a: { type: 'number', minimum: 0 } },
+    })
+    await page.goto('/walidator-json-schema')
+    await page.getByLabel('Dane JSON').fill('{"a": 1}')
+    await page.getByLabel('JSON Schema').fill(schema)
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByText('Dane pasują do schematu.')).toBeVisible()
+    await page.getByLabel('Dane JSON').fill('{"b": 1}')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.locator('.message-error')).toContainText('brakuje pola „a”')
+    await expect(page.locator('.message-error')).toContainText('niedozwolone pole „b”')
+    await page.getByLabel('Dane JSON').fill('{')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.locator('.message-error')).toBeVisible()
+  })
 })
 
 function converterReady(path: string): boolean {
