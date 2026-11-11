@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'chmod',
+    title: 'Kalkulator chmod',
+    description: 'Przelicza uprawnienia pliku między zapisem ósemkowym i symbolicznym.',
+    category: 'inne',
+    keywords: ['chmod', 'uprawnienia', 'octal', 'rwx', 'linux'],
+    component: () => import('./ChmodTool.vue'),
+  },
+  {
     slug: 'strefy-czasowe',
     title: 'Strefy czasowe',
     description: 'Przelicza datę i godzinę między strefami IANA. Domyślnie Europa/Warszawa.',
