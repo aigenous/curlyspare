@@ -1,3 +1,12 @@
+export interface OperatorDetails {
+  name: string
+  legalForm: string
+  nip: string
+  regon: string
+  correspondenceAddress: string
+  email: string
+}
+
 export const site = {
   name: 'DevNarzędzia',
   workingName: true,
@@ -7,6 +16,8 @@ export const site = {
     name: 'Piotr Szewczyk',
     legalForm: 'jednoosobowa działalność gospodarcza',
     nip: '6222809805',
-    email: '[ADRES E-MAIL DO KONTAKTU]',
-  },
+    regon: '368785970',
+    correspondenceAddress: 'Bobrowiecka 10/2, 00-728 Warszawa',
+    email: 'pszewczykpl@gmail.com',
+  } satisfies OperatorDetails,
 } as const
