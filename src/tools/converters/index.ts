@@ -133,4 +133,12 @@ export const converterTools: ToolDefinition[] = [
     keywords: ['sql', 'postgresql', 'mysql', 'mariadb', 'sqlite', 'formatowanie', 'formatter'],
     component: () => import('./formatowanie-sql/FormatowanieSql.vue'),
   },
+  {
+    slug: 'walidator-json-schema',
+    title: 'Walidator JSON Schema',
+    description: 'Sprawdź dokument JSON względem JSON Schema. Błędy podają ścieżkę pola.',
+    category: 'konwertery',
+    keywords: ['json', 'json schema', 'walidacja', 'schemat', 'ajv'],
+    component: () => import('./walidator-json-schema/WalidatorJsonSchema.vue'),
+  },
 ]

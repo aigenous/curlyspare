@@ -20,6 +20,7 @@ const slugs = [
   'formatowanie-xml',
   'parser-adresu',
   'formatowanie-sql',
+  'walidator-json-schema',
 ]
 
 describe('converterTools', () => {
