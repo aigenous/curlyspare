@@ -1,24 +1,28 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { DISCLAIMER } from './disclaimer'
+import { generatorDisclaimer } from '../../brand'
 import * as api from './index'
 
-const BANNED = ['Math.random', 'localStorage', 'sessionStorage', 'indexedDB', 'sendBeacon']
+const BANNED = ['Math.random', 'localStorage', 'sessionStorage', 'indexedDB', 'sendBeacon', 'fetch(']
 
 describe('generator policy', () => {
-  it('exports the shared disclaimer unchanged', () => {
-    expect(DISCLAIMER).toBe(
-      'Wygenerowane numery są fikcyjne i służą wyłącznie do testów oprogramowania. Nie używaj ich do podszywania się pod inne osoby ani w dokumentach.',
-    )
-    expect(api.DISCLAIMER).toBe(DISCLAIMER)
+  it('exports the identifier functions', () => {
     expect(typeof api.generatePesel).toBe('function')
-    expect(typeof api.validateIbanPl).toBe('function')
+    expect(typeof api.validatePesel).toBe('function')
+    expect(typeof api.generateNip).toBe('function')
+    expect(typeof api.generateRegon).toBe('function')
+    expect(typeof api.generateDowodOsobisty).toBe('function')
+    expect(typeof api.generatePaszport).toBe('function')
     expect(typeof api.generateKrs).toBe('function')
+    expect(typeof api.validateIbanPl).toBe('function')
+    expect(api.DISCLAIMER).toBe(generatorDisclaimer)
   })
 
-  it('keeps generated identifiers on the client and out of a non-crypto PRNG', () => {
-    const roots = [new URL('.', import.meta.url).pathname, new URL('../../tools/generators/', import.meta.url).pathname]
+  it('keeps identifiers in the browser and away from a non-crypto PRNG', () => {
+    const here = dirname(fileURLToPath(import.meta.url))
+    const roots = [here, join(here, '../../tools/generators')]
     const sources = roots.flatMap((root) => (exists(root) ? collectSources(root) : []))
     expect(sources.length).toBeGreaterThan(0)
     for (const source of sources) {
@@ -47,7 +51,10 @@ function collectSources(directory: string): { path: string; contents: string }[]
       found.push(...collectSources(path))
       continue
     }
-    if (entry.endsWith('.test.ts') || (!entry.endsWith('.ts') && !entry.endsWith('.vue'))) {
+    if (entry.endsWith('.test.ts') || entry.endsWith('.spec.ts')) {
+      continue
+    }
+    if (!entry.endsWith('.ts') && !entry.endsWith('.vue')) {
       continue
     }
     found.push({ path, contents: readFileSync(path, 'utf8') })

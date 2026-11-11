@@ -1,4 +1,4 @@
-export { DISCLAIMER } from './disclaimer'
+export { generatorDisclaimer as DISCLAIMER } from '../../brand'
 export {
   compareDates,
   formatIsoDate,

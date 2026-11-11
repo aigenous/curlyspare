@@ -1,3 +1,68 @@
+import { generatorDisclaimer } from '../../brand'
 import type { ToolDefinition } from '../../registry/types'
 
-export const generatorTools: ToolDefinition[] = []
+export const generatorTools: ToolDefinition[] = [
+  {
+    slug: 'generator-pesel',
+    title: 'Generator PESEL',
+    description: 'Generuje i sprawdza numer PESEL: data urodzenia, płeć i suma kontrolna.',
+    category: 'generatory',
+    keywords: ['pesel', 'generator pesel', 'walidator pesel', 'data urodzenia', 'płeć', 'suma kontrolna'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-pesel/GeneratorPesel.vue'),
+  },
+  {
+    slug: 'generator-nip',
+    title: 'Generator NIP',
+    description: 'Generuje i sprawdza NIP oraz pokazuje zapis z myślnikami.',
+    category: 'generatory',
+    keywords: ['nip', 'generator nip', 'walidator nip', 'podatek', 'myślniki'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-nip/GeneratorNip.vue'),
+  },
+  {
+    slug: 'generator-regon',
+    title: 'Generator REGON',
+    description: 'Generuje i sprawdza REGON 9-cyfrowy oraz 14-cyfrowy numer jednostki lokalnej.',
+    category: 'generatory',
+    keywords: ['regon', 'generator regon', 'walidator regon', 'gus', 'jednostka lokalna'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-regon/GeneratorRegon.vue'),
+  },
+  {
+    slug: 'generator-dowod-osobisty',
+    title: 'Generator dowodu osobistego',
+    description: 'Generuje i sprawdza serię i numer dowodu osobistego.',
+    category: 'generatory',
+    keywords: ['dowód', 'dowód osobisty', 'seria', 'numer dowodu', 'generator dowodu'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-dowod-osobisty/GeneratorDowodOsobisty.vue'),
+  },
+  {
+    slug: 'generator-paszport',
+    title: 'Generator numeru paszportu',
+    description: 'Generuje i sprawdza numer polskiego paszportu (dwie litery i siedem cyfr).',
+    category: 'generatory',
+    keywords: ['paszport', 'numer paszportu', 'generator paszportu', 'walidator paszportu'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-paszport/GeneratorPaszport.vue'),
+  },
+  {
+    slug: 'generator-krs',
+    title: 'Generator numeru KRS',
+    description: 'Losuje i sprawdza 10-cyfrowy numer KRS. Rejestr nie używa sumy kontrolnej.',
+    category: 'generatory',
+    keywords: ['krs', 'krajowy rejestr sądowy', 'generator krs', 'numer krs'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-krs/GeneratorKrs.vue'),
+  },
+  {
+    slug: 'walidator-iban',
+    title: 'Walidator IBAN PL',
+    description: 'Sprawdza polski IBAN algorytmem mod 97. Nie generuje rachunku i nie łączy się z bankiem.',
+    category: 'generatory',
+    keywords: ['iban', 'iban pl', 'nrb', 'numer konta', 'mod 97', 'walidator iban'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./walidator-iban/WalidatorIban.vue'),
+  },
+]
