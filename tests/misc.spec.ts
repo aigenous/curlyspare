@@ -14,6 +14,12 @@ describe('search', () => {
     expect(fold('Łódź')).toBe('lodz')
   })
 
+  it('uses „ze świętami” in the working-days description', () => {
+    const tool = tools.find((item) => item.slug === 'dni-robocze')
+    expect(tool?.description).toContain('ze świętami')
+    expect(tool?.description.includes('z świętami')).toBe(false)
+  })
+
   it('matches a tool by keyword and ignores blank queries', () => {
     expect(filterTools(tools, '   ')).toHaveLength(tools.length)
     expect(filterTools(tools, 'QR').map((tool) => tool.slug)).toEqual(['generator-qr'])

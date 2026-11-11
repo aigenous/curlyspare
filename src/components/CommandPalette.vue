@@ -10,7 +10,15 @@ const router = useRouter()
 const query = ref('')
 const active = ref(0)
 const input = ref<HTMLInputElement | null>(null)
+const dialog = ref<HTMLElement | null>(null)
 const results = computed(() => filterTools(tools, query.value))
+const listId = 'palette-listbox'
+const activeId = computed(() => {
+  const tool = results.value[active.value]
+  return tool ? `palette-option-${tool.slug}` : undefined
+})
+
+let restoreFocus: HTMLElement | null = null
 
 watch(results, () => {
   active.value = 0
@@ -27,22 +35,58 @@ async function go(index = active.value) {
   close()
 }
 
-function onKey(event: KeyboardEvent) {
+function move(delta: number) {
+  const count = results.value.length
+  if (count === 0) return
+  active.value = (active.value + delta + count) % count
+  const id = activeId.value
+  if (!id) return
+  const option = document.getElementById(id)
+  if (option && typeof option.scrollIntoView === 'function') {
+    option.scrollIntoView({ block: 'nearest' })
+  }
+}
+
+function trapFocus(event: KeyboardEvent) {
+  const root = dialog.value
+  if (!root) return
+  const focusable = [...root.querySelectorAll<HTMLElement>(
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])',
+  )].filter((element) => element.tabIndex >= 0)
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+  event.preventDefault()
+  if (!first || !last) return
+  const current = document.activeElement
+  const index = current instanceof HTMLElement ? focusable.indexOf(current) : -1
+  if (event.shiftKey) {
+    const previous = index <= 0 ? last : focusable[index - 1]
+    previous?.focus()
+    return
+  }
+  const next = index === -1 || index >= focusable.length - 1 ? first : focusable[index + 1]
+  next?.focus()
+}
+
+function onDialogKey(event: KeyboardEvent) {
   if (event.key === 'Escape') {
     event.preventDefault()
     close()
     return
   }
+  if (event.key === 'Tab') {
+    trapFocus(event)
+    return
+  }
+  if (event.target !== input.value) return
   if (event.key === 'ArrowDown') {
     event.preventDefault()
-    if (results.value.length === 0) return
-    active.value = (active.value + 1) % results.value.length
+    move(1)
     return
   }
   if (event.key === 'ArrowUp') {
     event.preventDefault()
-    if (results.value.length === 0) return
-    active.value = (active.value - 1 + results.value.length) % results.value.length
+    move(-1)
     return
   }
   if (event.key === 'Enter') {
@@ -52,11 +96,14 @@ function onKey(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', onKey)
+  const current = document.activeElement
+  restoreFocus = current instanceof HTMLElement && current !== document.body ? current : null
   void nextTick(() => input.value?.focus())
 })
 
-onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
+onBeforeUnmount(() => {
+  if (restoreFocus?.isConnected) restoreFocus.focus()
+})
 </script>
 
 <template>
@@ -65,31 +112,41 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
     @click.self="close"
   >
     <div
+      ref="dialog"
       class="palette"
       role="dialog"
       aria-modal="true"
       :aria-label="t('paletteLabel')"
+      @keydown="onDialogKey"
     >
       <input
         ref="input"
         v-model="query"
-        type="search"
+        type="text"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded="true"
+        :aria-controls="listId"
+        :aria-activedescendant="activeId"
         :aria-label="t('paletteLabel')"
         :placeholder="t('palettePlaceholder')"
       >
-      <ul>
+      <ul
+        :id="listId"
+        role="listbox"
+        tabindex="-1"
+      >
         <li
           v-for="(tool, index) in results"
+          :id="`palette-option-${tool.slug}`"
           :key="tool.slug"
+          role="option"
+          tabindex="-1"
+          :aria-selected="index === active"
+          @click="go(index)"
         >
-          <button
-            type="button"
-            :aria-selected="index === active"
-            @click="go(index)"
-          >
-            <strong>{{ tool.title }}</strong>
-            <span class="muted"> — {{ categoryLabel(tool.category) }}</span>
-          </button>
+          <strong>{{ tool.title }}</strong>
+          <span class="muted"> — {{ categoryLabel(tool.category) }}</span>
         </li>
       </ul>
       <p

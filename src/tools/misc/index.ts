@@ -108,7 +108,7 @@ export const miscTools: ToolDefinition[] = [
   {
     slug: 'dni-robocze',
     title: 'Dni robocze',
-    description: 'Liczy dni robocze w Polsce, z świętami stałymi i ruchomymi, i dodaje ich liczbę do daty.',
+    description: 'Liczy dni robocze w Polsce, ze świętami stałymi i ruchomymi, i dodaje ich liczbę do daty.',
     category: 'inne',
     keywords: ['dni robocze', 'święta', 'wielkanoc', 'kalendarz', 'boże ciało'],
     component: () => import('./WorkdaysTool.vue'),

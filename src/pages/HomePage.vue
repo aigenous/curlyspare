@@ -42,8 +42,9 @@ function inCategory(category: (typeof categories)[number]) {
     <p
       v-if="visible.length === 0"
       class="muted"
+      role="status"
     >
-      {{ t('homeEmpty') }}
+      {{ query.trim() ? t('homeNoResults') : t('homeEmpty') }}
     </p>
     <section
       v-for="category in categories"

@@ -24,6 +24,15 @@ body {
   outline-offset: 2px;
 }
 
+label.button-ghost:has(> input[type='file']:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+label.button-ghost > input[type='file']:focus-visible {
+  outline: none;
+}
+
 a {
   color: var(--primary);
 }
@@ -96,6 +105,7 @@ kbd {
 .button-ghost {
   border-radius: 10px;
   padding: 0.45rem 0.75rem;
+  min-height: 44px;
   cursor: pointer;
 }
 
@@ -276,7 +286,8 @@ h2 {
   overflow: auto;
 }
 
-.palette button {
+.palette button,
+.palette [role='option'] {
   width: 100%;
   text-align: left;
   border: 0;
@@ -287,8 +298,14 @@ h2 {
   cursor: pointer;
 }
 
+.palette [role='option'] {
+  display: block;
+}
+
 .palette button[aria-selected='true'],
-.palette button:hover {
+.palette [role='option'][aria-selected='true'],
+.palette button:hover,
+.palette [role='option']:hover {
   background: var(--primary-soft);
 }
 
@@ -305,7 +322,7 @@ h2 {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
   gap: 0.6rem;
   margin: 0;
 }
@@ -315,6 +332,7 @@ h2 {
   border-radius: 12px;
   padding: 0.7rem 0.8rem;
   background: var(--bg);
+  min-width: 0;
 }
 
 .stats dt {
@@ -324,6 +342,8 @@ h2 {
 
 .stats dd {
   margin: 0.15rem 0 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 1.4rem;
   font-weight: 700;
 }

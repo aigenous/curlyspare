@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { jsonToYaml, yamlToJson } from '../../../lib/converters/yaml'
-import CopyButton from '../CopyButton.vue'
+import CopyButton from '../../../components/CopyButton.vue'
 
 const source = ref('')
 const output = ref('')

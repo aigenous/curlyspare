@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { csvToJson, jsonToCsv, type CsvDelimiter } from '../../../lib/converters/csv'
-import CopyButton from '../CopyButton.vue'
+import CopyButton from '../../../components/CopyButton.vue'
 
 const source = ref('')
 const output = ref('')

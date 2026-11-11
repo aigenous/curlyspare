@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { HASH_ALGORITHMS, hashBytes, hashUtf8, type HashAlgorithm } from '../../../lib/converters/hash'
-import CopyButton from '../CopyButton.vue'
+import CopyButton from '../../../components/CopyButton.vue'
 import { readInputFile } from '../browser'
 
 const algorithm = ref<HashAlgorithm>('SHA-256')
@@ -139,6 +139,7 @@ async function fromFile(event: { target: unknown }): Promise<void> {
 .cv-file-label {
   position: relative;
   display: inline-flex;
+  align-items: center;
   cursor: pointer;
 }
 

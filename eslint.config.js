@@ -17,6 +17,7 @@ export default tseslint.config(
         matchMedia: 'readonly',
         Event: 'readonly',
         KeyboardEvent: 'readonly',
+        HTMLElement: 'readonly',
         HTMLInputElement: 'readonly',
         HTMLSelectElement: 'readonly',
       },

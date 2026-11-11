@@ -3,15 +3,16 @@ import { computed, ref } from 'vue'
 import { adjustPercent, percentChange, percentOf, ratioPercent } from '../../lib/misc/percent'
 
 const percent = ref('20')
-const whole = ref('150')
+const ofWhole = ref('150')
 const part = ref('30')
+const ratioWhole = ref('150')
 const from = ref('80')
 const to = ref('100')
 const base = ref('200')
 const delta = ref('10')
 
-const share = computed(() => percentOf(percent.value, whole.value))
-const ratio = computed(() => ratioPercent(part.value, whole.value))
+const share = computed(() => percentOf(percent.value, ofWhole.value))
+const ratio = computed(() => ratioPercent(part.value, ratioWhole.value))
 const change = computed(() => percentChange(from.value, to.value))
 const added = computed(() => adjustPercent(base.value, delta.value, 'add'))
 const removed = computed(() => adjustPercent(base.value, delta.value, 'subtract'))
@@ -31,7 +32,7 @@ const removed = computed(() => adjustPercent(base.value, delta.value, 'subtract'
       <label>
         Z liczby
         <input
-          v-model="whole"
+          v-model="ofWhole"
           class="input"
           inputmode="decimal"
         >
@@ -59,7 +60,7 @@ const removed = computed(() => adjustPercent(base.value, delta.value, 'subtract'
       <label>
         Całość
         <input
-          v-model="whole"
+          v-model="ratioWhole"
           class="input"
           inputmode="decimal"
         >

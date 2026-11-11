@@ -13,11 +13,16 @@ async function generate() {
     error.value = 'Wpisz tekst albo adres.'
     return
   }
-  image.value = await toDataURL(input.value, {
-    margin: 1,
-    width: 280,
-    errorCorrectionLevel: 'M',
-  })
+  try {
+    image.value = await toDataURL(input.value, {
+      margin: 1,
+      width: 280,
+      errorCorrectionLevel: 'M',
+    })
+  } catch {
+    image.value = ''
+    error.value = 'Nie udało się wygenerować kodu QR.'
+  }
 }
 </script>
 

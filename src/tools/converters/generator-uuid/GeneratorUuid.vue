@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { generateUuids, inspectUuid, type UuidVersion } from '../../../lib/converters/uuid'
-import CopyButton from '../CopyButton.vue'
+import CopyButton from '../../../components/CopyButton.vue'
 
 const version = ref<UuidVersion>(4)
 const count = ref(5)

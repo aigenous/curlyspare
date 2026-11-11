@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { decodeUrl, encodeUrl, type UrlEncoding } from '../../../lib/converters/url'
-import CopyButton from '../CopyButton.vue'
+import CopyButton from '../../../components/CopyButton.vue'
 
 const source = ref('')
 const output = ref('')
