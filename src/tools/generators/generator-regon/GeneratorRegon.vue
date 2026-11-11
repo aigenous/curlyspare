@@ -2,11 +2,13 @@
 import { ref } from 'vue'
 import CopyButton from '../../../components/CopyButton.vue'
 import { generateRegons, validateRegon, type RegonLength } from '../../../lib/generators'
+import { identifiersToCsv, identifiersToJson, downloadText } from '../download'
 import { COUNT_RANGE_ERROR, readCount, validationMessage } from '../messages'
 
 const length = ref<RegonLength>(9)
 const count = ref(1)
 const generated = ref('')
+const rows = ref<string[]>([])
 const note = ref('')
 const error = ref('')
 const probe = ref('')
@@ -21,12 +23,14 @@ function generate() {
   error.value = ''
   note.value = ''
   generated.value = ''
+  rows.value = []
   const parsedCount = readCount(count.value)
   if (parsedCount === null) {
     error.value = COUNT_RANGE_ERROR
     return
   }
   const values = generateRegons(parsedCount, selectedLength())
+  rows.value = values
   generated.value = values.join('\n')
   const only = values[0]
   if (values.length === 1 && only !== undefined && selectedLength() === 14) {
@@ -35,6 +39,14 @@ function generate() {
       note.value = `REGON podmiotu: ${result.entityRegon}.`
     }
   }
+}
+
+function downloadCsv() {
+  downloadText('regon.csv', `\uFEFF${identifiersToCsv('regon', rows.value)}`, 'text/csv;charset=utf-8')
+}
+
+function downloadJson() {
+  downloadText('regon.json', identifiersToJson(rows.value), 'application/json;charset=utf-8')
 }
 
 function check() {
@@ -110,10 +122,26 @@ function check() {
       >
         {{ note }}
       </p>
-      <CopyButton
+      <div
         v-if="generated"
-        :text="generated"
-      />
+        class="row"
+      >
+        <CopyButton :text="generated" />
+        <button
+          class="button button-ghost"
+          type="button"
+          @click="downloadCsv"
+        >
+          Pobierz CSV
+        </button>
+        <button
+          class="button button-ghost"
+          type="button"
+          @click="downloadJson"
+        >
+          Pobierz JSON
+        </button>
+      </div>
     </section>
     <section class="stack">
       <h2>Sprawdzanie</h2>

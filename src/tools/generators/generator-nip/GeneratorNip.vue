@@ -2,11 +2,13 @@
 import { ref } from 'vue'
 import CopyButton from '../../../components/CopyButton.vue'
 import { formatNip, generateNips, validateNip } from '../../../lib/generators'
+import { identifiersToCsv, identifiersToJson, downloadText } from '../download'
 import { COUNT_RANGE_ERROR, readCount, validationMessage } from '../messages'
 
 const count = ref(1)
 const grouped = ref(false)
 const generated = ref('')
+const rows = ref<string[]>([])
 const error = ref('')
 const probe = ref('')
 const verdict = ref('')
@@ -19,12 +21,22 @@ function present(nip: string): string {
 function generate() {
   error.value = ''
   generated.value = ''
+  rows.value = []
   const parsedCount = readCount(count.value)
   if (parsedCount === null) {
     error.value = COUNT_RANGE_ERROR
     return
   }
-  generated.value = generateNips(parsedCount).map(present).join('\n')
+  rows.value = generateNips(parsedCount).map(present)
+  generated.value = rows.value.join('\n')
+}
+
+function downloadCsv() {
+  downloadText('nip.csv', `\uFEFF${identifiersToCsv('nip', rows.value)}`, 'text/csv;charset=utf-8')
+}
+
+function downloadJson() {
+  downloadText('nip.json', identifiersToJson(rows.value), 'application/json;charset=utf-8')
 }
 
 function check() {
@@ -82,10 +94,26 @@ function check() {
           :value="generated"
         />
       </label>
-      <CopyButton
+      <div
         v-if="generated"
-        :text="generated"
-      />
+        class="row"
+      >
+        <CopyButton :text="generated" />
+        <button
+          class="button button-ghost"
+          type="button"
+          @click="downloadCsv"
+        >
+          Pobierz CSV
+        </button>
+        <button
+          class="button button-ghost"
+          type="button"
+          @click="downloadJson"
+        >
+          Pobierz JSON
+        </button>
+      </div>
     </section>
     <section class="stack">
       <h2>Sprawdzanie</h2>

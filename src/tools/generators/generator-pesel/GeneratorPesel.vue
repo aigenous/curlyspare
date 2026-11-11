@@ -9,12 +9,14 @@ import {
   type CalendarDate,
   type PeselSex,
 } from '../../../lib/generators'
+import { identifiersToCsv, identifiersToJson, downloadText } from '../download'
 import { COUNT_RANGE_ERROR, peselSexLabel, readCount, validationMessage } from '../messages'
 
 const birthDate = ref('')
 const sex = ref<'losowa' | PeselSex>('losowa')
 const count = ref(1)
 const generated = ref('')
+const rows = ref<string[]>([])
 const note = ref('')
 const error = ref('')
 const probe = ref('')
@@ -25,6 +27,7 @@ function generate() {
   error.value = ''
   note.value = ''
   generated.value = ''
+  rows.value = []
   const parsedCount = readCount(count.value)
   if (parsedCount === null) {
     error.value = COUNT_RANGE_ERROR
@@ -46,6 +49,7 @@ function generate() {
       birthDate: date,
       sex: sex.value === 'losowa' ? undefined : sex.value,
     })
+    rows.value = values
     generated.value = values.join('\n')
     const only = values[0]
     if (values.length === 1 && only !== undefined) {
@@ -57,6 +61,14 @@ function generate() {
   } catch {
     error.value = 'Nie udało się wygenerować numerów dla tych danych.'
   }
+}
+
+function downloadCsv() {
+  downloadText('pesel.csv', `\uFEFF${identifiersToCsv('pesel', rows.value)}`, 'text/csv;charset=utf-8')
+}
+
+function downloadJson() {
+  downloadText('pesel.json', identifiersToJson(rows.value), 'application/json;charset=utf-8')
 }
 
 function check() {
@@ -145,10 +157,26 @@ function check() {
       >
         {{ note }}
       </p>
-      <CopyButton
+      <div
         v-if="generated"
-        :text="generated"
-      />
+        class="row"
+      >
+        <CopyButton :text="generated" />
+        <button
+          class="button button-ghost"
+          type="button"
+          @click="downloadCsv"
+        >
+          Pobierz CSV
+        </button>
+        <button
+          class="button button-ghost"
+          type="button"
+          @click="downloadJson"
+        >
+          Pobierz JSON
+        </button>
+      </div>
     </section>
     <section class="stack">
       <h2>Sprawdzanie</h2>
