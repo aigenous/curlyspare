@@ -9,7 +9,7 @@ import {
   type JsonFormatOptions,
   type JsonIssue,
 } from '../../../lib/converters/json'
-import CopyButton from '../CopyButton.vue'
+import CopyButton from '../../../components/CopyButton.vue'
 import { selectTextPosition } from '../browser'
 
 const source = ref('')

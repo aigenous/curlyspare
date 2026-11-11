@@ -1,30 +1,42 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 
 const props = defineProps<{ text: string }>()
-const copied = ref(false)
+
+type CopyState = 'idle' | 'copied' | 'failed'
+
+const state = ref<CopyState>('idle')
 let timer = 0
 
+const label = computed(() => {
+  switch (state.value) {
+    case 'idle':
+      return 'Kopiuj'
+    case 'copied':
+      return 'Skopiowano'
+    case 'failed':
+      return 'Nie udało się skopiować'
+    default: {
+      const unreachable: never = state.value
+      return unreachable
+    }
+  }
+})
+
 async function copy() {
+  window.clearTimeout(timer)
   try {
     await navigator.clipboard.writeText(props.text)
+    state.value = 'copied'
   } catch {
-    const area = document.createElement('textarea')
-    area.value = props.text
-    area.setAttribute('readonly', '')
-    area.style.position = 'fixed'
-    area.style.left = '-9999px'
-    document.body.append(area)
-    area.select()
-    document.execCommand('copy')
-    area.remove()
+    state.value = 'failed'
   }
-  copied.value = true
-  window.clearTimeout(timer)
   timer = window.setTimeout(() => {
-    copied.value = false
+    state.value = 'idle'
   }, 1600)
 }
+
+onBeforeUnmount(() => window.clearTimeout(timer))
 </script>
 
 <template>
@@ -34,6 +46,6 @@ async function copy() {
     aria-live="polite"
     @click="copy"
   >
-    {{ copied ? 'Skopiowano' : 'Kopiuj' }}
+    {{ label }}
   </button>
 </template>

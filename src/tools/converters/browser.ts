@@ -12,34 +12,6 @@ export async function readInputFile(target: unknown): Promise<Result<Uint8Array>
   return ok(bytes)
 }
 
-export async function copyText(text: string): Promise<boolean> {
-  if (text === '') return false
-  try {
-    await navigator.clipboard.writeText(text)
-    return true
-  } catch {
-    return copyWithSelection(text)
-  }
-}
-
-function copyWithSelection(text: string): boolean {
-  const area = document.createElement('textarea')
-  area.value = text
-  area.setAttribute('readonly', '')
-  area.style.position = 'fixed'
-  area.style.left = '-9999px'
-  document.body.appendChild(area)
-  area.select()
-  let copied: boolean
-  try {
-    copied = document.execCommand('copy')
-  } catch {
-    copied = false
-  }
-  document.body.removeChild(area)
-  return copied
-}
-
 export function downloadBytes(bytes: Uint8Array, filename: string): void {
   const buffer = new ArrayBuffer(bytes.byteLength)
   new Uint8Array(buffer).set(bytes)

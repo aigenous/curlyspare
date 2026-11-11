@@ -25,7 +25,8 @@ test('Markdown preview renders formatting and strips active HTML', async ({ page
   await expect(page.getByText('Skrypty i atrybuty zdarzeń są usuwane.')).toBeVisible()
 
   const preview = page.locator('.preview.md')
-  await expect(preview.locator('h1')).toHaveText('Nagłówek')
+  await expect(preview.locator('h1')).toHaveCount(0)
+  await expect(preview.locator('h2')).toHaveText('Nagłówek')
   await expect(preview.locator('strong')).toHaveText('Pogrubienie')
   await expect(preview.locator('a')).toHaveAttribute('href', 'https://example.com')
 

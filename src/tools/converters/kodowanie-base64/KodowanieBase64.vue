@@ -7,7 +7,7 @@ import {
   encodeBase64Bytes,
   type Base64Variant,
 } from '../../../lib/converters/base64'
-import CopyButton from '../CopyButton.vue'
+import CopyButton from '../../../components/CopyButton.vue'
 import { downloadBytes, readInputFile } from '../browser'
 
 const source = ref('')
@@ -183,5 +183,9 @@ function saveBytes(): void {
   position: relative;
   display: inline-flex;
   cursor: pointer;
+}
+
+.button-ghost:has(.cv-file) {
+  align-items: center;
 }
 </style>

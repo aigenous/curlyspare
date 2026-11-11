@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import ClientOnly from '../../components/ClientOnly.vue'
 import { renderMarkdown } from '../../lib/misc/markdown'
 
-const source = ref('# Nagłówek\n\n**Pogrubienie** i [link](https://example.com).\n\n- punkt\n')
+const source = ref('## Nagłówek\n\n**Pogrubienie** i [link](https://example.com).\n\n- punkt\n')
 </script>
 
 <template>

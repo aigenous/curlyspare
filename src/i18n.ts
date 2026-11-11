@@ -15,6 +15,7 @@ const messages = {
   homeLede:
     'Formatery, identyfikatory i polskie dane testowe. Wpisane i wygenerowane wartości nie opuszczają tej przeglądarki.',
   homeEmpty: 'Brak narzędzi w rejestrze.',
+  homeNoResults: 'Nie znaleziono pasujących narzędzi.',
   footerLocal: 'Obliczenia wyłącznie w przeglądarce. Bez analityki i bez ciasteczek.',
   footerTerms: 'Regulamin',
   footerPrivacy: 'Polityka prywatności',

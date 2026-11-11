@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { decodeJwt, JWT_NOTICE, type DecodedJwt, type JwtDate } from '../../../lib/converters/jwt'
-import CopyButton from '../CopyButton.vue'
+import CopyButton from '../../../components/CopyButton.vue'
 
 const token = ref('')
 const error = ref('')
@@ -93,25 +93,33 @@ function run(): void {
           </dd>
         </div>
         <div>
-          <dt>Podpis</dt>
-          <dd>nie zweryfikowano{{ decoded.signature ? `: ${decoded.signature}` : '' }}</dd>
+          <dt id="jwt-podpis">Podpis</dt>
+          <dd aria-labelledby="jwt-podpis">
+            nie zweryfikowano{{ decoded.signature ? `: ${decoded.signature}` : '' }}
+          </dd>
         </div>
       </dl>
-      <h2>Nagłówek</h2>
+      <h2 id="jwt-naglowek">
+        Nagłówek
+      </h2>
       <textarea
         class="input cv-area cv-output"
         readonly
         spellcheck="false"
+        aria-labelledby="jwt-naglowek"
         :value="decoded.headerText"
       />
       <div class="cv-actions">
         <CopyButton :text="decoded.headerText" />
       </div>
-      <h2>Payload</h2>
+      <h2 id="jwt-payload">
+        Payload
+      </h2>
       <textarea
         class="input cv-area cv-output"
         readonly
         spellcheck="false"
+        aria-labelledby="jwt-payload"
         :value="decoded.payloadText"
       />
       <div class="cv-actions">
