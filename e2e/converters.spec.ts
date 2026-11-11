@@ -238,6 +238,23 @@ test.describe('converter screens', () => {
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.locator('.message-error')).toBeVisible()
   })
+
+  test('SQL formatter uppercases PostgreSQL clauses and rejects an empty query', async ({ page }) => {
+    test.skip(!converterReady('formatowanie-sql/FormatowanieSql.vue'), 'SQL screen is not on this branch yet')
+    await page.goto('/formatowanie-sql')
+    await page.getByLabel('Zapytanie SQL').fill("select a, b from users where id = 1 and name = 'Ala' order by a")
+    await page.getByRole('button', { name: 'Formatuj' }).click()
+    await expect(page.getByLabel('Wynik')).toHaveValue(
+      "SELECT\n  a,\n  b\nFROM\n  users\nWHERE\n  id = 1\n  AND name = 'Ala'\nORDER BY\n  a\n",
+    )
+    await page.getByLabel('Dialekt').selectOption('mysql')
+    await page.getByLabel('Zapytanie SQL').fill('select id from t limit 5')
+    await page.getByRole('button', { name: 'Formatuj' }).click()
+    await expect(page.getByLabel('Wynik')).toHaveValue(/LIMIT\n {2}5/)
+    await page.getByLabel('Zapytanie SQL').fill('   ')
+    await page.getByRole('button', { name: 'Formatuj' }).click()
+    await expect(page.locator('.message-error')).toHaveText('Wklej zapytanie SQL.')
+  })
 })
 
 function converterReady(path: string): boolean {
