@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'encje-html',
+    title: 'Encje HTML',
+    description: 'Koduje i dekoduje encje HTML, także polskie znaki.',
+    category: 'kodowanie',
+    keywords: ['html', 'encje', 'entity', 'encode', 'decode'],
+    component: () => import('./EntitiesTool.vue'),
+  },
+  {
     slug: 'porownanie-tekstu',
     title: 'Porównanie tekstu',
     description: 'Pokazuje różnice linia po linii albo słowo po słowie. Nic nie jest wysyłane.',
