@@ -28,6 +28,7 @@ const slugs = [
   'toml-na-json',
   'curl-na-fetch',
   'koder-jwt',
+  'kompresja',
 ]
 
 describe('converterTools', () => {

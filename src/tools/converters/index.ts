@@ -191,4 +191,12 @@ export const converterTools: ToolDefinition[] = [
     disclaimer: JWT_SIGN_NOTICE,
     component: () => import('./koder-jwt/KoderJwt.vue'),
   },
+  {
+    slug: 'kompresja',
+    title: 'Kompresja gzip',
+    description: 'Kompresuj i rozpakuj gzip albo deflate do Base64 w przeglądarce.',
+    category: 'kodowanie',
+    keywords: ['gzip', 'deflate', 'kompresja', 'base64', 'compressionstream'],
+    component: () => import('./kompresja/Kompresja.vue'),
+  },
 ]
