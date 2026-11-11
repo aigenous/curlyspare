@@ -10,6 +10,8 @@ interface IdentifierLibrary {
   validateKrs: (value: string) => { valid: boolean }
   validateDowodOsobisty: (value: string) => { valid: boolean }
   validatePaszport: (value: string) => { valid: boolean }
+  validateNrb: (value: string) => { valid: boolean }
+  validateGtin: (value: string) => { valid: boolean }
 }
 
 async function loadIdentifiers(): Promise<IdentifierLibrary> {
@@ -137,4 +139,61 @@ test.describe('identifier screens', () => {
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('alert')).toHaveText('Wpisz numer.')
   })
+
+  test('NRB generates a spaced account number that validates', async ({ page }) => {
+    test.skip(!screenReady('generator-nrb/GeneratorNrb.vue'), 'NRB screen is not on this branch yet')
+    const api = await loadIdentifiers()
+    await page.goto('/generator-nrb')
+    await page.getByRole('button', { name: 'Generuj' }).click()
+    const value = (await page.getByLabel('Wynik').inputValue()).trim()
+    expect(value).toMatch(/^\d{2}(?: \d{4}){6}$/)
+    expect(api.validateNrb(value).valid).toBe(true)
+    await page.getByLabel('NRB lub IBAN PL').fill('09 1010 1010 0075 9122 2300 0000')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toContainText('Poprawny NRB')
+    await expect(page.getByRole('status')).toContainText('10101010')
+  })
+
+  test('EAN generator checks a published EAN-13 and rejects a bad digit', async ({ page }) => {
+    test.skip(!screenReady('generator-ean/GeneratorEan.vue'), 'EAN screen is not on this branch yet')
+    const api = await loadIdentifiers()
+    await page.goto('/generator-ean')
+    await page.getByRole('button', { name: 'Generuj' }).click()
+    const value = (await page.getByLabel('Wynik').inputValue()).trim()
+    expect(value).toMatch(/^\d{13}$/)
+    expect(api.validateGtin(value).valid).toBe(true)
+    await page.getByRole('textbox', { name: 'Numer', exact: true }).fill('5901234123457')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toHaveText('Poprawny EAN-13: 5901234123457.')
+    await page.getByRole('textbox', { name: 'Numer', exact: true }).fill('5901234123458')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+  })
+
+  test('VIN validator accepts the published example and rejects letter I', async ({ page }) => {
+    test.skip(!screenReady('walidator-vin/WalidatorVin.vue'), 'VIN screen is not on this branch yet')
+    await page.goto('/walidator-vin')
+    await page.getByLabel('VIN').fill('1M8GDM9AXKP042788')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toHaveText('Poprawny VIN: 1M8GDM9AXKP042788.')
+    await page.getByLabel('VIN').fill('1M8GDM9AXKP04278I')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Nieprawidłowy format numeru.')
+  })
+
+  test('ISBN converter turns ISBN-10 into ISBN-13 and rejects a bad check digit', async ({ page }) => {
+    test.skip(!screenReady('konwerter-isbn/KonwerterIsbn.vue'), 'ISBN screen is not on this branch yet')
+    await page.goto('/konwerter-isbn')
+    await page.getByLabel('ISBN').fill('0-306-40615-2')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toHaveText('Poprawny ISBN-10.')
+    await expect(page.getByLabel('ISBN-13')).toHaveValue('9780306406157')
+    await page.getByRole('textbox', { name: 'ISBN', exact: true }).fill('0306406153')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+  })
 })
+
+function screenReady(path: string): boolean {
+  return existsSync(new URL(`../src/tools/generators/${path}`, import.meta.url))
+}

@@ -139,7 +139,88 @@ test.describe('converter screens', () => {
     await page.getByRole('button', { name: 'Dekoduj' }).click()
     await expect(page.getByRole('alert')).toHaveText('Token JWT powinien mieć trzy części rozdzielone kropkami.')
   })
+
+  test('HMAC of a Polish word matches the local SHA-256 vector and rejects an empty key', async ({ page }) => {
+    test.skip(!converterReady('generator-hmac/GeneratorHmac.vue'), 'HMAC screen is not on this branch yet')
+    await page.goto('/generator-hmac')
+    await page.getByLabel('Klucz').fill('klucz')
+    await page.getByLabel('Wiadomość').fill('zażółć')
+    await page.getByRole('button', { name: 'Policz HMAC' }).click()
+    await expect(page.getByLabel('Szesnastkowo')).toHaveValue(
+      '01dfcba5b00e0282b0b198a1639a10b45ad85ae2337c2b175a1a90725054b6a7',
+    )
+    await page.getByLabel('Klucz').fill('')
+    await page.getByRole('button', { name: 'Policz HMAC' }).click()
+    await expect(page.getByText('Klucz HMAC nie może być pusty.')).toBeVisible()
+  })
+
+  test('Base32 and hex round-trip text and reject a bad alphabet', async ({ page }) => {
+    test.skip(!converterReady('kodowanie-base32/KodowanieBase32.vue'), 'Base32 screen is not on this branch yet')
+    await page.goto('/kodowanie-base32')
+    await page.getByLabel('Tekst albo Base32').fill('foo')
+    await page.getByRole('button', { name: 'Koduj tekst', exact: true }).click()
+    await expect(output(page)).toHaveValue('MZXW6===')
+    await page.getByLabel('Tekst albo Base32').fill('MZXW6===')
+    await page.getByRole('button', { name: 'Dekoduj tekst', exact: true }).click()
+    await expect(output(page)).toHaveValue('foo')
+    await page.getByLabel('Tekst albo Base32').fill('MZXW6Y10')
+    await page.getByRole('button', { name: 'Dekoduj tekst', exact: true }).click()
+    await expect(page.getByText('Niepoprawny znak w Base32.')).toBeVisible()
+
+    await page.goto('/kodowanie-hex')
+    await page.getByLabel('Tekst albo hex').fill('foo')
+    await page.getByRole('button', { name: 'Koduj tekst', exact: true }).click()
+    await expect(output(page)).toHaveValue('666f6f')
+    await page.getByLabel('Tekst albo hex').fill('666f6f')
+    await page.getByRole('button', { name: 'Dekoduj tekst', exact: true }).click()
+    await expect(output(page)).toHaveValue('foo')
+    await page.getByLabel('Tekst albo hex').fill('zz')
+    await page.getByRole('button', { name: 'Dekoduj tekst', exact: true }).click()
+    await expect(page.getByText('Niepoprawny znak w hex.')).toBeVisible()
+  })
+
+  test('Unicode escapes round-trip ż and XML pretty-prints a document', async ({ page }) => {
+    test.skip(!converterReady('ucieczki-unicode/UcieczkiUnicode.vue'), 'Unicode screen is not on this branch yet')
+    await page.goto('/ucieczki-unicode')
+    await page.getByRole('textbox', { name: 'Tekst', exact: true }).fill('ż')
+    await page.getByRole('button', { name: 'Ucieknij' }).click()
+    await expect(output(page)).toHaveValue('\\u017c')
+    await page.getByRole('textbox', { name: 'Tekst', exact: true }).fill('\\u017c')
+    await page.getByRole('button', { name: 'Odczytaj' }).click()
+    await expect(output(page)).toHaveValue('ż')
+    await page.getByRole('textbox', { name: 'Tekst', exact: true }).fill('\\')
+    await page.getByRole('button', { name: 'Odczytaj' }).click()
+    await expect(page.getByText('Ucieczka na końcu tekstu jest niedokończona.')).toBeVisible()
+
+    await page.goto('/formatowanie-xml')
+    await page.getByLabel('Dokument XML').fill('<root><child a="1">zażółć</child><empty/></root>')
+    await page.getByRole('button', { name: 'Formatuj' }).click()
+    await expect(output(page)).toHaveValue('<root>\n  <child a="1">zażółć</child>\n  <empty/>\n</root>\n')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByText('Poprawny XML: element główny „root”.')).toBeVisible()
+    await page.getByLabel('Dokument XML').fill('')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.locator('.message-error')).toHaveText('Pusty dokument XML.')
+  })
+
+  test('URL parser splits host, path, and query', async ({ page }) => {
+    test.skip(!converterReady('parser-adresu/ParserAdresu.vue'), 'URL parser is not on this branch yet')
+    await page.goto('/parser-adresu')
+    await page.getByLabel('Adres URL albo parametry').fill('https://ala:hasło@example.com:8443/a/b?x=1#sekcja')
+    await page.getByRole('button', { name: 'Rozłóż' }).click()
+    await expect(stat(page, 'Host')).toHaveText('example.com')
+    await expect(stat(page, 'Port')).toHaveText('8443')
+    await expect(stat(page, 'Ścieżka')).toHaveText('/a/b')
+    await expect(stat(page, 'Fragment')).toHaveText('#sekcja')
+    await page.getByLabel('Adres URL albo parametry').fill('')
+    await page.getByRole('button', { name: 'Rozłóż' }).click()
+    await expect(page.locator('.message-error')).toHaveText('Wklej adres URL albo parametry zapytania.')
+  })
 })
+
+function converterReady(path: string): boolean {
+  return existsSync(new URL(`../src/tools/converters/${path}`, import.meta.url))
+}
 
 function output(page: Page) {
   return page.getByLabel('Wynik')
