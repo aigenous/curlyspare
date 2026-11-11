@@ -14,6 +14,7 @@ describe('generator registry', () => {
       'generator-krs',
       'generator-nrb',
       'generator-ean',
+      'konwerter-isbn',
       'walidator-iban',
     ])
     for (const tool of generatorTools) {

@@ -25,6 +25,7 @@ export {
   type GtinLength,
   type GtinValidation,
 } from './gtin'
+export { validateIsbn, type IsbnDetails, type IsbnValidation } from './isbn'
 export {
   formatIban,
   validateIbanPl,

@@ -75,6 +75,15 @@ export const generatorTools: ToolDefinition[] = [
     component: () => import('./generator-ean/GeneratorEan.vue'),
   },
   {
+    slug: 'konwerter-isbn',
+    title: 'Konwerter ISBN',
+    description: 'Sprawdza ISBN-10 i ISBN-13 oraz przelicza jeden format na drugi.',
+    category: 'generatory',
+    keywords: ['isbn', 'isbn-10', 'isbn-13', 'książka', 'ean'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./konwerter-isbn/KonwerterIsbn.vue'),
+  },
+  {
     slug: 'walidator-iban',
     title: 'Walidator IBAN PL',
     description: 'Sprawdza polski IBAN algorytmem mod 97. Nie generuje rachunku i nie łączy się z bankiem.',
