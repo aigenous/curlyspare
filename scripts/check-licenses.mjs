@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global console, process */
 // Fails when a dependency can only be used under GPL, AGPL, or LGPL.
 // A dual licence such as "MIT OR GPL-3.0-only" is allowed, because the
 // permissive alternative can be chosen. "GPL-2.0 OR GPL-3.0" is not.
