@@ -177,6 +177,31 @@ test.describe('identifier screens', () => {
     await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
   })
 
+  test('EU VAT accepts a Polish NIP and rejects a damaged checksum', async ({ page }) => {
+    test.skip(!screenReady('walidator-vat-ue/WalidatorVatUe.vue'), 'EU VAT screen is not on this branch yet')
+    await page.goto('/walidator-vat-ue')
+    await expect(page.getByText('Nie ma zapytania do żadnego rejestru.')).toBeVisible()
+    await page.getByLabel('Numer VAT').fill('PL 526-025-02-74')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toHaveText('Poprawny numer VAT (PL): PL5260250274.')
+    await page.getByLabel('Numer VAT').fill('PL5260250275')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+  })
+
+  test('test-person generator writes a fictional PESEL that validates', async ({ page }) => {
+    test.skip(!screenReady('generator-osoby-testowej/GeneratorOsobyTestowej.vue'), 'test-person screen is not on this branch yet')
+    const api = await loadIdentifiers()
+    await page.goto('/generator-osoby-testowej')
+    await expect(page.locator('.disclaimer')).toContainText('wyłącznie do testowania')
+    await page.getByRole('button', { name: 'Generuj' }).click()
+    const line = await page.getByLabel('Wynik').inputValue()
+    const pesel = /PESEL (\d{11})/.exec(line)?.[1] ?? ''
+    expect(pesel).toMatch(/^\d{11}$/)
+    expect(api.validatePesel(pesel).valid).toBe(true)
+    expect(line).toMatch(/\d{2}-\d{3}/)
+  })
+
   test('VIN validator accepts the published example and rejects letter I', async ({ page }) => {
     test.skip(!screenReady('walidator-vin/WalidatorVin.vue'), 'VIN screen is not on this branch yet')
     await page.goto('/walidator-vin')
