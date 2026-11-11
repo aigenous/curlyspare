@@ -6,6 +6,7 @@ import {
   generatorDisclaimer,
   gtinDisclaimer,
   ibanValidatorDisclaimer,
+  idDocumentDisclaimer,
   isbnValidatorDisclaimer,
   personTestDisclaimer,
   vatValidatorDisclaimer,
@@ -17,8 +18,6 @@ const sharedDisclaimer = new Set([
   'generator-pesel',
   'generator-nip',
   'generator-regon',
-  'generator-dowod-osobisty',
-  'generator-paszport',
   'generator-krs',
   'generator-nrb',
 ])
@@ -30,8 +29,8 @@ describe('generator registry', () => {
       'generator-pesel',
       'generator-nip',
       'generator-regon',
-      'generator-dowod-osobisty',
-      'generator-paszport',
+      'numer-dowodu-osobistego',
+      'numer-paszportu',
       'generator-krs',
       'generator-nrb',
       'generator-ean',
@@ -42,6 +41,8 @@ describe('generator registry', () => {
       'walidator-iban',
     ])
     const own: Record<string, string> = {
+      'numer-dowodu-osobistego': idDocumentDisclaimer,
+      'numer-paszportu': idDocumentDisclaimer,
       'generator-ean': gtinDisclaimer,
       'walidator-vat-ue': vatValidatorDisclaimer,
       'walidator-vin': vinValidatorDisclaimer,

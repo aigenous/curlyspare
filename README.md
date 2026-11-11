@@ -15,8 +15,8 @@ Sixty-two tools, in registry order (`generatorTools`, then `converterTools`, the
 | Generator PESEL | `generator-pesel` | Generuje i sprawdza numer PESEL: data urodzenia, płeć i suma kontrolna. |
 | Generator NIP | `generator-nip` | Generuje i sprawdza NIP oraz pokazuje zapis z myślnikami. |
 | Generator REGON | `generator-regon` | Generuje i sprawdza REGON 9-cyfrowy oraz 14-cyfrowy numer jednostki lokalnej. |
-| Generator dowodu osobistego | `generator-dowod-osobisty` | Generuje i sprawdza serię i numer dowodu osobistego. |
-| Generator numeru paszportu | `generator-paszport` | Generuje i sprawdza numer polskiego paszportu (dwie litery i siedem cyfr). |
+| Testowy numer dowodu osobistego – walidator i generator | `numer-dowodu-osobistego` | Sprawdź, czy seria i numer dowodu mają poprawny format i cyfrę kontrolną, albo wygeneruj numer testowy. |
+| Testowy numer paszportu – walidator i generator | `numer-paszportu` | Sprawdź, czy numer paszportu ma poprawny format i cyfrę kontrolną, albo wygeneruj numer testowy. |
 | Generator numeru KRS | `generator-krs` | Losuje i sprawdza 10-cyfrowy numer KRS. Rejestr nie używa sumy kontrolnej. |
 | Generator NRB | `generator-nrb` | Generuje i sprawdza polski numer rachunku: suma IBAN oraz cyfra kontrolna numeru rozliczeniowego. |
 | Generator EAN i GTIN | `generator-ean` | Generuje i sprawdza EAN-8, EAN-13 oraz GTIN-14. Walidator przyjmuje też UPC-A. |

@@ -6,9 +6,15 @@ import { brand } from '../brand'
 import { pageHead } from '../composables/usePageMeta'
 import { categoryLabel } from '../i18n'
 import { findTool } from '../registry'
+import IdDocumentGuide from '../tools/generators/IdDocumentGuide.vue'
+import { documentTitleFor, idDocumentPage } from '../tools/generators/id-document-copy'
 
 const route = useRoute()
 const tool = computed(() => findTool(String(route.meta.slug ?? '')))
+const idCopy = computed(() => {
+  const current = tool.value
+  return current ? idDocumentPage(current.slug) : null
+})
 
 const AsyncTool = computed(() => {
   const current = tool.value
@@ -24,9 +30,11 @@ const AsyncTool = computed(() => {
 
 useHead(() => {
   const current = tool.value
+  const page = current ? idDocumentPage(current.slug) : null
   return pageHead({
-    title: current ? `${current.title} — ${brand.name}` : brand.name,
-    description: current?.description ?? '',
+    title: page ? documentTitleFor(page) : current ? `${current.title} — ${brand.name}` : brand.name,
+    description: page?.metaDescription ?? current?.description ?? '',
+    ogTitle: page?.h1,
     path: current ? `/${current.slug}` : route.path,
   })
 })
@@ -53,5 +61,9 @@ useHead(() => {
     >
       {{ tool.disclaimer }}
     </p>
+    <IdDocumentGuide
+      v-if="idCopy"
+      :page="idCopy"
+    />
   </article>
 </template>

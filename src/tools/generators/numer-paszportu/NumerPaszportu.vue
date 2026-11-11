@@ -1,0 +1,19 @@
+<script setup lang="ts">
+import { formatPaszport, generatePaszporty, validatePaszport } from '../../../lib/generators'
+import IdNumberTool from '../IdNumberTool.vue'
+
+function passText(formatted: string, series: string): string {
+  return `Poprawny numer paszportu: ${formatted}. Seria ${series}.`
+}
+</script>
+
+<template>
+  <IdNumberTool
+    slug="numer-paszportu"
+    probe-label="Numer paszportu"
+    :pass-text="passText"
+    :generate-many="generatePaszporty"
+    :format="formatPaszport"
+    :validate="validatePaszport"
+  />
+</template>
