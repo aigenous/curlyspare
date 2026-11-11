@@ -27,10 +27,14 @@ export {
 } from './gtin'
 export { validateIsbn, type IsbnDetails, type IsbnValidation } from './isbn'
 export {
+  formatTestPersonCopyLine,
   generateTestPeople,
   generateTestPerson,
   testPeopleToCsv,
   testPeopleToJson,
+  TEST_COPY_PREFIX,
+  TEST_DATA_FIELD,
+  TEST_DATA_MARKER,
   TEST_PERSON_CSV_HEADER,
   type TestPerson,
   type TestPersonOptions,

@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { generatorDisclaimer } from '../src/brand'
+import {
+  generatorDisclaimer,
+  gtinDisclaimer,
+  ibanValidatorDisclaimer,
+  isbnValidatorDisclaimer,
+  personTestDisclaimer,
+  vatValidatorDisclaimer,
+  vinValidatorDisclaimer,
+} from '../src/brand'
 import { assertRegistry, findTool, tools } from '../src/registry'
 import type { ToolDefinition } from '../src/registry/types'
 
@@ -53,14 +61,37 @@ describe('tool registry', () => {
     }
   })
 
-  it('gives every generator the shared testing disclaimer', () => {
+  it('gives identifier generators the shared disclaimer and checkers their own', () => {
     expect(generatorDisclaimer.trim().length).toBeGreaterThan(40)
-    const identifier = /pesel|nip|regon|krs|iban|dowod|paszport/
+    const shared = new Set([
+      'generator-pesel',
+      'generator-nip',
+      'generator-regon',
+      'generator-dowod-osobisty',
+      'generator-paszport',
+      'generator-krs',
+      'generator-nrb',
+    ])
+    const own: Record<string, string> = {
+      'generator-ean': gtinDisclaimer,
+      'walidator-vat-ue': vatValidatorDisclaimer,
+      'walidator-vin': vinValidatorDisclaimer,
+      'konwerter-isbn': isbnValidatorDisclaimer,
+      'generator-osoby-testowej': personTestDisclaimer,
+      'walidator-iban': ibanValidatorDisclaimer,
+    }
+    const identifier = /pesel|nip|regon|krs|iban|dowod|paszport|ean|isbn|vin|vat-ue|osoby-testowej/
     const generators = tools.filter(
       (tool) => tool.category === 'generatory' || identifier.test(tool.slug),
     )
+    expect(generators.length).toBe(shared.size + Object.keys(own).length)
     for (const tool of generators) {
-      expect(tool.disclaimer, tool.slug).toBe(generatorDisclaimer)
+      if (shared.has(tool.slug)) {
+        expect(tool.disclaimer, tool.slug).toBe(generatorDisclaimer)
+        continue
+      }
+      expect(tool.disclaimer, tool.slug).toBe(own[tool.slug])
+      expect(tool.disclaimer, tool.slug).not.toBe(generatorDisclaimer)
     }
   })
 })

@@ -34,7 +34,7 @@ export interface ToolDefinition {
 
 Slugs are lowercase words separated by single hyphens. They must be unique. Do not use `regulamin`, `polityka-prywatnosci`, `operator`, or `404`.
 
-Generators that invent identifiers must set `disclaimer` to `generatorDisclaimer` exported from `src/brand.ts`. That string is fixed legal copy.
+Generators that invent identifiers (PESEL, NIP, REGON, KRS, dowód osobisty, paszport, NRB) must set `disclaimer` to `generatorDisclaimer` exported from `src/brand.ts`. That string is fixed legal copy. The fictional-person generator, the EAN/GTIN generator, and the VAT UE, VIN, ISBN and IBAN checkers use the other disclaimer constants in that file. Do not assign `generatorDisclaimer` to those checkers.
 
 ## Ownership
 

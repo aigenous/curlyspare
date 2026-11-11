@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import CopyButton from '../../../components/CopyButton.vue'
 import { validateIsbn } from '../../../lib/generators'
 import { validationMessage } from '../messages'
+import { isbnPassMessage } from '../verdicts'
 
 const probe = ref('')
 const verdict = ref('')
@@ -21,10 +22,7 @@ function check() {
   }
   isbn10.value = result.isbn10 ?? ''
   isbn13.value = result.isbn13
-  verdict.value =
-    result.isbn10 === null
-      ? `Poprawny ${result.kind}. Prefiks 979 nie ma odpowiednika ISBN-10.`
-      : `Poprawny ${result.kind}.`
+  verdict.value = isbnPassMessage(result.kind, result.isbn10)
 }
 </script>
 
