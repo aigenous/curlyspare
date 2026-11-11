@@ -157,4 +157,20 @@ export const converterTools: ToolDefinition[] = [
     keywords: ['json', 'typescript', 'interfejs', 'typ', 'interface'],
     component: () => import('./json-na-typescript/JsonNaTypescript.vue'),
   },
+  {
+    slug: 'tester-jsonpath',
+    title: 'Tester JSONPath',
+    description: 'Wykonaj zapytanie JSONPath na dokumencie JSON i zobacz trafienia.',
+    category: 'konwertery',
+    keywords: ['jsonpath', 'json', 'zapytanie', 'filtr', 'ścieżka'],
+    component: () => import('./tester-jsonpath/TesterJsonpath.vue'),
+  },
+  {
+    slug: 'toml-na-json',
+    title: 'TOML na JSON',
+    description: 'Zamień TOML na JSON i obiekt JSON z powrotem na TOML.',
+    category: 'konwertery',
+    keywords: ['toml', 'json', 'konwersja'],
+    component: () => import('./toml-na-json/TomlNaJson.vue'),
+  },
 ]

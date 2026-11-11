@@ -23,6 +23,8 @@ const slugs = [
   'walidator-json-schema',
   'xml-na-json',
   'json-na-typescript',
+  'tester-jsonpath',
+  'toml-na-json',
 ]
 
 describe('converterTools', () => {

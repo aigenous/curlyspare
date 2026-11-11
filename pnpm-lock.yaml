@@ -26,12 +26,18 @@ importers:
       he:
         specifier: 2.0.0
         version: 2.0.0
+      jsonpath-plus:
+        specifier: 11.3.0
+        version: 11.3.0
       marked:
         specifier: 18.2.0
         version: 18.2.0
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
+      smol-toml:
+        specifier: 1.9.1
+        version: 1.9.1
       sql-formatter:
         specifier: 15.9.0
         version: 15.9.0
@@ -400,6 +406,18 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@jsep-plugin/assignment@1.4.0':
+    resolution: {integrity: sha512-nw2Px23Eirx0PFTVoPrb3FEq9Wkmg6vxcDtt38MtBCf1G0tjLCB9cK+3seOXyiw+6+aalgYhvJabQbWwMVKlEQ==}
+    engines: {node: '>= 10.16.0'}
+    peerDependencies:
+      jsep: ^0.4.0||^1.0.0
+
+  '@jsep-plugin/regex@1.1.0':
+    resolution: {integrity: sha512-2Vkbda+XRjK6VTI6Lrh0sNBuMT8mZ51EhqMvO+V2rSdmqjs7NAGssxPZfkL23EFzYfSrvxyd1ZjOdqPQMM50og==}
+    engines: {node: '>= 10.16.0'}
+    peerDependencies:
+      jsep: ^0.4.0||^1.0.0
 
   '@keyv/bigmap@1.3.1':
     resolution: {integrity: sha512-WbzE9sdmQtKy8vrNPa9BRnwZh5UF4s1KTmSK0KUVLo3eff5BlQNNWDnFOouNpKfPKDnms9xynJjsMYjMaT/aFQ==}
@@ -1110,6 +1128,10 @@ packages:
       canvas:
         optional: true
 
+  jsep@1.6.0:
+    resolution: {integrity: sha512-Y8Tr54CX7B5YGAwo7/n8eumidEX3Opx98RyyQVnlHqUaZcPA8uUzL2v1rshr9ypW9Q6hNjfJtg3sL+8kaNE7TA==}
+    engines: {node: '>= 20.16.0'}
+
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
 
@@ -1118,6 +1140,11 @@ packages:
 
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
+
+  jsonpath-plus@11.3.0:
+    resolution: {integrity: sha512-l7zpg7itqXMNbyVXrPWvR0976Rx2cirJ1Stqt3Xf/2VYPlMMefgnAGJ7WQNMkvO5nxhTspZdlGE/p5SH3cW8mw==}
+    engines: {node: '>=22.0.0'}
+    hasBin: true
 
   keyv@5.6.0:
     resolution: {integrity: sha512-CYDD3SOtsHtyXeEORYRx2qBtpDJFjRTGXUtmNEMGyzYOKj1TE3tycdlho7kA1Ufx9OYWZzg52QFBGALTirzDSw==}
@@ -1335,6 +1362,10 @@ packages:
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
+
+  smol-toml@1.9.1:
+    resolution: {integrity: sha512-j7WyPdf0CJoutMzMoPLF/bVXHtKZIT9Rb4eGeEbWw8X2t5oirjPgpL+OpaENZrILYaXqYwnVH+qgUwVbl+pUJQ==}
+    engines: {node: '>= 18'}
 
   source-map-js@1.2.2:
     resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
@@ -1870,6 +1901,14 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
+
+  '@jsep-plugin/assignment@1.4.0(jsep@1.6.0)':
+    dependencies:
+      jsep: 1.6.0
+
+  '@jsep-plugin/regex@1.1.0(jsep@1.6.0)':
+    dependencies:
+      jsep: 1.6.0
 
   '@keyv/bigmap@1.3.1(keyv@5.6.0)':
     dependencies:
@@ -2606,11 +2645,19 @@ snapshots:
       - '@noble/hashes'
       - supports-color
 
+  jsep@1.6.0: {}
+
   json-schema-traverse@0.4.1: {}
 
   json-schema-traverse@1.0.0: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
+
+  jsonpath-plus@11.3.0:
+    dependencies:
+      '@jsep-plugin/assignment': 1.4.0(jsep@1.6.0)
+      '@jsep-plugin/regex': 1.1.0(jsep@1.6.0)
+      jsep: 1.6.0
 
   keyv@5.6.0:
     dependencies:
@@ -2827,6 +2874,8 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
+
+  smol-toml@1.9.1: {}
 
   source-map-js@1.2.2: {}
 
