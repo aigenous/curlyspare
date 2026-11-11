@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { validateIbanPl } from '../../../lib/generators'
 import { validationMessage } from '../messages'
+import { ibanPassMessage } from '../verdicts'
 
 const probe = ref('')
 const verdict = ref('')
@@ -11,7 +12,7 @@ function check() {
   const result = validateIbanPl(probe.value)
   verdictError.value = !result.valid
   verdict.value = result.valid
-    ? `Poprawny IBAN: ${result.formatted}. NRB: ${result.nrb}.`
+    ? ibanPassMessage(result.formatted, result.nrb)
     : validationMessage(result.error)
 }
 </script>

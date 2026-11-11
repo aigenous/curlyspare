@@ -1,4 +1,12 @@
-import { generatorDisclaimer } from '../../brand'
+import {
+  generatorDisclaimer,
+  gtinDisclaimer,
+  ibanValidatorDisclaimer,
+  isbnValidatorDisclaimer,
+  personTestDisclaimer,
+  vatValidatorDisclaimer,
+  vinValidatorDisclaimer,
+} from '../../brand'
 import type { ToolDefinition } from '../../registry/types'
 
 export const generatorTools: ToolDefinition[] = [
@@ -71,7 +79,7 @@ export const generatorTools: ToolDefinition[] = [
     description: 'Generuje i sprawdza EAN-8, EAN-13 oraz GTIN-14. Walidator przyjmuje też UPC-A.',
     category: 'generatory',
     keywords: ['ean', 'ean-13', 'ean-8', 'gtin', 'gtin-14', 'upc', 'kod kreskowy'],
-    disclaimer: generatorDisclaimer,
+    disclaimer: gtinDisclaimer,
     component: () => import('./generator-ean/GeneratorEan.vue'),
   },
   {
@@ -80,7 +88,7 @@ export const generatorTools: ToolDefinition[] = [
     description: 'Sprawdza format i sumę kontrolną numeru VAT państw UE, bez zapytania do rejestru.',
     category: 'generatory',
     keywords: ['vat', 'nip ue', 'vies', 'numer vat', 'podatek'],
-    disclaimer: generatorDisclaimer,
+    disclaimer: vatValidatorDisclaimer,
     component: () => import('./walidator-vat-ue/WalidatorVatUe.vue'),
   },
   {
@@ -89,7 +97,7 @@ export const generatorTools: ToolDefinition[] = [
     description: 'Sprawdza cyfrę kontrolną numeru VIN według ISO 3779.',
     category: 'generatory',
     keywords: ['vin', 'numer nadwozia', 'pojazd', 'cyfra kontrolna'],
-    disclaimer: generatorDisclaimer,
+    disclaimer: vinValidatorDisclaimer,
     component: () => import('./walidator-vin/WalidatorVin.vue'),
   },
   {
@@ -98,7 +106,7 @@ export const generatorTools: ToolDefinition[] = [
     description: 'Sprawdza ISBN-10 i ISBN-13 oraz przelicza jeden format na drugi.',
     category: 'generatory',
     keywords: ['isbn', 'isbn-10', 'isbn-13', 'książka', 'ean'],
-    disclaimer: generatorDisclaimer,
+    disclaimer: isbnValidatorDisclaimer,
     component: () => import('./konwerter-isbn/KonwerterIsbn.vue'),
   },
   {
@@ -107,7 +115,7 @@ export const generatorTools: ToolDefinition[] = [
     description: 'Tworzy fikcyjną osobę: imię, nazwisko, PESEL zgodny z płcią i datą oraz adres o poprawnym formacie kodu.',
     category: 'generatory',
     keywords: ['osoba testowa', 'dane testowe', 'pesel', 'adres', 'csv', 'json'],
-    disclaimer: generatorDisclaimer,
+    disclaimer: personTestDisclaimer,
     component: () => import('./generator-osoby-testowej/GeneratorOsobyTestowej.vue'),
   },
   {
@@ -116,7 +124,7 @@ export const generatorTools: ToolDefinition[] = [
     description: 'Sprawdza polski IBAN algorytmem mod 97. Nie generuje rachunku i nie łączy się z bankiem.',
     category: 'generatory',
     keywords: ['iban', 'iban pl', 'nrb', 'numer konta', 'mod 97', 'walidator iban'],
-    disclaimer: generatorDisclaimer,
+    disclaimer: ibanValidatorDisclaimer,
     component: () => import('./walidator-iban/WalidatorIban.vue'),
   },
 ]

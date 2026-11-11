@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { validateVin } from '../../../lib/generators'
 import { validationMessage } from '../messages'
+import { vinPassMessage } from '../verdicts'
 
 const probe = ref('')
 const verdict = ref('')
@@ -10,7 +11,7 @@ const verdictError = ref(false)
 function check() {
   const result = validateVin(probe.value)
   verdictError.value = !result.valid
-  verdict.value = result.valid ? `Poprawny VIN: ${result.vin}.` : validationMessage(result.error)
+  verdict.value = result.valid ? vinPassMessage(result.vin) : validationMessage(result.error)
 }
 </script>
 

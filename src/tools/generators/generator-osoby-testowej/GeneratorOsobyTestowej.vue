@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import CopyButton from '../../../components/CopyButton.vue'
 import {
-  formatPolishDate,
+  formatTestPersonCopyLine,
   generateTestPeople,
   parseIsoDate,
   testPeopleToCsv,
@@ -50,9 +50,7 @@ function generate() {
 }
 
 function line(person: TestPerson): string {
-  const date = parseIsoDate(person.birthDate)
-  const when = date === null ? person.birthDate : formatPolishDate(date)
-  return `${person.firstName} ${person.lastName}, ${peselSexLabel(person.sex)}, ${when}, PESEL ${person.pesel}, ${person.street} ${person.houseNumber}, ${person.postalCode} ${person.city}`
+  return formatTestPersonCopyLine(person, peselSexLabel(person.sex))
 }
 
 function downloadCsv() {

@@ -1,4 +1,4 @@
-import { formatIsoDate } from './dates'
+import { formatIsoDate, formatPolishDate, parseIsoDate } from './dates'
 import { generatePesel, validatePesel, type PeselGenerateOptions, type PeselSex } from './pesel'
 import { cryptoRandomInt, type RandomInt } from './random'
 
@@ -42,8 +42,17 @@ const STREETS = [
   'os. Debugowe',
 ] as const
 
+/** Same marker in CSV and JSON, so a downloaded file is obviously test data. */
+export const TEST_DATA_MARKER = 'tak'
+
+/** Regulamin: copied lines use this prefix, unchanged. */
+export const TEST_COPY_PREFIX = '[TEST]'
+
+/** Regulamin: CSV column and JSON field use this name, unchanged. */
+export const TEST_DATA_FIELD = 'dane_testowe'
+
 export const TEST_PERSON_CSV_HEADER =
-  'imie,nazwisko,plec,data_urodzenia,pesel,kod_pocztowy,miejscowosc,ulica,numer'
+  `imie,nazwisko,plec,data_urodzenia,pesel,kod_pocztowy,miejscowosc,ulica,numer,${TEST_DATA_FIELD}`
 
 export interface TestPerson {
   firstName: string
@@ -112,6 +121,12 @@ export function generateTestPeople(
   return people
 }
 
+export function formatTestPersonCopyLine(person: TestPerson, sexLabel: string): string {
+  const date = parseIsoDate(person.birthDate)
+  const when = date === null ? person.birthDate : formatPolishDate(date)
+  return `${TEST_COPY_PREFIX} ${person.firstName} ${person.lastName}, ${sexLabel}, ${when}, PESEL ${person.pesel}, ${person.street} ${person.houseNumber}, ${person.postalCode} ${person.city}`
+}
+
 export function testPeopleToCsv(people: readonly TestPerson[]): string {
   const rows = people.map((person) =>
     [
@@ -124,6 +139,7 @@ export function testPeopleToCsv(people: readonly TestPerson[]): string {
       person.city,
       person.street,
       person.houseNumber,
+      TEST_DATA_MARKER,
     ].map(csvField).join(','),
   )
   return [TEST_PERSON_CSV_HEADER, ...rows].join('\n')
@@ -144,6 +160,7 @@ function exportedPerson(person: TestPerson): Record<string, string> {
     miejscowosc: person.city,
     ulica: person.street,
     numer: person.houseNumber,
+    [TEST_DATA_FIELD]: TEST_DATA_MARKER,
   }
 }
 
