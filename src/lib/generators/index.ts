@@ -26,6 +26,15 @@ export {
   type GtinValidation,
 } from './gtin'
 export { validateIsbn, type IsbnDetails, type IsbnValidation } from './isbn'
+export {
+  generateTestPeople,
+  generateTestPerson,
+  testPeopleToCsv,
+  testPeopleToJson,
+  TEST_PERSON_CSV_HEADER,
+  type TestPerson,
+  type TestPersonOptions,
+} from './person'
 export { validateVin, type VinDetails, type VinValidation } from './vin'
 export {
   EU_VAT_COUNTRIES,

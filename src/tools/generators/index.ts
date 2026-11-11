@@ -102,6 +102,15 @@ export const generatorTools: ToolDefinition[] = [
     component: () => import('./konwerter-isbn/KonwerterIsbn.vue'),
   },
   {
+    slug: 'generator-osoby-testowej',
+    title: 'Generator osoby testowej',
+    description: 'Tworzy fikcyjną osobę: imię, nazwisko, PESEL zgodny z płcią i datą oraz adres o poprawnym formacie kodu.',
+    category: 'generatory',
+    keywords: ['osoba testowa', 'dane testowe', 'pesel', 'adres', 'csv', 'json'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-osoby-testowej/GeneratorOsobyTestowej.vue'),
+  },
+  {
     slug: 'walidator-iban',
     title: 'Walidator IBAN PL',
     description: 'Sprawdza polski IBAN algorytmem mod 97. Nie generuje rachunku i nie łączy się z bankiem.',

@@ -17,6 +17,7 @@ describe('generator registry', () => {
       'walidator-vat-ue',
       'walidator-vin',
       'konwerter-isbn',
+      'generator-osoby-testowej',
       'walidator-iban',
     ])
     for (const tool of generatorTools) {

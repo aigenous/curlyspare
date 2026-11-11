@@ -9,7 +9,7 @@ const validationText: Record<ValidationErrorCode, string> = {
   'invalid-format': 'Nieprawidłowy format numeru.',
   'invalid-checksum': 'Suma kontrolna się nie zgadza.',
   'invalid-date': 'Numer koduje nieistniejącą datę.',
-  'unsupported-country': 'Obsługiwany jest wyłącznie polski IBAN (PL).',
+  'unsupported-country': 'Ten kraj nie jest obsługiwany.',
 }
 
 export function readCount(value: number): number | null {
