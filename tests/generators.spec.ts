@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { generatorDisclaimer } from '../src/brand'
 
 type RandomInt = (maxExclusive: number) => number
 
@@ -48,7 +49,7 @@ async function loadSequenceRng(): Promise<(values: readonly number[]) => RandomI
 describe.skipIf(!generatorsPresent)('Polish identifier generators', () => {
   it('publishes a testing disclaimer', async () => {
     const { DISCLAIMER } = await loadGenerators()
-    expect(DISCLAIMER.trim().length).toBeGreaterThan(40)
+    expect(DISCLAIMER).toBe(generatorDisclaimer)
   })
 
   it('reproduces published checksum vectors and rejects a damaged digit', async () => {

@@ -1,7 +1,9 @@
 import { expect, test, type Page } from '@playwright/test'
 import { tools, type ToolDefinition } from '../src/registry'
 
-const finished = tools.filter((tool) => tool.category === 'generatory' || tool.category === 'konwertery')
+const finished = tools.filter(
+  (tool) => tool.category === 'generatory' || tool.category === 'konwertery' || tool.category === 'kodowanie',
+)
 
 test('every finished generator shows the disclaimer and every converter renders', async ({ page }) => {
   for (const tool of finished) {
@@ -137,8 +139,10 @@ async function openTool(page: Page, tool: ToolDefinition) {
   await page.goto(`/${tool.slug}`)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(tool.title)
   if (tool.category === 'generatory') {
-    expect(tool.disclaimer).toBeTruthy()
-    await expect(page.locator('.disclaimer')).toHaveText(tool.disclaimer ?? '')
+    expect(tool.disclaimer, `${tool.slug} needs a disclaimer`).toBeTruthy()
+  }
+  if (tool.disclaimer) {
+    await expect(page.locator('.disclaimer')).toHaveText(tool.disclaimer)
   }
   expect(errors).toEqual([])
 }

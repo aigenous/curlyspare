@@ -1,0 +1,158 @@
+import { existsSync } from 'node:fs'
+import { expect, test, type Page } from '@playwright/test'
+
+const present = existsSync(new URL('../src/lib/converters/json.ts', import.meta.url))
+
+test.describe('converter screens', () => {
+  test.skip(!present, 'converter screens are not on this branch yet')
+
+  test('JSON formatter pretty-prints, minifies, and reports the broken line', async ({ page }) => {
+    await page.goto('/formatowanie-json')
+    await page.getByLabel('Dokument JSON').fill('{"b":1,"a":2}')
+    await page.getByRole('checkbox', { name: 'Sortuj klucze' }).check()
+    await page.getByRole('button', { name: 'Formatuj' }).click()
+    await expect(output(page)).toHaveValue('{\n  "a": 2,\n  "b": 1\n}\n')
+    await page.getByRole('button', { name: 'Minimalizuj' }).click()
+    await expect(output(page)).toHaveValue('{"b":1,"a":2}')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toContainText('Poprawny JSON')
+    await page.getByLabel('Dokument JSON').fill('{')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('alert')).toContainText('Wiersz 1')
+  })
+
+  test('Base64 encodes and decodes text, and rejects a bad alphabet', async ({ page }) => {
+    await page.goto('/kodowanie-base64')
+    await page.getByLabel('Tekst albo Base64').fill('abc')
+    await page.getByRole('button', { name: 'Koduj tekst', exact: true }).click()
+    await expect(output(page)).toHaveValue('YWJj')
+    await page.getByLabel('Tekst albo Base64').fill('YWJj')
+    await page.getByRole('button', { name: 'Dekoduj tekst', exact: true }).click()
+    await expect(output(page)).toHaveValue('abc')
+    await page.getByLabel('Tekst albo Base64').fill('!!!!')
+    await page.getByRole('button', { name: 'Dekoduj tekst' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny znak w Base64.')
+  })
+
+  test('URL encoder round-trips a component and reports a broken percent sequence', async ({ page }) => {
+    await page.goto('/kodowanie-url')
+    await page.getByLabel('Tekst').fill('a b/ą')
+    await page.getByRole('button', { name: 'Koduj', exact: true }).click()
+    await expect(output(page)).toHaveValue('a%20b%2F%C4%85')
+    await page.getByLabel('Tekst').fill('a%20b%2F%C4%85')
+    await page.getByRole('button', { name: 'Dekoduj', exact: true }).click()
+    await expect(output(page)).toHaveValue('a b/ą')
+    await page.getByLabel('Tryb').selectOption('form')
+    await page.getByLabel('Tekst').fill('a b')
+    await page.getByRole('button', { name: 'Koduj', exact: true }).click()
+    await expect(output(page)).toHaveValue('a+b')
+    await page.getByLabel('Tryb').selectOption('component')
+    await page.getByLabel('Tekst').fill('%')
+    await page.getByRole('button', { name: 'Dekoduj', exact: true }).click()
+    await expect(page.getByRole('alert')).toBeVisible()
+  })
+
+  test('YAML and CSV round-trip a small document and reject empty input', async ({ page }) => {
+    await page.goto('/json-na-yaml')
+    await page.getByLabel('JSON albo YAML').fill('{"a":1}')
+    await page.getByRole('button', { name: 'JSON na YAML' }).click()
+    await expect(output(page)).toHaveValue('a: 1\n')
+    await page.getByLabel('JSON albo YAML').fill('a: 1\n')
+    await page.getByRole('button', { name: 'YAML na JSON' }).click()
+    await expect(output(page)).toHaveValue('{\n  "a": 1\n}\n')
+    await page.getByLabel('JSON albo YAML').fill('{')
+    await page.getByRole('button', { name: 'JSON na YAML' }).click()
+    await expect(page.getByRole('alert')).toContainText('Wiersz 1')
+
+    await page.goto('/json-na-csv')
+    await page.getByLabel('JSON albo CSV').fill('[{"name":"Ala","city":"Kraków"}]')
+    await page.getByRole('button', { name: 'JSON na CSV' }).click()
+    await expect(output(page)).toHaveValue('name,city\nAla,Kraków\n')
+    await page.getByLabel('JSON albo CSV').fill('name,city\nAla,Kraków\n')
+    await page.getByRole('button', { name: 'CSV na JSON' }).click()
+    await expect(output(page)).toHaveValue(/"name": "Ala"[\s\S]*"city": "Kraków"/)
+    await page.getByLabel('JSON albo CSV').fill('[]')
+    await page.getByRole('button', { name: 'JSON na CSV' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Pusta tablica nie zawiera kolumn CSV.')
+  })
+
+  test('UUID generator emits version 4 and rejects a non-UUID', async ({ page }) => {
+    await page.goto('/generator-uuid')
+    await page.getByLabel('Liczba').fill('2')
+    await page.getByRole('button', { name: 'Generuj' }).click()
+    const lines = (await page.getByLabel('Identyfikatory').inputValue()).split('\n').filter(Boolean)
+    expect(lines).toHaveLength(2)
+    for (const line of lines) {
+      expect(line).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
+    }
+    await page.getByLabel('UUID').fill(lines[0] ?? '')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toContainText('losowy (v4)')
+    await page.getByLabel('UUID').fill('nie-uuid')
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toHaveText('To nie jest UUID.')
+  })
+
+  test('SHA-256 of abc matches the known vector', async ({ page }) => {
+    await page.goto('/generator-skrotow')
+    await expect(page.locator('.disclaimer')).toContainText('SHA-1')
+    await page.getByLabel('Tekst').fill('abc')
+    await page.getByRole('button', { name: 'Policz tekst' }).click()
+    await expect(page.getByLabel('Szesnastkowo')).toHaveValue(
+      'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+    )
+    await expect(page.getByRole('status')).toHaveText('Policzono skrót tekstu.')
+  })
+
+  test('Unix timestamp converts the epoch and a Warsaw winter hour', async ({ page }) => {
+    await page.goto('/znacznik-czasu')
+    await page.getByLabel('Znacznik Unix').fill('0')
+    await page.getByRole('button', { name: 'Przelicz na datę' }).click()
+    await expect(stat(page, 'UTC')).toHaveText('1970-01-01T00:00:00.000Z')
+    await expect(stat(page, 'Sekundy')).toHaveText('0')
+
+    await page.getByLabel('Data lokalna').fill('2024-01-15 12:00:00')
+    await page.getByRole('button', { name: 'Przelicz na Unix' }).click()
+    await expect(stat(page, 'UTC')).toHaveText('2024-01-15T11:00:00.000Z')
+    await expect(stat(page, 'Sekundy')).toHaveText('1705316400')
+
+    await page.getByLabel('Data lokalna').fill('2024-03-31 02:30:00')
+    await page.getByRole('button', { name: 'Przelicz na Unix' }).click()
+    await expect(page.getByRole('alert')).toContainText('przeskok czasu')
+    await page.getByLabel('Znacznik Unix').fill('teraz')
+    await page.getByRole('button', { name: 'Przelicz na datę' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Znacznik Unix musi być liczbą.')
+  })
+
+  test('JWT decoder reads the payload and does not claim the signature was checked', async ({ page }) => {
+    await page.goto('/dekoder-jwt')
+    await expect(page.locator('.disclaimer')).toContainText('Podpis nie został zweryfikowany')
+    await page.getByLabel('Token JWT').fill(`${jwtPart({ alg: 'HS256', typ: 'JWT' })}.${jwtPart({ sub: 'ala', exp: 1893456000 })}.c2ln`)
+    await page.getByRole('button', { name: 'Dekoduj' }).click()
+    await expect(stat(page, 'Algorytm')).toHaveText('HS256')
+    await expect(stat(page, 'Wygasa (exp)')).toContainText('2030')
+    await expect(stat(page, 'Podpis')).toContainText('nie zweryfikowano')
+    await expect(page.getByRole('heading', { name: 'Payload' }).locator('xpath=following::textarea[1]')).toHaveValue(
+      /"sub": "ala"/,
+    )
+    await page.getByLabel('Token JWT').fill('nie.token')
+    await page.getByRole('button', { name: 'Dekoduj' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Token JWT powinien mieć trzy części rozdzielone kropkami.')
+  })
+})
+
+function output(page: Page) {
+  return page.getByLabel('Wynik')
+}
+
+function stat(page: Page, name: string) {
+  const exact = new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`)
+  return page.locator('dt', { hasText: exact }).locator('xpath=following-sibling::dd')
+}
+
+function jwtPart(value: unknown): string {
+  const bytes = new TextEncoder().encode(JSON.stringify(value))
+  let binary = ''
+  for (const byte of bytes) binary += String.fromCharCode(byte)
+  return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/u, '')
+}
