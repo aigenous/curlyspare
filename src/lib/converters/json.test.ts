@@ -123,6 +123,25 @@ describe('formatJson and minifyJson', () => {
     })
     expect(formatJson('9007199254740991')).toEqual({ ok: true, value: '9007199254740991\n' })
     expect(formatJson('1.5')).toEqual({ ok: true, value: '1.5\n' })
+    for (const lexeme of ['1e20', '1E16', '9007199254740993.0']) {
+      const formatted = formatJson(lexeme)
+      expect(formatted).toEqual({ ok: true, value: `${JSON.stringify(JSON.parse(lexeme))}\n` })
+      const parsed = parseJson(lexeme)
+      expect(parsed.ok && typeof parsed.value).toBe('number')
+    }
+  })
+
+  it('keeps a __proto__ key as an own property', () => {
+    const parsed = parseJson('{"__proto__":{"polluted":true}}')
+    expect(parsed.ok).toBe(true)
+    if (!parsed.ok || parsed.value === null || typeof parsed.value !== 'object') return
+    expect(Object.hasOwn(parsed.value, '__proto__')).toBe(true)
+    expect(Object.getPrototypeOf(parsed.value)).toBeNull()
+    expect(Object.prototype).not.toHaveProperty('polluted')
+    const formatted = formatJson('{"__proto__":{"polluted":true}}')
+    expect(formatted.ok && formatted.value).toContain('"__proto__"')
+    expect(formatted.ok && formatted.value).toContain('"polluted"')
+    expect(Object.prototype).not.toHaveProperty('polluted')
   })
 
   it('describes the value in Polish', () => {

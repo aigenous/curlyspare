@@ -51,8 +51,8 @@ function narrowSafeInts(value: unknown): unknown {
   if (typeof value === 'bigint') return value >= MIN_SAFE && value <= MAX_SAFE ? Number(value) : value
   if (Array.isArray(value)) return value.map(narrowSafeInts)
   if (isPlainObject(value)) {
-    const copy: Record<string, unknown> = {}
-    for (const [key, item] of Object.entries(value)) copy[key] = narrowSafeInts(item)
+    const copy = Object.create(null) as Record<string, unknown>
+    for (const key of Object.keys(value)) copy[key] = narrowSafeInts(value[key])
     return copy
   }
   return value

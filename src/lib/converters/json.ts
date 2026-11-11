@@ -205,11 +205,7 @@ class JsonReader {
       this.moveTo(start)
       this.fail('Liczba JSON jest poza zakresem.')
     }
-    if (Number.isInteger(value) && !Number.isSafeInteger(value)) {
-      if (/^-?(?:0|[1-9]\d*)$/.test(lexeme)) return BigInt(lexeme)
-      this.moveTo(start)
-      this.fail('Liczba JSON jest poza zakresem.')
-    }
+    if (/^-?(?:0|[1-9]\d*)$/.test(lexeme) && !Number.isSafeInteger(value)) return BigInt(lexeme)
     return value
   }
 
