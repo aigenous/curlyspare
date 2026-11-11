@@ -380,6 +380,21 @@ h2 {
   font-family: var(--mono);
 }
 
+.md :where(h1, h2, h3, p, ul, ol, pre) {
+  margin: 0.35rem 0;
+}
+
+.md :where(code, pre) {
+  font-family: var(--mono);
+}
+
+.md pre {
+  overflow: auto;
+  padding: 0.6rem 0.7rem;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
 .message-error {
   margin: 0;
   padding: 0.7rem 0.8rem;

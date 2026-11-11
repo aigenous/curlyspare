@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'podglad-markdown',
+    title: 'Podgląd Markdown',
+    description: 'Renderuje Markdown i czyści wynik w przeglądarce.',
+    category: 'tekst',
+    keywords: ['markdown', 'md', 'podgląd', 'html'],
+    component: () => import('./MarkdownTool.vue'),
+  },
+  {
     slug: 'encje-html',
     title: 'Encje HTML',
     description: 'Koduje i dekoduje encje HTML, także polskie znaki.',
