@@ -141,4 +141,12 @@ export const converterTools: ToolDefinition[] = [
     keywords: ['json', 'json schema', 'walidacja', 'schemat', 'ajv'],
     component: () => import('./walidator-json-schema/WalidatorJsonSchema.vue'),
   },
+  {
+    slug: 'xml-na-json',
+    title: 'XML na JSON',
+    description: 'Zamień XML na JSON i obiekt JSON z powrotem na XML.',
+    category: 'konwertery',
+    keywords: ['xml', 'json', 'atrybuty', 'konwersja'],
+    component: () => import('./xml-na-json/XmlNaJson.vue'),
+  },
 ]
