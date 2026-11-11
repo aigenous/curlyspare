@@ -26,6 +26,7 @@ export {
   type GtinValidation,
 } from './gtin'
 export { validateIsbn, type IsbnDetails, type IsbnValidation } from './isbn'
+export { validateVin, type VinDetails, type VinValidation } from './vin'
 export {
   formatIban,
   validateIbanPl,

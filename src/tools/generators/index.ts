@@ -75,6 +75,15 @@ export const generatorTools: ToolDefinition[] = [
     component: () => import('./generator-ean/GeneratorEan.vue'),
   },
   {
+    slug: 'walidator-vin',
+    title: 'Walidator VIN',
+    description: 'Sprawdza cyfrę kontrolną numeru VIN według ISO 3779.',
+    category: 'generatory',
+    keywords: ['vin', 'numer nadwozia', 'pojazd', 'cyfra kontrolna'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./walidator-vin/WalidatorVin.vue'),
+  },
+  {
     slug: 'konwerter-isbn',
     title: 'Konwerter ISBN',
     description: 'Sprawdza ISBN-10 i ISBN-13 oraz przelicza jeden format na drugi.',
