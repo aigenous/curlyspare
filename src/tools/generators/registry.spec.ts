@@ -12,6 +12,7 @@ describe('generator registry', () => {
       'generator-dowod-osobisty',
       'generator-paszport',
       'generator-krs',
+      'generator-nrb',
       'walidator-iban',
     ])
     for (const tool of generatorTools) {

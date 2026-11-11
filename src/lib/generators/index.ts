@@ -23,6 +23,15 @@ export {
 } from './iban'
 export { generateKrs, generateKrsNumbers, validateKrs, type KrsDetails, type KrsValidation } from './krs'
 export {
+  formatNrb,
+  generateNrb,
+  generateNrbs,
+  validateNrb,
+  type NrbDetails,
+  type NrbGenerateOptions,
+  type NrbValidation,
+} from './nrb'
+export {
   formatNip,
   generateNip,
   generateNips,

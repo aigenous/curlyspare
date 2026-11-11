@@ -57,6 +57,15 @@ export const generatorTools: ToolDefinition[] = [
     component: () => import('./generator-krs/GeneratorKrs.vue'),
   },
   {
+    slug: 'generator-nrb',
+    title: 'Generator NRB',
+    description: 'Generuje i sprawdza polski numer rachunku: suma IBAN oraz cyfra kontrolna numeru rozliczeniowego.',
+    category: 'generatory',
+    keywords: ['nrb', 'numer konta', 'rachunek', 'iban', 'numer rozliczeniowy'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-nrb/GeneratorNrb.vue'),
+  },
+  {
     slug: 'walidator-iban',
     title: 'Walidator IBAN PL',
     description: 'Sprawdza polski IBAN algorytmem mod 97. Nie generuje rachunku i nie łączy się z bankiem.',

@@ -1,3 +1,4 @@
+import { mod97Numeric } from './checksum'
 import { invalid, stripSeparators, type ValidationResult } from './validation'
 
 /**
@@ -59,9 +60,5 @@ function ibanMod97(iban: string): number {
     expanded += code >= 65 ? String(code - 55) : char
   }
 
-  let remainder = 0
-  for (const char of expanded) {
-    remainder = (remainder * 10 + (char.charCodeAt(0) - 48)) % 97
-  }
-  return remainder
+  return mod97Numeric(expanded)
 }

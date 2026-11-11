@@ -18,6 +18,15 @@ export function mod11DigitOrNull(
   return remainder === 10 ? null : remainder
 }
 
+/** Running remainder of a digit string modulo 97. The string must contain only digits. */
+export function mod97Numeric(digits: string): number {
+  let remainder = 0
+  for (const char of digits) {
+    remainder = (remainder * 10 + (char.charCodeAt(0) - 48)) % 97
+  }
+  return remainder
+}
+
 /** Digit value, or A=10 … Z=35. */
 export function alphanumericValue(char: string): number {
   const code = char.charCodeAt(0)
