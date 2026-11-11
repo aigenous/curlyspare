@@ -1,3 +1,80 @@
 import type { ToolDefinition } from '../../registry/types'
+import { SHA1_NOTICE } from '../../lib/converters/hash'
+import { JWT_NOTICE } from '../../lib/converters/jwt'
 
-export const converterTools: ToolDefinition[] = []
+export const converterTools: ToolDefinition[] = [
+  {
+    slug: 'formatowanie-json',
+    title: 'Formatowanie JSON',
+    description: 'Formatuj, minimalizuj i sprawdzaj JSON. Błąd podaje wiersz i kolumnę.',
+    category: 'konwertery',
+    keywords: ['json', 'formatowanie', 'formatter', 'minify', 'minimalizacja', 'walidacja', 'pretty'],
+    component: () => import('./formatowanie-json/FormatowanieJson.vue'),
+  },
+  {
+    slug: 'kodowanie-base64',
+    title: 'Kodowanie Base64',
+    description: 'Koduj i dekoduj Base64 w UTF-8, także wariant URL-safe i pliki.',
+    category: 'kodowanie',
+    keywords: ['base64', 'base64url', 'kodowanie', 'dekodowanie', 'plik', 'utf-8', 'url-safe'],
+    component: () => import('./kodowanie-base64/KodowanieBase64.vue'),
+  },
+  {
+    slug: 'dekoder-jwt',
+    title: 'Dekoder JWT',
+    description: 'Odczytaj nagłówek i payload tokenu JWT oraz daty exp i iat. Podpis nie jest weryfikowany.',
+    category: 'kodowanie',
+    keywords: ['jwt', 'json web token', 'dekoder', 'payload', 'nagłówek', 'exp', 'iat'],
+    disclaimer: JWT_NOTICE,
+    component: () => import('./dekoder-jwt/DekoderJwt.vue'),
+  },
+  {
+    slug: 'generator-uuid',
+    title: 'Generator UUID',
+    description: 'Generuj UUID v4 i v7, także hurtowo, i sprawdź wersję identyfikatora.',
+    category: 'kodowanie',
+    keywords: ['uuid', 'guid', 'uuidv4', 'uuidv7', 'identyfikator', 'walidator'],
+    component: () => import('./generator-uuid/GeneratorUuid.vue'),
+  },
+  {
+    slug: 'kodowanie-url',
+    title: 'Kodowanie URL',
+    description: 'Koduj i dekoduj składniki adresu URL oraz pola formularza.',
+    category: 'kodowanie',
+    keywords: ['url', 'uri', 'encode', 'decode', 'kodowanie procentowe', 'query', 'formularz'],
+    component: () => import('./kodowanie-url/KodowanieUrl.vue'),
+  },
+  {
+    slug: 'generator-skrotow',
+    title: 'Skróty SHA',
+    description: 'Policz skrót SHA-1, SHA-256 lub SHA-512 z tekstu albo pliku. Liczone lokalnie.',
+    category: 'kodowanie',
+    keywords: ['hash', 'sha', 'sha-1', 'sha-256', 'sha-512', 'skrót', 'webcrypto'],
+    disclaimer: SHA1_NOTICE,
+    component: () => import('./generator-skrotow/GeneratorSkrotow.vue'),
+  },
+  {
+    slug: 'znacznik-czasu',
+    title: 'Znacznik czasu Unix',
+    description: 'Zamień znacznik Unix na datę i odwrotnie. Domyślna strefa to Europe/Warsaw.',
+    category: 'konwertery',
+    keywords: ['unix', 'timestamp', 'epoch', 'czas', 'data', 'strefa czasowa', 'warsaw', 'utc'],
+    component: () => import('./znacznik-czasu/ZnacznikCzasu.vue'),
+  },
+  {
+    slug: 'json-na-yaml',
+    title: 'JSON na YAML',
+    description: 'Zamień JSON na YAML i blokowy YAML z powrotem na JSON.',
+    category: 'konwertery',
+    keywords: ['json', 'yaml', 'yml', 'konwersja'],
+    component: () => import('./json-na-yaml/JsonNaYaml.vue'),
+  },
+  {
+    slug: 'json-na-csv',
+    title: 'JSON na CSV',
+    description: 'Zamień tablicę obiektów JSON na CSV i CSV z nagłówkiem z powrotem na JSON.',
+    category: 'konwertery',
+    keywords: ['json', 'csv', 'excel', 'przecinek', 'średnik', 'tabela'],
+    component: () => import('./json-na-csv/JsonNaCsv.vue'),
+  },
+]
