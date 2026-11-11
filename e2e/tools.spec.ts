@@ -77,6 +77,16 @@ test.describe('shell tools', () => {
     await expect(password).toHaveValue('')
   })
 
+  test('HTML entities encode markup and decode it back', async ({ page }) => {
+    await page.goto('/encje-html')
+    const result = page.getByLabel('Wynik')
+    await expect(result).toHaveValue(/&lt;p&gt;/)
+    await expect(result).toHaveValue(/&amp;/)
+    await page.getByLabel('Tekst').fill('&lt;b&gt;łódź&lt;/b&gt;')
+    await page.getByLabel('Kierunek').selectOption('decode')
+    await expect(result).toHaveValue('<b>łódź</b>')
+  })
+
   test('text diff marks the changed line and can switch to words', async ({ page }) => {
     await page.goto('/porownanie-tekstu')
     await expect(page.locator('.diff-removed')).toContainText('ma')
