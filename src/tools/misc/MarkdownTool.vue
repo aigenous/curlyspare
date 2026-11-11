@@ -4,6 +4,7 @@ import ClientOnly from '../../components/ClientOnly.vue'
 import { renderMarkdown } from '../../lib/misc/markdown'
 
 const source = ref('## Nagłówek\n\n**Pogrubienie** i [link](https://example.com).\n\n- punkt\n')
+const allowRemoteImages = ref(false)
 </script>
 
 <template>
@@ -20,13 +21,20 @@ const source = ref('## Nagłówek\n\n**Pogrubienie** i [link](https://example.co
     <p class="hint">
       Podgląd jest czyszczony w przeglądarce. Skrypty i atrybuty zdarzeń są usuwane.
     </p>
+    <label class="check">
+      <input
+        v-model="allowRemoteImages"
+        type="checkbox"
+      >
+      Wczytaj obrazy z zewnętrznych adresów
+    </label>
     <ClientOnly>
       <!-- eslint-disable vue/no-v-html -- DOMPurify removes scripts and event handlers before insertion. -->
       <div
         class="preview md"
         role="region"
         aria-label="Podgląd HTML"
-        v-html="renderMarkdown(source)"
+        v-html="renderMarkdown(source, { allowRemoteImages })"
       />
       <!-- eslint-enable vue/no-v-html -->
       <template #fallback>
