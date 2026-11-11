@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'tester-regex',
+    title: 'Tester wyrażeń regularnych',
+    description: 'Sprawdza wyrażenie, flagi i grupy na tekście w przeglądarce.',
+    category: 'tekst',
+    keywords: ['regex', 'regexp', 'grupy', 'flagi', 'wyrażenie'],
+    component: () => import('./RegexTool.vue'),
+  },
+  {
     slug: 'systemy-liczbowe',
     title: 'Systemy liczbowe',
     description: 'Przelicza liczbę między systemem dwójkowym, ósemkowym, dziesiętnym i szesnastkowym.',
