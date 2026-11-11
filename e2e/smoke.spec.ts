@@ -15,7 +15,7 @@ test('home is Polish and lists every registered tool', async ({ page }) => {
   await expect(page).toHaveTitle(shellPages[0].title)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(shellPages[0].heading)
   for (const tool of tools) {
-    await expect(page.getByRole('link', { name: tool.title })).toBeVisible()
+    await expect(page.getByRole('link', { name: new RegExp(`^${escapeRegExp(tool.title)}(?:\\s|$)`) })).toBeVisible()
   }
 })
 
