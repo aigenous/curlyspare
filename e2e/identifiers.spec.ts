@@ -1,5 +1,5 @@
-import { existsSync } from 'node:fs'
-import { expect, test } from '@playwright/test'
+import { existsSync, readFileSync } from 'node:fs'
+import { expect, test, type Download } from '@playwright/test'
 
 const present = existsSync(new URL('../src/lib/generators/index.ts', import.meta.url))
 
@@ -44,6 +44,13 @@ test.describe('identifier screens', () => {
     await page.getByLabel('Numer PESEL').fill('44051401358')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+
+    const csvButton = page.getByRole('button', { name: 'Pobierz CSV' })
+    if (await csvButton.count()) {
+      const [download] = await Promise.all([page.waitForEvent('download'), csvButton.click()])
+      expect(download.suggestedFilename()).toBe('pesel.csv')
+      expect(await readDownload(download)).toContain(value)
+    }
   })
 
   test('NIP generates a valid number and rejects a damaged checksum', async ({ page }) => {
@@ -196,4 +203,9 @@ test.describe('identifier screens', () => {
 
 function screenReady(path: string): boolean {
   return existsSync(new URL(`../src/tools/generators/${path}`, import.meta.url))
+}
+
+async function readDownload(download: Download): Promise<string> {
+  const path = await download.path()
+  return path ? readFileSync(path, 'utf8') : ''
 }
