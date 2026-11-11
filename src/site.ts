@@ -7,6 +7,6 @@ export const site = {
     name: 'Piotr Szewczyk',
     legalForm: 'jednoosobowa działalność gospodarcza',
     nip: '6222809805',
-    email: 'pszewczykpl@gmail.com',
+    email: '[ADRES E-MAIL DO KONTAKTU]',
   },
 } as const
