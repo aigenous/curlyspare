@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'systemy-liczbowe',
+    title: 'Systemy liczbowe',
+    description: 'Przelicza liczbę między systemem dwójkowym, ósemkowym, dziesiętnym i szesnastkowym.',
+    category: 'konwertery',
+    keywords: ['bin', 'oct', 'dec', 'hex', 'bigint', 'system'],
+    component: () => import('./BaseTool.vue'),
+  },
+  {
     slug: 'konwerter-kolorow',
     title: 'Konwerter kolorów',
     description: 'Przelicza kolor między HEX, RGB i HSL.',
