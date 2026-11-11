@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'dni-robocze',
+    title: 'Dni robocze',
+    description: 'Liczy dni robocze w Polsce, z świętami stałymi i ruchomymi, i dodaje ich liczbę do daty.',
+    category: 'inne',
+    keywords: ['dni robocze', 'święta', 'wielkanoc', 'kalendarz', 'boże ciało'],
+    component: () => import('./WorkdaysTool.vue'),
+  },
+  {
     slug: 'kalkulator-vat',
     title: 'Kalkulator VAT',
     description: 'Liczy netto, VAT i brutto dla stawek 23, 8, 5 i 0 procent.',
