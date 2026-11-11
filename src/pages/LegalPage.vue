@@ -32,9 +32,7 @@ const copy = computed(() => {
         title: t('operatorTitle'),
         description: t('operatorDescription'),
         path: '/operator',
-        paragraphs: [
-          `Placeholder. ${brand.operator.name}, ${brand.operator.legalForm}, NIP ${brand.operator.nip}, ${brand.operator.email}.`,
-        ],
+        paragraphs: [] as string[],
       }
     default: {
       const unreachable: never = page.value
@@ -42,6 +40,8 @@ const copy = computed(() => {
     }
   }
 })
+
+const contactEmail = `mailto:${brand.operator.email}`
 
 useHead(() => {
   const current = copy.value
@@ -62,5 +62,36 @@ useHead(() => {
     >
       {{ paragraph }}
     </p>
+    <dl
+      v-if="page === 'operator'"
+      class="operator-details"
+    >
+      <div>
+        <dt>Operator</dt>
+        <dd>{{ brand.operator.name }}</dd>
+      </div>
+      <div>
+        <dt>Forma prawna</dt>
+        <dd>{{ brand.operator.legalForm }}</dd>
+      </div>
+      <div>
+        <dt>NIP</dt>
+        <dd>{{ brand.operator.nip }}</dd>
+      </div>
+      <div>
+        <dt>REGON</dt>
+        <dd>{{ brand.operator.regon }}</dd>
+      </div>
+      <div>
+        <dt>Adres korespondencyjny</dt>
+        <dd>{{ brand.operator.correspondenceAddress }}</dd>
+      </div>
+      <div>
+        <dt>Adres e-mail do kontaktu</dt>
+        <dd>
+          <a :href="contactEmail">{{ brand.operator.email }}</a>
+        </dd>
+      </div>
+    </dl>
   </article>
 </template>
