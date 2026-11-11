@@ -1,6 +1,7 @@
 import type { ToolDefinition } from '../../registry/types'
 import { SHA1_NOTICE } from '../../lib/converters/hash'
 import { JWT_NOTICE } from '../../lib/converters/jwt'
+import { JWT_SIGN_NOTICE } from '../../lib/converters/jwt-sign'
 
 export const converterTools: ToolDefinition[] = [
   {
@@ -180,5 +181,14 @@ export const converterTools: ToolDefinition[] = [
     category: 'konwertery',
     keywords: ['curl', 'fetch', 'axios', 'http', 'nagłówki'],
     component: () => import('./curl-na-fetch/CurlNaFetch.vue'),
+  },
+  {
+    slug: 'koder-jwt',
+    title: 'Koder JWT',
+    description: 'Podpisz payload JWT algorytmem HS256, HS384 albo HS512. Sekret zostaje w przeglądarce.',
+    category: 'kodowanie',
+    keywords: ['jwt', 'hs256', 'hs384', 'hs512', 'podpis', 'hmac'],
+    disclaimer: JWT_SIGN_NOTICE,
+    component: () => import('./koder-jwt/KoderJwt.vue'),
   },
 ]

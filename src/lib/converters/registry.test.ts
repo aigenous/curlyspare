@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { JWT_NOTICE } from './jwt'
+import { JWT_SIGN_NOTICE } from './jwt-sign'
 import { SHA1_NOTICE } from './hash'
 import { converterTools } from '../../tools/converters'
 
@@ -26,6 +27,7 @@ const slugs = [
   'tester-jsonpath',
   'toml-na-json',
   'curl-na-fetch',
+  'koder-jwt',
 ]
 
 describe('converterTools', () => {
@@ -45,5 +47,7 @@ describe('converterTools', () => {
     expect(converterTools.find((tool) => tool.slug === 'dekoder-jwt')?.disclaimer).toBe(JWT_NOTICE)
     expect(JWT_NOTICE.toLowerCase()).toContain('nie został zweryfikowany')
     expect(converterTools.find((tool) => tool.slug === 'generator-skrotow')?.disclaimer).toBe(SHA1_NOTICE)
+    expect(converterTools.find((tool) => tool.slug === 'koder-jwt')?.disclaimer).toBe(JWT_SIGN_NOTICE)
+    expect(JWT_SIGN_NOTICE.toLowerCase()).toContain('sekret zostaje w przeglądarce')
   })
 })
