@@ -21,7 +21,7 @@ function apply(result: { ok: true; value: string } | { ok: false; error: string 
 <template>
   <div class="cv">
     <p class="cv-note">
-      Obsługiwany jest blokowy YAML: wcięcia spacjami, mapy, listy i skalary. Wcięcie wyniku to 2 spacje.
+      YAML 1.2 jest czytany lokalnie. Wynik JSON na YAML ma wcięcie 2 spacje.
     </p>
     <label class="cv-field">
       JSON albo YAML

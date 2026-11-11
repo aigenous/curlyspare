@@ -64,7 +64,7 @@ export const converterTools: ToolDefinition[] = [
   {
     slug: 'json-na-yaml',
     title: 'JSON na YAML',
-    description: 'Zamień JSON na YAML i blokowy YAML z powrotem na JSON.',
+    description: 'Zamień JSON na YAML i YAML 1.2 z powrotem na JSON.',
     category: 'konwertery',
     keywords: ['json', 'yaml', 'yml', 'konwersja'],
     component: () => import('./json-na-yaml/JsonNaYaml.vue'),
@@ -124,5 +124,13 @@ export const converterTools: ToolDefinition[] = [
     category: 'konwertery',
     keywords: ['url', 'query', 'parametry', 'host', 'ścieżka', 'parser'],
     component: () => import('./parser-adresu/ParserAdresu.vue'),
+  },
+  {
+    slug: 'formatowanie-sql',
+    title: 'Formatowanie SQL',
+    description: 'Formatuj zapytanie SQL. Dialekty obejmują PostgreSQL, MySQL, MariaDB i SQLite.',
+    category: 'konwertery',
+    keywords: ['sql', 'postgresql', 'mysql', 'mariadb', 'sqlite', 'formatowanie', 'formatter'],
+    component: () => import('./formatowanie-sql/FormatowanieSql.vue'),
   },
 ]

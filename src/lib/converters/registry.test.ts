@@ -19,6 +19,7 @@ const slugs = [
   'ucieczki-unicode',
   'formatowanie-xml',
   'parser-adresu',
+  'formatowanie-sql',
 ]
 
 describe('converterTools', () => {
