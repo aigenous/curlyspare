@@ -11,3 +11,4 @@ test-results
 !.env.example
 .eslintcache
 .vercel
+.playwright-mcp

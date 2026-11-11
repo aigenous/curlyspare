@@ -43,12 +43,15 @@ function generate() {
     >
       Generuj
     </button>
-    <textarea
-      class="input"
-      rows="10"
-      readonly
-      :value="output"
-    />
+    <label>
+      Wynik
+      <textarea
+        class="input"
+        rows="10"
+        readonly
+        :value="output"
+      />
+    </label>
     <CopyButton :text="output" />
   </div>
 </template>
