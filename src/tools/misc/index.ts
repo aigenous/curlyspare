@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'kalkulator-cidr',
+    title: 'Kalkulator CIDR',
+    description: 'Liczy adres sieci, maskę, rozgłoszenie i zakres hostów dla IPv4.',
+    category: 'siec',
+    keywords: ['ipv4', 'cidr', 'maska', 'podsieć', 'subnet'],
+    component: () => import('./CidrTool.vue'),
+  },
+  {
     slug: 'podglad-markdown',
     title: 'Podgląd Markdown',
     description: 'Renderuje Markdown i czyści wynik w przeglądarce.',
