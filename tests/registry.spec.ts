@@ -55,8 +55,10 @@ describe('tool registry', () => {
 
   it('gives every generator the shared testing disclaimer', () => {
     expect(generatorDisclaimer.trim().length).toBeGreaterThan(40)
-    const generators = tools.filter((tool) => tool.category === 'generatory')
-    expect(generators.every((tool) => tool.disclaimer === generatorDisclaimer)).toBe(true)
+    const identifier = /pesel|nip|regon|krs|iban|dowod|paszport/
+    const generators = tools.filter(
+      (tool) => tool.category === 'generatory' || identifier.test(tool.slug),
+    )
     for (const tool of generators) {
       expect(tool.disclaimer, tool.slug).toBe(generatorDisclaimer)
     }

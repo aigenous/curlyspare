@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   plugins: [vue()],
   test: {
-    include: ['tests/**/*.spec.ts', 'src/**/*.spec.ts'],
+    include: ['tests/**/*.spec.ts', 'src/**/*.{spec,test}.ts'],
     exclude: ['e2e/**', 'node_modules/**', 'dist/**', 'coverage/**'],
     coverage: {
       provider: 'v8',
