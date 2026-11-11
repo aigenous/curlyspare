@@ -42,6 +42,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./QrTool.vue'),
   },
   {
+    slug: 'generator-hasel',
+    title: 'Generator haseł',
+    description: 'Losuje hasło w przeglądarce i szacuje jego entropię.',
+    category: 'inne',
+    keywords: ['hasło', 'haslo', 'password', 'entropia', 'losowe'],
+    component: () => import('./PasswordTool.vue'),
+  },
+  {
     slug: 'konwerter-kolorow',
     title: 'Konwerter kolorów',
     description: 'Przelicza kolor między HEX, RGB i HSL.',
