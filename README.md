@@ -36,6 +36,7 @@ Do not link or deploy a project from automation. In the Vercel project settings 
 
 - `src/registry` — typed tool list. Home, search, routes, and the sitemap read it.
 - `src/tools/generators` and `src/tools/converters` — tool modules. Empty until those agents land.
+- `src/tools/misc` — shell-owned tools: letter case, text counter, Polish lorem, slugify, QR, HEX/RGB/HSL.
 - `src/styles/tokens.css` — cobalt `#315CB4`, navy `#254779`, cream `#F4F1EA`, light and dark. No green.
 - Shell pages: `/`, `/regulamin`, `/polityka-prywatnosci`, `/operator`, `/404`.
 

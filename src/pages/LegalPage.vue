@@ -17,22 +17,14 @@ const copy = computed(() => {
         title: t('termsTitle'),
         description: t('termsDescription'),
         path: '/regulamin',
-        paragraphs: [
-          'Serwis udostępnia narzędzia uruchamiane w przeglądarce. Wyniki służą do testowania oprogramowania.',
-          'Numery generowane przez serwis mają tylko poprawną sumę kontrolną. Nie wolno używać ich do podszywania się pod inne osoby ani w dokumentach, formularzach urzędowych, bankowych lub finansowych.',
-          'Walidacja sprawdza wyłącznie sumę kontrolną w tej przeglądarce. Serwis nie odpytuje rejestrów GUS, KRS, CEIDG ani wykazu podatników VAT i nie generuje numerów kart płatniczych.',
-        ],
+        paragraphs: ['Placeholder. Treść regulaminu zostanie uzupełniona.'],
       }
     case 'privacy':
       return {
         title: t('privacyTitle'),
         description: t('privacyDescription'),
         path: '/polityka-prywatnosci',
-        paragraphs: [
-          `Administratorem jest ${brand.operator.name}, ${brand.operator.legalForm}, NIP ${brand.operator.nip}, e-mail ${brand.operator.email}.`,
-          'Wpisane i wygenerowane wartości są liczone lokalnie i nie są wysyłane na serwer. Serwis nie prowadzi kont, analityki, reklam ani ciasteczek.',
-          'Przeglądarka może zapisać w localStorage wyłącznie motyw jasny albo ciemny. Wygenerowane identyfikatory i treść narzędzi nie są zapisywane.',
-        ],
+        paragraphs: ['Placeholder. Treść polityki prywatności zostanie uzupełniona.'],
       }
     case 'operator':
       return {
@@ -40,9 +32,7 @@ const copy = computed(() => {
         description: t('operatorDescription'),
         path: '/operator',
         paragraphs: [
-          `${brand.operator.name}, ${brand.operator.legalForm}.`,
-          `NIP: ${brand.operator.nip}. E-mail: ${brand.operator.email}.`,
-          `${brand.name} jest nazwą roboczą i może zostać zmieniona. Adres siedziby uzupełni operator.`,
+          `Placeholder. ${brand.operator.name}, ${brand.operator.legalForm}, NIP ${brand.operator.nip}, ${brand.operator.email}.`,
         ],
       }
     default: {

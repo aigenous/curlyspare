@@ -22,12 +22,13 @@ export interface ToolDefinition {
 }
 ```
 
-`src/registry/index.ts` builds `tools` by spreading:
+`src/registry/index.ts` builds `tools` by spreading, in order:
 
 - `generatorTools` from `src/tools/generators/index.ts`
 - `converterTools` from `src/tools/converters/index.ts`
+- `miscTools` from `src/tools/misc/index.ts`
 
-Both arrays start empty. Routes, the home grid, Ctrl/Cmd+K search, and the sitemap all come from that registry. The sitemap is written at the end of `vite-ssg build` from the prerendered pages, which are the registry routes plus the shell pages.
+`miscTools` is an additive registration owned by the shell. The `ToolDefinition` shape did not change. Routes, the home grid, Ctrl/Cmd+K search, and the sitemap all come from that registry. The sitemap is written at the end of `vite-ssg build` from the prerendered pages, which are the registry routes plus the shell pages.
 
 `component` must resolve to a Vue module (`{ default: Component }`). The shell route renders the title, description, and optional `disclaimer`, then the component. Put only the tool UI in the component.
 
@@ -42,7 +43,7 @@ Generators that invent identifiers must set `disclaimer` to `generatorDisclaimer
 | `src/tools/generators/**`, `src/lib/generators/**` | generators agent |
 | `src/tools/converters/**`, `src/lib/converters/**` | converters agent |
 | `.github/**`, `e2e/**`, `scripts/**`, `tests/**`, Vitest config, Playwright config | tests/CI agent |
-| App shell, router, layout, design tokens, registry, search, sitemap, SSG, `vercel.json`, everything else | scaffold |
+| `src/tools/misc/**`, `src/lib/misc/**`, app shell, router, layout, design tokens, registry, search, sitemap, SSG, `vercel.json`, everything else | scaffold |
 
 Do not edit another owner's files. Register a tool only by appending to the array you own.
 

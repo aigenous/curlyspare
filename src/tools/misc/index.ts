@@ -1,0 +1,52 @@
+import type { ToolDefinition } from '../../registry/types'
+
+export const miscTools: ToolDefinition[] = [
+  {
+    slug: 'wielkosc-liter',
+    title: 'Wielkość liter',
+    description: 'Zamienia wielkość liter, także na camelCase, snake_case i kebab-case.',
+    category: 'tekst',
+    keywords: ['case', 'wielkie', 'małe', 'camel', 'snake', 'kebab'],
+    component: () => import('./CaseTool.vue'),
+  },
+  {
+    slug: 'licznik-tekstu',
+    title: 'Licznik tekstu',
+    description: 'Liczy znaki, słowa, linie i akapity bez wysyłania treści.',
+    category: 'tekst',
+    keywords: ['znaki', 'słowa', 'licznik', 'counter'],
+    component: () => import('./CounterTool.vue'),
+  },
+  {
+    slug: 'lorem-ipsum',
+    title: 'Lorem ipsum po polsku',
+    description: 'Układa przykładowe polskie akapity do makiet i testów układu.',
+    category: 'tekst',
+    keywords: ['lorem', 'ipsum', 'akapit', 'placeholder'],
+    component: () => import('./LoremTool.vue'),
+  },
+  {
+    slug: 'slugify',
+    title: 'Slug z polskich znaków',
+    description: 'Robi adresowy slug i zamienia polskie znaki diakrytyczne.',
+    category: 'tekst',
+    keywords: ['slug', 'slugify', 'adres', 'ogonki'],
+    component: () => import('./SlugTool.vue'),
+  },
+  {
+    slug: 'generator-qr',
+    title: 'Generator kodów QR',
+    description: 'Rysuje kod QR w przeglądarce. Obraz nie jest wysyłany na serwer.',
+    category: 'inne',
+    keywords: ['qr', 'kod', 'png'],
+    component: () => import('./QrTool.vue'),
+  },
+  {
+    slug: 'konwerter-kolorow',
+    title: 'Konwerter kolorów',
+    description: 'Przelicza kolor między HEX, RGB i HSL.',
+    category: 'inne',
+    keywords: ['hex', 'rgb', 'hsl', 'kolor', 'color'],
+    component: () => import('./ColorTool.vue'),
+  },
+]

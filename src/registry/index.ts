@@ -1,5 +1,6 @@
 import { converterTools } from '../tools/converters'
 import { generatorTools } from '../tools/generators'
+import { miscTools } from '../tools/misc'
 import type { ToolCategory, ToolDefinition } from './types'
 
 export const categories: readonly ToolCategory[] = [
@@ -11,7 +12,7 @@ export const categories: readonly ToolCategory[] = [
   'inne',
 ]
 
-export const tools: ToolDefinition[] = [...generatorTools, ...converterTools]
+export const tools: ToolDefinition[] = [...generatorTools, ...converterTools, ...miscTools]
 
 const reservedSlugs = new Set(['regulamin', 'polityka-prywatnosci', 'operator', '404'])
 
