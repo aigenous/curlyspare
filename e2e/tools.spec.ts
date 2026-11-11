@@ -77,6 +77,14 @@ test.describe('shell tools', () => {
     await expect(password).toHaveValue('')
   })
 
+  test('text diff marks the changed line and can switch to words', async ({ page }) => {
+    await page.goto('/porownanie-tekstu')
+    await expect(page.locator('.diff-removed')).toContainText('ma')
+    await expect(page.locator('.diff-added')).toContainText('nie ma')
+    await page.getByLabel('Tryb').selectOption('word')
+    await expect(page.locator('.diff-added')).toContainText('nie')
+  })
+
   test('number bases round-trip and reject a foreign digit', async ({ page }) => {
     await page.goto('/systemy-liczbowe')
     await expect(page.getByLabel('Wynik')).toHaveValue('FF')
