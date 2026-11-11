@@ -199,4 +199,12 @@ export const converterTools: ToolDefinition[] = [
     keywords: ['gzip', 'deflate', 'kompresja', 'base64', 'compressionstream'],
     component: () => import('./kompresja/Kompresja.vue'),
   },
+  {
+    slug: 'csv-na-markdown',
+    title: 'CSV na Markdown',
+    description: 'Zamień CSV na tabelę Markdown. Pierwszy wiersz jest nagłówkiem.',
+    category: 'konwertery',
+    keywords: ['csv', 'markdown', 'tabela', 'separator'],
+    component: () => import('./csv-na-markdown/CsvNaMarkdown.vue'),
+  },
 ]

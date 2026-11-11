@@ -29,6 +29,7 @@ const slugs = [
   'curl-na-fetch',
   'koder-jwt',
   'kompresja',
+  'csv-na-markdown',
 ]
 
 describe('converterTools', () => {
