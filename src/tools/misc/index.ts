@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'kalkulator-vat',
+    title: 'Kalkulator VAT',
+    description: 'Liczy netto, VAT i brutto dla stawek 23, 8, 5 i 0 procent.',
+    category: 'inne',
+    keywords: ['vat', 'netto', 'brutto', 'podatek', 'faktura'],
+    component: () => import('./VatTool.vue'),
+  },
+  {
     slug: 'kwota-slownie',
     title: 'Kwota słownie',
     description: 'Zapisuje kwotę w złotych i groszach słownie, do faktury.',
