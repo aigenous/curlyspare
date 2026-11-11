@@ -16,6 +16,16 @@ export {
   type DowodValidation,
 } from './dowod-osobisty'
 export {
+  generateGtin,
+  generateGtins,
+  gtinCheckDigit,
+  validateGtin,
+  type GtinDetails,
+  type GtinGenerateLength,
+  type GtinLength,
+  type GtinValidation,
+} from './gtin'
+export {
   formatIban,
   validateIbanPl,
   type IbanDetails,

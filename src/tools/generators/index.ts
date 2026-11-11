@@ -66,6 +66,15 @@ export const generatorTools: ToolDefinition[] = [
     component: () => import('./generator-nrb/GeneratorNrb.vue'),
   },
   {
+    slug: 'generator-ean',
+    title: 'Generator EAN i GTIN',
+    description: 'Generuje i sprawdza EAN-8, EAN-13 oraz GTIN-14. Walidator przyjmuje też UPC-A.',
+    category: 'generatory',
+    keywords: ['ean', 'ean-13', 'ean-8', 'gtin', 'gtin-14', 'upc', 'kod kreskowy'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./generator-ean/GeneratorEan.vue'),
+  },
+  {
     slug: 'walidator-iban',
     title: 'Walidator IBAN PL',
     description: 'Sprawdza polski IBAN algorytmem mod 97. Nie generuje rachunku i nie łączy się z bankiem.',

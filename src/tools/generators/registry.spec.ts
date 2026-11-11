@@ -13,6 +13,7 @@ describe('generator registry', () => {
       'generator-paszport',
       'generator-krs',
       'generator-nrb',
+      'generator-ean',
       'walidator-iban',
     ])
     for (const tool of generatorTools) {
