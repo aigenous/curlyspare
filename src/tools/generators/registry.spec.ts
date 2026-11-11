@@ -14,6 +14,7 @@ describe('generator registry', () => {
       'generator-krs',
       'generator-nrb',
       'generator-ean',
+      'walidator-vat-ue',
       'walidator-vin',
       'konwerter-isbn',
       'walidator-iban',

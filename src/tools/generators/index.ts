@@ -75,6 +75,15 @@ export const generatorTools: ToolDefinition[] = [
     component: () => import('./generator-ean/GeneratorEan.vue'),
   },
   {
+    slug: 'walidator-vat-ue',
+    title: 'Walidator VAT UE',
+    description: 'Sprawdza format i sumę kontrolną numeru VAT państw UE, bez zapytania do rejestru.',
+    category: 'generatory',
+    keywords: ['vat', 'nip ue', 'vies', 'numer vat', 'podatek'],
+    disclaimer: generatorDisclaimer,
+    component: () => import('./walidator-vat-ue/WalidatorVatUe.vue'),
+  },
+  {
     slug: 'walidator-vin',
     title: 'Walidator VIN',
     description: 'Sprawdza cyfrę kontrolną numeru VIN według ISO 3779.',

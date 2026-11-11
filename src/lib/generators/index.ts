@@ -28,6 +28,13 @@ export {
 export { validateIsbn, type IsbnDetails, type IsbnValidation } from './isbn'
 export { validateVin, type VinDetails, type VinValidation } from './vin'
 export {
+  EU_VAT_COUNTRIES,
+  validateEuVat,
+  type EuVatCountry,
+  type EuVatDetails,
+  type EuVatValidation,
+} from './vat'
+export {
   formatIban,
   validateIbanPl,
   type IbanDetails,
