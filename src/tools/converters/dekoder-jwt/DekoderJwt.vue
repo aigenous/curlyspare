@@ -93,9 +93,7 @@ function run(): void {
           </dd>
         </div>
         <div>
-          <dt id="jwt-podpis">
-            Podpis
-          </dt>
+          <dt id="jwt-podpis">Podpis</dt>
           <dd aria-labelledby="jwt-podpis">
             nie zweryfikowano{{ decoded.signature ? `: ${decoded.signature}` : '' }}
           </dd>
