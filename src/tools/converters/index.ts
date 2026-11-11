@@ -173,4 +173,12 @@ export const converterTools: ToolDefinition[] = [
     keywords: ['toml', 'json', 'konwersja'],
     component: () => import('./toml-na-json/TomlNaJson.vue'),
   },
+  {
+    slug: 'curl-na-fetch',
+    title: 'cURL na fetch',
+    description: 'Zamień polecenie curl na wywołanie fetch oraz axios.',
+    category: 'konwertery',
+    keywords: ['curl', 'fetch', 'axios', 'http', 'nagłówki'],
+    component: () => import('./curl-na-fetch/CurlNaFetch.vue'),
+  },
 ]

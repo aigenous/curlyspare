@@ -25,6 +25,7 @@ const slugs = [
   'json-na-typescript',
   'tester-jsonpath',
   'toml-na-json',
+  'curl-na-fetch',
 ]
 
 describe('converterTools', () => {
