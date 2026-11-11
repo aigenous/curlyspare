@@ -90,6 +90,15 @@ describe('color conversion', () => {
     expect(formatHex({ r: 49, g: 92, b: 180 })).toBe('#315cb4')
   })
 
+  it('covers the remaining hue sectors and clamps bad channels', () => {
+    expect(hslToRgb({ h: 90, s: 100, l: 50 })).toEqual({ r: 128, g: 255, b: 0 })
+    expect(hslToRgb({ h: 270, s: 100, l: 50 })).toEqual({ r: 128, g: 0, b: 255 })
+    expect(hslToRgb({ h: 330, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 128 })
+    expect(rgbToHsl({ r: 255, g: 0, b: 128 }).h).toBe(329.9)
+    expect(hslToRgb({ h: 0, s: Number.NaN, l: 200 })).toEqual({ r: 255, g: 255, b: 255 })
+    expect(formatHex({ r: Number.NaN, g: 300, b: -5 })).toBe('#00ff00')
+  })
+
   it('round-trips primary colors through HSL', () => {
     expect(rgbToHsl({ r: 255, g: 255, b: 255 })).toEqual({ h: 0, s: 0, l: 100 })
     expect(hslToRgb({ h: 0, s: 100, l: 50 })).toEqual({ r: 255, g: 0, b: 0 })

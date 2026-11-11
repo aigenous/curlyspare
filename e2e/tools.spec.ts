@@ -31,7 +31,7 @@ test.describe('shell tools', () => {
     await page.getByLabel('Akapity').fill('1')
     await page.getByLabel('Zdania w akapicie').fill('1')
     await page.getByRole('button', { name: 'Generuj' }).click()
-    await expect(page.locator('textarea[readonly]')).toHaveValue(
+    await expect(page.getByLabel('Wynik')).toHaveValue(
       'Tester wkleja krótki akapit i sprawdza, czy formularz przyjmuje polskie znaki.',
     )
   })

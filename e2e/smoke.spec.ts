@@ -40,7 +40,8 @@ for (const tool of tools) {
 }
 
 test('an unknown address shows the not-found page', async ({ page }) => {
-  await page.goto('/nie-ma-takiej-strony')
+  const response = await page.goto('/nie-ma-takiej-strony')
+  expect(response?.status()).toBe(404)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Nie ma takiej strony')
 })
 
