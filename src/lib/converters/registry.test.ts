@@ -13,6 +13,12 @@ const slugs = [
   'znacznik-czasu',
   'json-na-yaml',
   'json-na-csv',
+  'generator-hmac',
+  'kodowanie-base32',
+  'kodowanie-hex',
+  'ucieczki-unicode',
+  'formatowanie-xml',
+  'parser-adresu',
 ]
 
 describe('converterTools', () => {
