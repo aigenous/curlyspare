@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'strefy-czasowe',
+    title: 'Strefy czasowe',
+    description: 'Przelicza datę i godzinę między strefami IANA. Domyślnie Europa/Warszawa.',
+    category: 'konwertery',
+    keywords: ['strefa', 'czas', 'warszawa', 'utc', 'timezone'],
+    component: () => import('./TimezoneTool.vue'),
+  },
+  {
     slug: 'roznica-dat',
     title: 'Różnica dat',
     description: 'Liczy lata, miesiące i dni między dwiema datami, także wiek.',
