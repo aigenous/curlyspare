@@ -36,6 +36,16 @@ describe('csv', () => {
     ])
   })
 
+  it('writes integers beyond 2^53 without rounding', () => {
+    expect(jsonToCsv('[{"id":9007199254740993}]')).toEqual({
+      ok: true,
+      value: 'id\n9007199254740993\n',
+    })
+    expect(jsonToCsv('[{"n":1e20}]')).toEqual({ ok: true, value: 'n\n100000000000000000000\n' })
+    expect(jsonToCsv('[{"n":1E16}]')).toEqual({ ok: true, value: 'n\n10000000000000000\n' })
+    expect(jsonToCsv('[{"n":9007199254740993.0}]')).toEqual({ ok: true, value: 'n\n9007199254740992\n' })
+  })
+
   it('rejects mixed arrays, an unclosed quote, and a repeated header', () => {
     expect(jsonToCsv('[1, {"a":1}]').ok).toBe(false)
     expect(jsonToCsv('[]').ok).toBe(false)
