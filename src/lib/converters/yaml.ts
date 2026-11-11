@@ -1,6 +1,9 @@
 import { parse, stringify, YAMLParseError } from 'yaml'
-import { formatJsonIssue, parseJson } from './json'
+import { formatJsonIssue, parseJson, stringifyJson } from './json'
 import { err, ok, type Result } from './result'
+
+const MIN_SAFE = BigInt(Number.MIN_SAFE_INTEGER)
+const MAX_SAFE = BigInt(Number.MAX_SAFE_INTEGER)
 
 function yamlMessage(error: unknown): string {
   if (error instanceof YAMLParseError) {
@@ -30,9 +33,9 @@ export function jsonToYaml(input: string): Result<string> {
 export function parseYaml(input: string): Result<unknown> {
   if (isEmptyDocument(input)) return err('Pusty dokument YAML.')
   try {
-    const value = parse(input, { uniqueKeys: true })
+    const value = parse(input, { uniqueKeys: true, intAsBigInt: true })
     if (value === undefined) return err('Pusty dokument YAML.')
-    return ok(value)
+    return ok(narrowSafeInts(value))
   } catch (error) {
     return err(yamlMessage(error))
   }
@@ -41,5 +44,22 @@ export function parseYaml(input: string): Result<unknown> {
 export function yamlToJson(input: string): Result<string> {
   const parsed = parseYaml(input)
   if (!parsed.ok) return parsed
-  return ok(`${JSON.stringify(parsed.value, null, 2)}\n`)
+  return ok(`${stringifyJson(parsed.value, 2)}\n`)
+}
+
+function narrowSafeInts(value: unknown): unknown {
+  if (typeof value === 'bigint') return value >= MIN_SAFE && value <= MAX_SAFE ? Number(value) : value
+  if (Array.isArray(value)) return value.map(narrowSafeInts)
+  if (isPlainObject(value)) {
+    const copy: Record<string, unknown> = {}
+    for (const [key, item] of Object.entries(value)) copy[key] = narrowSafeInts(item)
+    return copy
+  }
+  return value
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (value === null || typeof value !== 'object') return false
+  const proto = Object.getPrototypeOf(value)
+  return proto === Object.prototype || proto === null
 }
