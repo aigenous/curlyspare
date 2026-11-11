@@ -8,8 +8,10 @@ import { filterTools, fold } from '../src/lib/search'
 import { tools } from '../src/registry'
 
 describe('search', () => {
-  it('folds Polish diacritics that Unicode decomposes', () => {
+  it('folds Polish diacritics, including ł and ż', () => {
     expect(fold('Ąćęńóśź')).toBe('acenosz')
+    expect(fold('Żółć')).toBe('zolc')
+    expect(fold('Łódź')).toBe('lodz')
   })
 
   it('matches a tool by keyword and ignores blank queries', () => {

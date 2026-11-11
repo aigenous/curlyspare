@@ -56,6 +56,27 @@ test.describe('shell tools', () => {
     await expect(page.getByRole('link', { name: 'Pobierz PNG' })).toHaveAttribute('href', /^data:image\/png/)
   })
 
+  test('password generator uses the selected classes and rejects an empty alphabet', async ({ page }) => {
+    await page.goto('/generator-hasel')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Generator haseł')
+    await page.getByRole('button', { name: 'Generuj', exact: true }).click()
+    const password = page.getByLabel('Hasło')
+    await expect(password).not.toHaveValue('')
+    const value = await password.inputValue()
+    expect(value).toHaveLength(16)
+    expect(value).toMatch(/^[a-zA-Z0-9]+$/)
+    expect(value).toMatch(/[a-z]/)
+    expect(value).toMatch(/[A-Z]/)
+    expect(value).toMatch(/\d/)
+
+    await page.getByLabel('Małe litery').uncheck()
+    await page.getByLabel('Wielkie litery').uncheck()
+    await page.getByLabel('Cyfry').uncheck()
+    await page.getByRole('button', { name: 'Generuj', exact: true }).click()
+    await expect(page.getByText('Zaznacz co najmniej jeden zestaw znaków.')).toBeVisible()
+    await expect(password).toHaveValue('')
+  })
+
   test('color tool converts HEX red into RGB', async ({ page }) => {
     await page.goto('/konwerter-kolorow')
     const hex = page.getByLabel('HEX')
