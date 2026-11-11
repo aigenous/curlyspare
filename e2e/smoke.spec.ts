@@ -33,7 +33,7 @@ for (const tool of tools) {
     page.on('pageerror', (error) => errors.push(error.message))
     await page.goto(`/${tool.slug}`)
     await expect(page).toHaveTitle(new RegExp(`${escapeRegExp(tool.title)} — DevNarzędzia`))
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(tool.title)
+    await expect(page.getByRole('heading', { level: 1, name: tool.title })).toBeVisible()
     await expect(page.getByText(tool.description)).toBeVisible()
     expect(errors).toEqual([])
   })
