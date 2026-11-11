@@ -1,7 +1,12 @@
 import type { ToolDefinition } from '../registry/types'
 
 export function fold(value: string): string {
-  return value.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '')
+  return value
+    .replaceAll('ł', 'l')
+    .replaceAll('Ł', 'L')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
 }
 
 export function filterTools(list: readonly ToolDefinition[], query: string): ToolDefinition[] {
