@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'wyjasniacz-cron',
+    title: 'Wyjaśniacz cron',
+    description: 'Tłumaczy wyrażenie cron na polski i pokazuje pięć kolejnych uruchomień w strefie Europe/Warsaw.',
+    category: 'inne',
+    keywords: ['cron', 'harmonogram', 'crontab', 'warszawa'],
+    component: () => import('./CronTool.vue'),
+  },
+  {
     slug: 'kalkulator-cidr',
     title: 'Kalkulator CIDR',
     description: 'Liczy adres sieci, maskę, rozgłoszenie i zakres hostów dla IPv4.',
