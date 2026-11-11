@@ -43,11 +43,11 @@ export function amountToWords(input: string): { ok: true; words: string } | { ok
   if (parsed.zloty > 999_999_999_999n) {
     return { ok: false, error: 'Kwota może mieć najwyżej 12 cyfr przed przecinkiem.' }
   }
-  const zloty = `${spell(parsed.zloty)} ${currencyForm(parsed.zloty, ['złoty', 'złote', 'złotych'])}`
+  const zloty = `${spell(parsed.zloty)} ${form(parsed.zloty, ['złoty', 'złote', 'złotych'])}`
   const words =
     parsed.grosz === 0
       ? zloty
-      : `${zloty} ${spell(BigInt(parsed.grosz))} ${currencyForm(BigInt(parsed.grosz), ['grosz', 'grosze', 'groszy'])}`
+      : `${zloty} ${spell(BigInt(parsed.grosz))} ${form(parsed.grosz, ['grosz', 'grosze', 'groszy'])}`
   return { ok: true, words: parsed.negative ? `minus ${words}` : words }
 }
 
@@ -121,16 +121,11 @@ function underThousand(value: number): string {
   return words.filter(Boolean).join(' ')
 }
 
-function currencyForm(value: bigint, forms: [string, string, string]): string {
-  return form(Number(value % 100n), forms)
-}
-
-function form(value: number, forms: [string, string, string]): string {
-  const tail = value % 100
-  if (tail < 12 || tail > 14) {
-    const last = value % 10
-    if (last === 1) return forms[0]
-    if (last >= 2 && last <= 4) return forms[1]
-  }
+function form(value: bigint | number, forms: [string, string, string]): string {
+  const count = typeof value === 'bigint' ? value : BigInt(value)
+  if (count === 1n) return forms[0]
+  const tail = Number(count % 100n)
+  const last = tail % 10
+  if (last >= 2 && last <= 4 && (tail < 12 || tail > 14)) return forms[1]
   return forms[2]
 }
