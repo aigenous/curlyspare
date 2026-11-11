@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'roznica-dat',
+    title: 'Różnica dat',
+    description: 'Liczy lata, miesiące i dni między dwiema datami, także wiek.',
+    category: 'inne',
+    keywords: ['wiek', 'data', 'różnica', 'kalendarz', 'urodziny'],
+    component: () => import('./DatesTool.vue'),
+  },
+  {
     slug: 'dni-robocze',
     title: 'Dni robocze',
     description: 'Liczy dni robocze w Polsce, z świętami stałymi i ruchomymi, i dodaje ich liczbę do daty.',
