@@ -356,10 +356,18 @@ h2 {
   overflow-wrap: anywhere;
 }
 
-.mark {
+.mark,
+.diff-added {
   background: var(--primary-soft);
   color: inherit;
   border-radius: 4px;
+}
+
+.diff-removed {
+  background: var(--danger-soft);
+  color: inherit;
+  border-radius: 4px;
+  text-decoration: line-through;
 }
 
 .match-list {

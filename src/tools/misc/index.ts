@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'porownanie-tekstu',
+    title: 'Porównanie tekstu',
+    description: 'Pokazuje różnice linia po linii albo słowo po słowie. Nic nie jest wysyłane.',
+    category: 'tekst',
+    keywords: ['diff', 'różnica', 'porównanie', 'linie', 'słowa'],
+    component: () => import('./DiffTool.vue'),
+  },
+  {
     slug: 'tester-regex',
     title: 'Tester wyrażeń regularnych',
     description: 'Sprawdza wyrażenie, flagi i grupy na tekście w przeglądarce.',

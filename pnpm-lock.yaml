@@ -14,6 +14,9 @@ importers:
       '@unhead/vue':
         specifier: ^2.1.17
         version: 2.1.17(vue@3.5.45(typescript@5.9.3))
+      diff:
+        specifier: 9.0.0
+        version: 9.0.0
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
@@ -838,6 +841,10 @@ packages:
 
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
+
+  diff@9.0.0:
+    resolution: {integrity: sha512-svtcdpS8CgJyqAjEQIXdb3OjhFVVYjzGAPO8WGCmRbrml64SPw/jJD4GoE98aR7r25A0XcgrK3F02yw9R/vhQw==}
+    engines: {node: '>=0.3.1'}
 
   dijkstrajs@1.0.3:
     resolution: {integrity: sha512-qiSlmBq9+BCdCA/L46dw8Uy93mloxsPSbwnm5yrKn2vMPiy8KyAskTF6zuV/j5BMsmOGZDPs7KjU+mjb670kfA==}
@@ -2216,6 +2223,8 @@ snapshots:
   decimal.js@10.6.0: {}
 
   deep-is@0.1.4: {}
+
+  diff@9.0.0: {}
 
   dijkstrajs@1.0.3: {}
 
