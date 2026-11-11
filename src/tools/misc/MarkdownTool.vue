@@ -24,6 +24,8 @@ const source = ref('# Nagłówek\n\n**Pogrubienie** i [link](https://example.com
       <!-- eslint-disable vue/no-v-html -- DOMPurify removes scripts and event handlers before insertion. -->
       <div
         class="preview md"
+        role="region"
+        aria-label="Podgląd HTML"
         v-html="renderMarkdown(source)"
       />
       <!-- eslint-enable vue/no-v-html -->

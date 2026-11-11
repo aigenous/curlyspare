@@ -1,14 +1,16 @@
 import { useHead } from '@unhead/vue'
 import { brand } from '../brand'
 
-export function usePageMeta(input: {
+export interface PageMetaInput {
   title: string
   description: string
   path: string
   robots?: string
-}) {
+}
+
+export function pageHead(input: PageMetaInput) {
   const url = `${brand.siteUrl}${input.path === '/' ? '/' : input.path}`
-  useHead({
+  return {
     title: input.title,
     htmlAttrs: { lang: 'pl' },
     meta: [
@@ -21,5 +23,9 @@ export function usePageMeta(input: {
       { name: 'robots', content: input.robots ?? 'index,follow' },
     ],
     link: [{ rel: 'canonical', href: url }],
-  })
+  }
+}
+
+export function usePageMeta(input: PageMetaInput) {
+  useHead(pageHead(input))
 }

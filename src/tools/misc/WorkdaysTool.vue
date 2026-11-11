@@ -34,6 +34,7 @@ const holidays = computed(() => polishHolidays(year.value))
     <p
       v-if="!between.ok"
       class="message-error"
+      role="alert"
     >
       {{ between.error }}
     </p>
@@ -67,6 +68,7 @@ const holidays = computed(() => polishHolidays(year.value))
     <p
       v-if="!added.ok"
       class="message-error"
+      role="alert"
     >
       {{ added.error }}
     </p>

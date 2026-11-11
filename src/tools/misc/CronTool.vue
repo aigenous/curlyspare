@@ -25,6 +25,7 @@ const result = computed(() => explainCron(expression.value))
       <p
         v-if="!result.ok"
         class="message-error"
+        role="alert"
       >
         {{ result.error }}
       </p>

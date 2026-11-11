@@ -3,6 +3,7 @@ import { useHead } from '@unhead/vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { brand } from '../brand'
+import { pageHead } from '../composables/usePageMeta'
 import { t } from '../i18n'
 
 type LegalPageId = 'terms' | 'privacy' | 'operator'
@@ -44,17 +45,11 @@ const copy = computed(() => {
 
 useHead(() => {
   const current = copy.value
-  const url = `${brand.siteUrl}${current.path}`
-  const title = `${current.title} — ${brand.name}`
-  return {
-    title,
-    meta: [
-      { name: 'description', content: current.description },
-      { property: 'og:title', content: title },
-      { property: 'og:url', content: url },
-    ],
-    link: [{ rel: 'canonical', href: url }],
-  }
+  return pageHead({
+    title: `${current.title} — ${brand.name}`,
+    description: current.description,
+    path: current.path,
+  })
 })
 </script>
 

@@ -26,6 +26,7 @@ const words = computed(() => (result.value.ok ? result.value.words : ''))
     <p
       v-if="!result.ok"
       class="message-error"
+      role="alert"
     >
       {{ result.error }}
     </p>

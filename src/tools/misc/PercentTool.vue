@@ -43,6 +43,7 @@ const removed = computed(() => adjustPercent(base.value, delta.value, 'subtract'
     <p
       v-else
       class="message-error"
+      role="alert"
     >
       {{ share.error }}
     </p>
@@ -70,6 +71,7 @@ const removed = computed(() => adjustPercent(base.value, delta.value, 'subtract'
     <p
       v-else
       class="message-error"
+      role="alert"
     >
       {{ ratio.error }}
     </p>
@@ -97,6 +99,7 @@ const removed = computed(() => adjustPercent(base.value, delta.value, 'subtract'
     <p
       v-else
       class="message-error"
+      role="alert"
     >
       {{ change.error }}
     </p>

@@ -160,6 +160,24 @@ h2 {
   margin-top: 1.5rem;
 }
 
+.category h2 .count {
+  color: var(--ink-muted);
+  font-size: 0.85em;
+  font-weight: 400;
+}
+
+.stack > label,
+.row > label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .tool-grid {
   list-style: none;
   padding: 0;

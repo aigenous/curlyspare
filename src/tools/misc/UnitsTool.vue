@@ -44,6 +44,7 @@ function onUnit(event: Event) {
     <p
       v-if="!result.ok"
       class="message-error"
+      role="alert"
     >
       {{ result.error }}
     </p>

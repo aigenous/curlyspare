@@ -31,6 +31,7 @@ async function copy() {
   <button
     class="button-ghost"
     type="button"
+    aria-live="polite"
     @click="copy"
   >
     {{ copied ? 'Skopiowano' : 'Kopiuj' }}

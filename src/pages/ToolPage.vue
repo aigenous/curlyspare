@@ -3,6 +3,7 @@ import { computed, defineAsyncComponent, type Component } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { brand } from '../brand'
+import { pageHead } from '../composables/usePageMeta'
 import { categoryLabel } from '../i18n'
 import { findTool } from '../registry'
 
@@ -23,20 +24,11 @@ const AsyncTool = computed(() => {
 
 useHead(() => {
   const current = tool.value
-  const title = current ? `${current.title} — ${brand.name}` : brand.name
-  const description = current?.description ?? ''
-  const path = current ? `/${current.slug}` : route.path
-  const url = `${brand.siteUrl}${path}`
-  return {
-    title,
-    meta: [
-      { name: 'description', content: description },
-      { property: 'og:title', content: title },
-      { property: 'og:description', content: description },
-      { property: 'og:url', content: url },
-    ],
-    link: [{ rel: 'canonical', href: url }],
-  }
+  return pageHead({
+    title: current ? `${current.title} — ${brand.name}` : brand.name,
+    description: current?.description ?? '',
+    path: current ? `/${current.slug}` : route.path,
+  })
 })
 </script>
 

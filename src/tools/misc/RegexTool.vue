@@ -57,6 +57,7 @@ const error = computed(() => (result.value.ok ? '' : result.value.error))
     <p
       v-if="error"
       class="message-error"
+      role="alert"
     >
       {{ error }}
     </p>

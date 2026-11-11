@@ -67,6 +67,7 @@ function onBase(event: Event, target: 'from' | 'to') {
     <p
       v-if="error"
       class="message-error"
+      role="alert"
     >
       {{ error }}
     </p>

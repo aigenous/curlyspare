@@ -86,6 +86,7 @@ function generate() {
     <p
       v-if="error"
       class="message-error"
+      role="alert"
     >
       {{ error }}
     </p>

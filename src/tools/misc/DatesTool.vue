@@ -30,6 +30,7 @@ const result = computed(() => dateSpan(from.value, to.value))
     <p
       v-if="!result.ok"
       class="message-error"
+      role="alert"
     >
       {{ result.error }}
     </p>

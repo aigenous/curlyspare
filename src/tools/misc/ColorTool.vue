@@ -40,6 +40,8 @@ function onHsl() {
   <div class="stack">
     <div
       class="swatch"
+      role="img"
+      :aria-label="`Podgląd koloru ${formatHex(rgb)}`"
       :style="{ background: formatHex(rgb) }"
     />
     <label>
@@ -60,7 +62,7 @@ function onHsl() {
     </p>
     <div class="row">
       <label>
-        R
+        Czerwony
         <input
           v-model.number="rgb.r"
           class="input"
@@ -71,7 +73,7 @@ function onHsl() {
         >
       </label>
       <label>
-        G
+        Zielony
         <input
           v-model.number="rgb.g"
           class="input"
@@ -82,7 +84,7 @@ function onHsl() {
         >
       </label>
       <label>
-        B
+        Niebieski
         <input
           v-model.number="rgb.b"
           class="input"
@@ -95,7 +97,7 @@ function onHsl() {
     </div>
     <div class="row">
       <label>
-        H
+        Odcień
         <input
           v-model.number="hsl.h"
           class="input"
@@ -107,7 +109,7 @@ function onHsl() {
         >
       </label>
       <label>
-        S
+        Nasycenie
         <input
           v-model.number="hsl.s"
           class="input"
@@ -119,7 +121,7 @@ function onHsl() {
         >
       </label>
       <label>
-        L
+        Jasność
         <input
           v-model.number="hsl.l"
           class="input"

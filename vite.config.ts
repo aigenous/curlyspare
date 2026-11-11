@@ -5,6 +5,15 @@ import vue from '@vitejs/plugin-vue'
 import { defineConfig, type Plugin } from 'vite'
 import { site } from './src/site'
 
+const shellPaths = ['/', '/regulamin', '/polityka-prywatnosci', '/operator']
+
+function registeredSlugs(): string[] {
+  const files = ['src/tools/misc/index.ts', 'src/tools/generators/index.ts', 'src/tools/converters/index.ts']
+  return files.flatMap((file) =>
+    [...readFileSync(resolve(file), 'utf8').matchAll(/slug:\s*'([^']+)'/g)].map((match) => match[1] ?? ''),
+  )
+}
+
 function previewNotFound(): Plugin {
   return {
     name: 'preview-not-found',
@@ -52,6 +61,15 @@ export default defineConfig({
         .filter((file) => file.endsWith('.html') && file !== '404.html')
         .map((file) => (file === 'index.html' ? '/' : `/${file.replace(/\.html$/, '')}`))
         .sort((a, b) => a.localeCompare(b))
+      const expected = new Set([...shellPaths, ...registeredSlugs().map((slug) => `/${slug}`)])
+      const built = new Set(pages)
+      const missing = [...expected].filter((path) => !built.has(path))
+      if (missing.length > 0) {
+        throw new Error(`Brak stron w mapie witryny: ${missing.join(', ')}`)
+      }
+      if (built.has('/404')) {
+        throw new Error('Mapa witryny nie może zawierać strony 404.')
+      }
       const urls = pages
         .map((path) => `  <url><loc>${siteUrl}${path === '/' ? '/' : path}</loc></url>`)
         .join('\n')

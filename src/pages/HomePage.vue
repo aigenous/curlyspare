@@ -53,6 +53,7 @@ function inCategory(category: (typeof categories)[number]) {
       <template v-if="inCategory(category).length">
         <h2 :id="category">
           {{ categoryLabel(category) }}
+          <span class="count">({{ inCategory(category).length }})</span>
         </h2>
         <ul class="tool-grid">
           <li

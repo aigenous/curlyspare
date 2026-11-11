@@ -97,6 +97,7 @@ function onZone(event: Event, target: 'from' | 'to') {
     <p
       v-if="!result.ok"
       class="message-error"
+      role="alert"
     >
       {{ result.error }}
     </p>
