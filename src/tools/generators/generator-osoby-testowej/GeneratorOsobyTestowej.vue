@@ -12,6 +12,7 @@ import {
   type TestPerson,
 } from '../../../lib/generators'
 import { downloadText } from '../download'
+import { GENERATED_NUMBER_LABEL } from '../verdicts'
 import { COUNT_RANGE_ERROR, peselSexLabel, readCount } from '../messages'
 
 const birthDate = ref('')
@@ -122,6 +123,12 @@ function downloadJson() {
         role="alert"
       >
         {{ error }}
+      </p>
+      <p
+        v-if="people.length > 0"
+        class="muted"
+      >
+        {{ GENERATED_NUMBER_LABEL }}
       </p>
       <label v-if="people.length > 0">
         Wynik

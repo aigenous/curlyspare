@@ -1,14 +1,15 @@
 import type { PeselSex, ValidationErrorCode } from '../../lib/generators'
+import { INVALID_NUMBER_LABEL } from './verdicts'
 
 export const COUNT_RANGE_ERROR = 'Podaj liczbę od 1 do 100.'
 
 const validationText: Record<ValidationErrorCode, string> = {
   empty: 'Wpisz numer.',
-  'invalid-characters': 'Numer zawiera niedozwolone znaki.',
-  'invalid-length': 'Nieprawidłowa liczba znaków.',
-  'invalid-format': 'Nieprawidłowy format numeru.',
-  'invalid-checksum': 'Suma kontrolna się nie zgadza.',
-  'invalid-date': 'Numer koduje nieistniejącą datę.',
+  'invalid-characters': INVALID_NUMBER_LABEL,
+  'invalid-length': INVALID_NUMBER_LABEL,
+  'invalid-format': INVALID_NUMBER_LABEL,
+  'invalid-checksum': INVALID_NUMBER_LABEL,
+  'invalid-date': INVALID_NUMBER_LABEL,
   'unsupported-country': 'Ten kraj nie jest obsługiwany.',
 }
 

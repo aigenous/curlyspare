@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { validateEuVat } from '../../../lib/generators'
+import CheckResult from '../CheckResult.vue'
 import { validationMessage } from '../messages'
-import { euVatPassMessage } from '../verdicts'
+import { VAT_VALID_LABEL } from '../verdicts'
 
 const probe = ref('')
 const verdict = ref('')
@@ -11,9 +12,7 @@ const verdictError = ref(false)
 function check() {
   const result = validateEuVat(probe.value)
   verdictError.value = !result.valid
-  verdict.value = result.valid
-    ? euVatPassMessage(result.country, result.vat)
-    : validationMessage(result.error)
+  verdict.value = result.valid ? VAT_VALID_LABEL : validationMessage(result.error)
 }
 </script>
 
@@ -41,12 +40,9 @@ function check() {
     >
       Sprawdź
     </button>
-    <p
-      v-if="verdict"
-      :class="verdictError ? 'message-error' : 'muted'"
-      :role="verdictError ? 'alert' : 'status'"
-    >
-      {{ verdict }}
-    </p>
+    <CheckResult
+      :message="verdict"
+      :error="verdictError"
+    />
   </div>
 </template>
