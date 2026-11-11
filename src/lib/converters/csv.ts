@@ -22,6 +22,7 @@ function delimiterOf(value: CsvDelimiter | undefined): Result<CsvDelimiter> {
 function cellText(value: unknown): string {
   if (value === null || value === undefined) return ''
   if (typeof value === 'string') return value
+  if (typeof value === 'bigint') return value.toString()
   if (typeof value === 'number') return Number.isFinite(value) ? String(value) : ''
   if (typeof value === 'boolean') return value ? 'true' : 'false'
   return JSON.stringify(value)

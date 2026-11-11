@@ -177,7 +177,7 @@ class JsonReader {
     return value
   }
 
-  private parseNumber(): number {
+  private parseNumber(): number | bigint {
     const start = this.index
     if (this.peek() === '-') this.advance()
     if (this.peek() === '0') {
@@ -202,6 +202,11 @@ class JsonReader {
     const lexeme = this.input.slice(start, this.index)
     const value = JSON.parse(lexeme) as number
     if (!Number.isFinite(value)) {
+      this.moveTo(start)
+      this.fail('Liczba JSON jest poza zakresem.')
+    }
+    if (Number.isInteger(value) && !Number.isSafeInteger(value)) {
+      if (/^-?(?:0|[1-9]\d*)$/.test(lexeme)) return BigInt(lexeme)
       this.moveTo(start)
       this.fail('Liczba JSON jest poza zakresem.')
     }
@@ -361,25 +366,47 @@ function resolveIndent(indent: number | 'tab' | undefined): JsonResult<number | 
   return { ok: true, value: indent === 0 ? undefined : indent }
 }
 
+export function stringifyJson(value: unknown, space?: number | '\t'): string {
+  const gap = space === undefined || space === 0 ? '' : space === '\t' ? '\t' : ' '.repeat(space)
+  return writeJson(value, gap, 0)
+}
+
 export function formatJson(input: string, options: JsonFormatOptions = {}): JsonResult<string> {
   const parsed = parseJson(input)
   if (!parsed.ok) return parsed
   const indent = resolveIndent(options.indent)
   if (!indent.ok) return indent
   const value = options.sortKeys ? sortKeysDeep(parsed.value) : parsed.value
-  const text = JSON.stringify(value, null, indent.value)
-  if (text === undefined) {
-    return { ok: false, error: 'Wartości nie da się zapisać jako JSON.', line: 1, column: 1, position: 0 }
-  }
+  const text = stringifyJson(value, indent.value === '\t' || typeof indent.value === 'number' ? indent.value : undefined)
   return { ok: true, value: indent.value === undefined ? text : `${text}\n` }
 }
 
 export function minifyJson(input: string): JsonResult<string> {
   const parsed = parseJson(input)
   if (!parsed.ok) return parsed
-  const text = JSON.stringify(parsed.value)
-  if (text === undefined) {
-    return { ok: false, error: 'Wartości nie da się zapisać jako JSON.', line: 1, column: 1, position: 0 }
+  return { ok: true, value: stringifyJson(parsed.value) }
+}
+
+function writeJson(value: unknown, gap: string, depth: number): string {
+  if (typeof value === 'bigint') return value.toString()
+  if (value === null || typeof value === 'number' || typeof value === 'boolean' || typeof value === 'string') {
+    return JSON.stringify(value) ?? 'null'
   }
-  return { ok: true, value: text }
+  const nested = gap === '' ? '' : `\n${gap.repeat(depth + 1)}`
+  const close = gap === '' ? '' : `\n${gap.repeat(depth)}`
+  const separator = gap === '' ? ',' : `,${nested}`
+  if (Array.isArray(value)) {
+    if (value.length === 0) return '[]'
+    return `[${nested}${value.map((item) => writeJson(item, gap, depth + 1)).join(separator)}${close}]`
+  }
+  if (typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>)
+    if (entries.length === 0) return '{}'
+    const body = entries.map(([key, item]) => {
+      const rendered = writeJson(item, gap, depth + 1)
+      return `${JSON.stringify(key)}:${gap === '' ? '' : ' '}${rendered}`
+    })
+    return `{${nested}${body.join(separator)}${close}}`
+  }
+  return 'null'
 }

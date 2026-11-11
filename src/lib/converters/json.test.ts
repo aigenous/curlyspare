@@ -112,6 +112,19 @@ describe('formatJson and minifyJson', () => {
     expect(formatJson('1', { indent: 11 }).ok).toBe(false)
   })
 
+  it('keeps integers beyond 2^53 exactly', () => {
+    expect(formatJson('{"id":9007199254740993}')).toEqual({
+      ok: true,
+      value: '{\n  "id": 9007199254740993\n}\n',
+    })
+    expect(minifyJson('[9007199254740993,-9007199254740993]')).toEqual({
+      ok: true,
+      value: '[9007199254740993,-9007199254740993]',
+    })
+    expect(formatJson('9007199254740991')).toEqual({ ok: true, value: '9007199254740991\n' })
+    expect(formatJson('1.5')).toEqual({ ok: true, value: '1.5\n' })
+  })
+
   it('describes the value in Polish', () => {
     expect(describeJsonValue({ a: 1, b: 2, c: 3, d: 4, e: 5 })).toBe('Poprawny JSON: obiekt, 5 kluczy.')
     expect(describeJsonValue([1])).toBe('Poprawny JSON: tablica, 1 element.')

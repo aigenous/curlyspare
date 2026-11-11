@@ -1,4 +1,4 @@
-import { formatJsonIssue, parseJson } from './json'
+import { formatJsonIssue, parseJson, stringifyJson } from './json'
 import { err, ok, type Result } from './result'
 
 const INDENT = 2
@@ -53,6 +53,7 @@ function escapeYamlString(value: string): string {
 function emitScalar(value: unknown): string {
   if (value === null) return 'null'
   if (typeof value === 'boolean') return value ? 'true' : 'false'
+  if (typeof value === 'bigint') return value.toString()
   if (typeof value === 'number') return JSON.stringify(value)
   if (typeof value === 'string') return needsQuotes(value) ? escapeYamlString(value) : value
   if (Array.isArray(value)) return '[]'
@@ -265,7 +266,13 @@ function parseScalar(raw: string, line: number): unknown {
   if (value.startsWith("'")) return parseSingleQuoted(value, line)
   if (/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/.test(value)) {
     const numeric = JSON.parse(value) as number
-    if (Number.isFinite(numeric)) return numeric
+    if (Number.isFinite(numeric)) {
+      if (Number.isInteger(numeric) && !Number.isSafeInteger(numeric)) {
+        if (/^-?(?:0|[1-9]\d*)$/.test(value)) return BigInt(value)
+        throw new YamlParseError('Liczba całkowita jest poza zakresem.', line)
+      }
+      return numeric
+    }
   }
   return value
 }
@@ -414,5 +421,5 @@ export function parseYaml(input: string): Result<unknown> {
 export function yamlToJson(input: string): Result<string> {
   const parsed = parseYaml(input)
   if (!parsed.ok) return parsed
-  return ok(`${JSON.stringify(parsed.value, null, 2)}\n`)
+  return ok(`${stringifyJson(parsed.value, 2)}\n`)
 }
