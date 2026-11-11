@@ -1,0 +1,14 @@
+node_modules
+dist
+.vite
+coverage
+playwright-report
+test-results
+.DS_Store
+*.local
+.env
+.env.*
+!.env.example
+.eslintcache
+.vercel
+.playwright-mcp
