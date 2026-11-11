@@ -149,4 +149,12 @@ export const converterTools: ToolDefinition[] = [
     keywords: ['xml', 'json', 'atrybuty', 'konwersja'],
     component: () => import('./xml-na-json/XmlNaJson.vue'),
   },
+  {
+    slug: 'json-na-typescript',
+    title: 'JSON na TypeScript',
+    description: 'Zbuduj interfejsy TypeScript z przykładowego dokumentu JSON.',
+    category: 'konwertery',
+    keywords: ['json', 'typescript', 'interfejs', 'typ', 'interface'],
+    component: () => import('./json-na-typescript/JsonNaTypescript.vue'),
+  },
 ]

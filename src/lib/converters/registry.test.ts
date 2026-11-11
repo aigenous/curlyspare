@@ -22,6 +22,7 @@ const slugs = [
   'formatowanie-sql',
   'walidator-json-schema',
   'xml-na-json',
+  'json-na-typescript',
 ]
 
 describe('converterTools', () => {
