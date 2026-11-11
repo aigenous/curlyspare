@@ -77,6 +77,30 @@ test.describe('shell tools', () => {
     await expect(password).toHaveValue('')
   })
 
+  test('number bases round-trip and reject a foreign digit', async ({ page }) => {
+    await page.goto('/systemy-liczbowe')
+    await expect(page.getByLabel('Wynik')).toHaveValue('FF')
+    await page.getByLabel('Liczba').fill('2')
+    await page.getByLabel('Z systemu').selectOption('2')
+    await expect(page.getByText('Znak „2” nie należy do systemu o podstawie 2.')).toBeVisible()
+    await page.getByLabel('Liczba').fill('FF')
+    await page.getByLabel('Z systemu').selectOption('16')
+    await page.getByLabel('Na system').selectOption('10')
+    await expect(page.getByLabel('Wynik')).toHaveValue('255')
+    await page.getByLabel('Na system').selectOption('2')
+    await expect(page.getByLabel('Wynik')).toHaveValue('11111111')
+  })
+
+  test('regex tester highlights Polish words and reports a bad pattern', async ({ page }) => {
+    await page.goto('/tester-regex')
+    await expect(page.locator('.mark')).toHaveText(['Zażółć', 'gęślą', 'jaźń'])
+    await page.getByLabel('Wyrażenie').fill('(')
+    await expect(page.getByText('Niepoprawne wyrażenie regularne.')).toBeVisible()
+    await page.getByLabel('Wyrażenie').fill('a')
+    await page.getByRole('checkbox', { name: 'v', exact: true }).check()
+    await expect(page.getByText('Flagi u i v wykluczają się.')).toBeVisible()
+  })
+
   test('color tool converts HEX red into RGB', async ({ page }) => {
     await page.goto('/konwerter-kolorow')
     const hex = page.getByLabel('HEX')
