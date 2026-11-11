@@ -1,0 +1,279 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--primary);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.skip {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  transform: translateY(-150%);
+  background: var(--navy);
+  color: var(--bg);
+  padding: 0.4rem 0.7rem;
+  z-index: 20;
+}
+
+.skip:focus {
+  transform: none;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header,
+.footer,
+.main {
+  width: min(1080px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: var(--header-h);
+}
+
+.brand {
+  color: var(--navy);
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -0.03em;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.button,
+.button-ghost {
+  border-radius: 10px;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+}
+
+.button {
+  border: 0;
+  background: var(--button-bg);
+  color: var(--button-fg);
+  font-weight: 700;
+}
+
+.button:hover {
+  background: var(--button-bg-hover);
+}
+
+.button-ghost {
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+  color: var(--ink);
+}
+
+.main {
+  flex: 1;
+  padding-bottom: 3rem;
+}
+
+.kicker {
+  margin: 0 0 0.35rem;
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.lede,
+.muted {
+  color: var(--ink-muted);
+}
+
+.search {
+  display: grid;
+  gap: 0.35rem;
+  margin: 1.25rem 0 1.5rem;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 0.7rem 0.8rem;
+}
+
+.category {
+  margin-top: 1.5rem;
+}
+
+.tool-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.tool-card {
+  display: block;
+  height: 100%;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+}
+
+.tool-card h3 {
+  margin: 0.35rem 0;
+}
+
+.tool-card p {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.disclaimer {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--primary-soft);
+  color: var(--ink);
+}
+
+.footer {
+  padding: 1.5rem 0 2rem;
+  color: var(--ink-muted);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
+.palette-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(18 24 32 / 46%);
+  display: grid;
+  align-items: start;
+  justify-content: center;
+  padding: 12vh 1rem 1rem;
+  z-index: 30;
+}
+
+.palette {
+  width: min(640px, 100%);
+  background: var(--bg-elevated);
+  color: var(--ink);
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.palette input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  padding: 0.9rem 1rem;
+}
+
+.palette ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem;
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.palette button {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  border-radius: 10px;
+  padding: 0.65rem 0.7rem;
+  cursor: pointer;
+}
+
+.palette button[aria-selected='true'],
+.palette button:hover {
+  background: var(--primary-soft);
+}
+
+.theme-icon::before {
+  content: '☾';
+}
+
+:root[data-theme='dark'] .theme-icon::before {
+  content: '☀';
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
