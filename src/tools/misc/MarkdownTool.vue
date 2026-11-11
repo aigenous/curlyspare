@@ -21,12 +21,12 @@ const source = ref('# Nagłówek\n\n**Pogrubienie** i [link](https://example.com
       Podgląd jest czyszczony w przeglądarce. Skrypty i atrybuty zdarzeń są usuwane.
     </p>
     <ClientOnly>
-      <!-- DOMPurify removes scripts and event handlers before this HTML is inserted. -->
-      <!-- eslint-disable-next-line vue/no-v-html -->
+      <!-- eslint-disable vue/no-v-html -- DOMPurify removes scripts and event handlers before insertion. -->
       <div
         class="preview md"
         v-html="renderMarkdown(source)"
       />
+      <!-- eslint-enable vue/no-v-html -->
       <template #fallback>
         <pre class="preview">{{ source }}</pre>
       </template>
