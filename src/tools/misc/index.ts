@@ -50,6 +50,14 @@ export const miscTools: ToolDefinition[] = [
     component: () => import('./PasswordTool.vue'),
   },
   {
+    slug: 'kwota-slownie',
+    title: 'Kwota słownie',
+    description: 'Zapisuje kwotę w złotych i groszach słownie, do faktury.',
+    category: 'inne',
+    keywords: ['słownie', 'faktura', 'złote', 'grosze', 'pln', 'kwota'],
+    component: () => import('./AmountTool.vue'),
+  },
+  {
     slug: 'wyjasniacz-cron',
     title: 'Wyjaśniacz cron',
     description: 'Tłumaczy wyrażenie cron na polski i pokazuje pięć kolejnych uruchomień w strefie Europe/Warsaw.',
