@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { validateIbanPl } from '../../../lib/generators'
+import CheckResult from '../CheckResult.vue'
 import { validationMessage } from '../messages'
-import { ibanPassMessage } from '../verdicts'
+import { VALID_NUMBER_LABEL } from '../verdicts'
 
 const probe = ref('')
 const verdict = ref('')
+const verdictDetail = ref('')
 const verdictError = ref(false)
 
 function check() {
+  verdictDetail.value = ''
   const result = validateIbanPl(probe.value)
   verdictError.value = !result.valid
-  verdict.value = result.valid
-    ? ibanPassMessage(result.formatted, result.nrb)
-    : validationMessage(result.error)
+  if (!result.valid) {
+    verdict.value = validationMessage(result.error)
+    return
+  }
+  verdict.value = VALID_NUMBER_LABEL
+  verdictDetail.value = `Zapis: ${result.formatted}. NRB: ${result.nrb}.`
 }
 </script>
 
@@ -39,12 +45,10 @@ function check() {
     >
       Sprawdź
     </button>
-    <p
-      v-if="verdict"
-      :class="verdictError ? 'message-error' : 'muted'"
-      :role="verdictError ? 'alert' : 'status'"
-    >
-      {{ verdict }}
-    </p>
+    <CheckResult
+      :message="verdict"
+      :error="verdictError"
+      :detail="verdictDetail"
+    />
   </div>
 </template>
