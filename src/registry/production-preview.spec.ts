@@ -31,7 +31,8 @@ function productionEnv(): NodeJS.ProcessEnv {
 }
 
 function plain(value: string): string {
-  return value.replace(/\u001b\[[0-9;]*m/g, '')
+  const escape = String.fromCharCode(0x1b)
+  return value.replace(new RegExp(`${escape}\\[[0-9;]*m`, 'g'), '')
 }
 
 function freePort(): Promise<number> {
