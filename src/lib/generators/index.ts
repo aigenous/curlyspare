@@ -85,6 +85,7 @@ export {
   generatePeselOnDate,
   generatePesels,
   parsePesel,
+  PESEL_DEFAULT_YEAR_RANGE,
   randomPeselDate,
   validatePesel,
   type PeselDetails,

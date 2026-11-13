@@ -23,8 +23,11 @@ export const PESEL_WEIGHTS = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3] as const
 const MIN_YEAR = 1800
 const MAX_YEAR = 2299
 
-const DEFAULT_FROM: CalendarDate = { year: 1950, month: 1, day: 1 }
-const DEFAULT_TO: CalendarDate = { year: 2005, month: 12, day: 31 }
+/** Inclusive range used when a caller does not supply a birth date. */
+export const PESEL_DEFAULT_YEAR_RANGE = {
+  from: { year: 1950, month: 1, day: 1 },
+  to: { year: 2005, month: 12, day: 31 },
+} as const satisfies { from: CalendarDate; to: CalendarDate }
 
 const CENTURY_MONTH_OFFSET: Readonly<Record<number, number>> = {
   18: 80,
@@ -119,35 +122,37 @@ export function generatePesels(
   return generateUnique(count, () => generatePesel(options, rng))
 }
 
-const RANDOM_FROM: CalendarDate = { year: 1950, month: 1, day: 1 }
-const RANDOM_TO: CalendarDate = { year: 2010, month: 12, day: 31 }
-
 /**
- * Uniform calendar day from 1950-01-01 through 2010-12-31.
- * Uses the shared cryptographic RNG. The generator's own default range stays 1950–2005.
+ * Uniform day inside `PESEL_DEFAULT_YEAR_RANGE`.
+ * Uses the shared cryptographic RNG.
  */
 export function randomPeselDate(rng: RandomInt = cryptoRandomInt): CalendarDate {
-  return randomDateBetween(RANDOM_FROM, RANDOM_TO, rng)
+  return randomDateBetween(PESEL_DEFAULT_YEAR_RANGE.from, PESEL_DEFAULT_YEAR_RANGE.to, rng)
 }
 
 /**
  * Builds a PESEL for a calendar day.
  * `sex` is the English code, or `random` when the caller wants either sex.
+ * The date is `{ year, month, day }` so a local timezone cannot shift the day.
  * The digits come from `generatePesel`, including its cryptographic RNG.
  */
 export function generatePeselOnDate(
-  date: CalendarDate | Date,
+  date: CalendarDate,
   sex: PeselSexCode | 'random' = 'random',
   rng: RandomInt = cryptoRandomInt,
 ): string {
-  const birthDate = calendarDateOf(date)
   const polishSex = toPeselSex(sex)
-  return generatePesel(polishSex === null ? { birthDate } : { birthDate, sex: polishSex }, rng)
+  return generatePesel(polishSex === null ? { birthDate: date } : { birthDate: date, sex: polishSex }, rng)
 }
 
-/** Reads up to eleven digits. Separators and other non-digits are ignored. */
+/**
+ * Reads digits and ignores other characters.
+ * More than eleven digits is not a PESEL: `valid` stays false.
+ * `sum` and `expected` appear once ten digits are present. Date and sex appear once eleven are.
+ * `valid` is decided only here.
+ */
 export function parsePesel(input: string): PeselParse {
-  const compact = input.replace(/\D/g, '').slice(0, 11)
+  const compact = input.replace(/\D/g, '')
   const digits = compact.length === 0 ? [] : toDigits(compact)
   const parsed: PeselParse = {
     digits,
@@ -222,8 +227,8 @@ function resolveBirthDate(options: PeselGenerateOptions, rng: RandomInt): Calend
     return options.birthDate
   }
 
-  const from = options.from ?? DEFAULT_FROM
-  const to = options.to ?? DEFAULT_TO
+  const from = options.from ?? PESEL_DEFAULT_YEAR_RANGE.from
+  const to = options.to ?? PESEL_DEFAULT_YEAR_RANGE.to
   assertPeselDate(from)
   assertPeselDate(to)
   if (compareDates(from, to) > 0) {
@@ -304,16 +309,3 @@ function toPeselSex(sex: PeselSexCode | 'random'): PeselSex | null {
   }
 }
 
-function calendarDateOf(date: CalendarDate | Date): CalendarDate {
-  if (date instanceof Date) {
-    if (Number.isNaN(date.getTime())) {
-      throw new RangeError('PESEL birth date must be a real day between 1800 and 2299')
-    }
-    return {
-      year: date.getUTCFullYear(),
-      month: date.getUTCMonth() + 1,
-      day: date.getUTCDate(),
-    }
-  }
-  return date
-}

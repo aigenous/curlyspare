@@ -90,4 +90,14 @@ describe('PESEL anatomy', () => {
     expect(anatomy.cells[10]?.state).toBe('bad')
     expect(anatomy.valid).toBe(false)
   })
+
+  it('keeps extra digits and does not call the number valid', () => {
+    const anatomy = peselAnatomy('4405140135999')
+    expect(anatomy.complete).toBe(false)
+    expect(anatomy.valid).toBe(false)
+    expect(anatomy.cells).toHaveLength(13)
+    expect(anatomy.cells.slice(11).every((cell) => cell.state === 'bad')).toBe(true)
+    expect(anatomy.cells.slice(0, 11).every((cell) => cell.state === 'filled')).toBe(true)
+    expect(anatomy.parts[2]).toEqual({ from: 10, to: 13, labelKey: 'check', role: 'check' })
+  })
 })
