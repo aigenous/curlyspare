@@ -51,12 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
-      # An unset VITE_SITE_URL writes the placeholder host into sitemap.xml and robots.txt.
-      - name: Build
-        run: pnpm build
-        env:
-          VITE_SITE_URL: https://curlyspare.vercel.app
-          VERCEL_ENV: production
+      - run: pnpm build
       - name: Check fonts are self-hosted
         run: bash scripts/check-dist-fonts.sh dist
       - name: Check dist has no .example hosts
