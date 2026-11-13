@@ -51,7 +51,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
-      - run: pnpm build
+      - name: Production build
+        env:
+          VERCEL_ENV: production
+          VITE_SITE_URL: https://curlyspare.vercel.app
+        run: pnpm build
       - name: Check fonts are self-hosted
         run: bash scripts/check-dist-fonts.sh dist
       - uses: actions/upload-artifact@v4
