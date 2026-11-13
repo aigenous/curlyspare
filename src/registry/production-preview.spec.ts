@@ -2,15 +2,18 @@ import { spawn, type ChildProcess } from 'node:child_process'
 import { createServer } from 'node:net'
 import { describe, expect, it } from 'vitest'
 import { tools } from './index'
-import { publishedSlugList } from './published-slugs'
+import { publishedSlugList, shellPaths } from './published-slugs'
 
-const sitemapPaths = ['/', '/licencje', '/operator', '/polityka-prywatnosci', '/regulamin']
+function expectedSitemapPaths(): string[] {
+  return [...shellPaths, ...publishedSlugList.map((slug) => `/${slug}`)].sort((left, right) =>
+    left.localeCompare(right),
+  )
+}
 
-function draftToolPath(): string {
+function unpublishedToolPath(): string | undefined {
   const allowed = new Set<string>(publishedSlugList)
   const slug = tools.map((tool) => tool.slug).find((item) => !allowed.has(item))
-  if (!slug) throw new Error('Expected an unpublished tool in the registry.')
-  return `/${slug}`
+  return slug === undefined ? undefined : `/${slug}`
 }
 
 function productionEnv(): NodeJS.ProcessEnv {
@@ -123,23 +126,34 @@ async function stop(child: ChildProcess): Promise<void> {
 }
 
 describe('production preview', () => {
-  it('returns 404 for a draft tool and lists the shell pages in the sitemap', async () => {
+  it('serves published pages, returns 404 for anything else, and lists the allowlist in the sitemap', async () => {
     const port = await freePort()
     const env = productionEnv()
     await run(['exec', 'vite-ssg', 'build'], env)
     const preview = await startPreview(port, env)
+    const origin = `http://127.0.0.1:${port}`
     try {
-      const home = await fetch(`http://127.0.0.1:${port}/`)
+      const home = await fetch(`${origin}/`)
       expect(home.status).toBe(200)
-      const draft = await fetch(`http://127.0.0.1:${port}${draftToolPath()}`)
-      expect(draft.status).toBe(404)
-      expect(await draft.text()).toContain('Nie ma takiej strony')
-      const sitemap = await fetch(`http://127.0.0.1:${port}/sitemap.xml`)
+      const homeHtml = await home.text()
+      expect(homeHtml).not.toContain('Nie ma takiej strony')
+      for (const slug of publishedSlugList) {
+        const page = await fetch(`${origin}/${slug}`)
+        expect(page.status, slug).toBe(200)
+        expect(await page.text(), slug).not.toContain('Nie ma takiej strony')
+      }
+      const draftPath = unpublishedToolPath()
+      const missingPath = draftPath ?? '/nie-ma-takiej-strony'
+      const missing = await fetch(`${origin}${missingPath}`)
+      expect(missing.status).toBe(404)
+      expect(await missing.text()).toContain('Nie ma takiej strony')
+      const sitemap = await fetch(`${origin}/sitemap.xml`)
       expect(sitemap.status).toBe(200)
       const locs = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(
         (match) => new URL(match[1] ?? '').pathname,
       )
-      expect(locs).toEqual(sitemapPaths)
+      expect(locs).toEqual(expectedSitemapPaths())
+      expect(locs).not.toContain('/404')
     } finally {
       await stop(preview)
     }
