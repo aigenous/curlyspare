@@ -64,6 +64,8 @@ describe('ID document page copy', () => {
     expect(TEST_COPY_PREFIX).toBe('[TEST]')
     expect(line).toBe('[TEST] ABS 123456')
     expect(stripTestPrefix(line)).toBe('ABS 123456')
+    expect(stripTestPrefix('  [TEST]  ABS 123456  ')).toBe('ABS 123456')
+    expect(stripTestPrefix('ABS 123456')).toBe('ABS 123456')
     expect(TEST_DATA_FIELD).toBe('dane_testowe')
     const csv = idNumbersToCsv([line])
     expect(csv.split('\n')[0]).toBe('numer,dane_testowe')

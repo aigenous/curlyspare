@@ -7,7 +7,7 @@ import { pageHead } from '../composables/usePageMeta'
 import { categoryLabel } from '../i18n'
 import { findTool } from '../registry'
 import IdDocumentGuide from '../tools/generators/IdDocumentGuide.vue'
-import { documentTitleFor, idDocumentPage } from '../tools/generators/id-document-copy'
+import { ID_TEST_NOTICE_LINES, documentTitleFor, idDocumentPage } from '../tools/generators/id-document-copy'
 
 const route = useRoute()
 const tool = computed(() => findTool(String(route.meta.slug ?? '')))
@@ -49,12 +49,26 @@ useHead(() => {
     <p class="lede">
       {{ tool.description }}
     </p>
-    <div class="panel">
+    <component
+      :is="idCopy ? 'section' : 'div'"
+      :class="idCopy ? 'tool panel' : 'panel'"
+    >
+      <div
+        v-if="idCopy"
+        class="id-test-notice"
+      >
+        <p
+          v-for="line in ID_TEST_NOTICE_LINES"
+          :key="line"
+        >
+          {{ line }}
+        </p>
+      </div>
       <component
         :is="AsyncTool"
         v-if="AsyncTool"
       />
-    </div>
+    </component>
     <p
       v-if="tool.disclaimer"
       class="disclaimer"

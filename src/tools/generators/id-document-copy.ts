@@ -155,13 +155,19 @@ export function idDocumentDocumentTitle(slug: string): string | null {
   return page === null ? null : documentTitleFor(page)
 }
 
+export const ID_TEST_NOTICE_LINES = [
+  'Numer testowy \u2013 nie jest dokumentem ani jego wzorem.',
+  'Zastrze\u017cenie poni\u017cej \u2193',
+] as const
+
 export function presentIdNumber(formatted: string): string {
   return `${TEST_COPY_PREFIX} ${formatted}`
 }
 
 export function stripTestPrefix(input: string): string {
-  if (!input.startsWith(TEST_COPY_PREFIX)) return input
-  return input.slice(TEST_COPY_PREFIX.length).trimStart()
+  const trimmed = input.trim()
+  if (!trimmed.startsWith(TEST_COPY_PREFIX)) return trimmed
+  return trimmed.slice(TEST_COPY_PREFIX.length).trim()
 }
 
 export function idDocumentExportFilename(slug: IdDocumentSlug, extension: 'csv' | 'json'): string {

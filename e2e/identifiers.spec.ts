@@ -107,6 +107,12 @@ test.describe('identifier screens', () => {
       'Testowy numer dowodu osobistego – walidator i generator',
     )
     expect((await page.title()).toLowerCase()).not.toContain('generator dowodu')
+    await expect(page.locator('section.tool .id-test-notice p').nth(0)).toHaveText(
+      'Numer testowy – nie jest dokumentem ani jego wzorem.',
+    )
+    await expect(page.locator('section.tool .id-test-notice p').nth(1)).toHaveText('Zastrzeżenie poniżej ↓')
+    await expect(page.locator('section.tool .id-test-notice img')).toHaveCount(0)
+    await expect(page.locator('.disclaimer')).toContainText('nie jest to dokument ani jego wzór')
     await page.getByLabel('Ile numerów').fill('101')
     await page.getByRole('button', { name: 'Generuj' }).click()
     await expect(page.getByRole('alert')).toHaveText('Podaj liczbę od 1 do 100.')
@@ -135,6 +141,12 @@ test.describe('identifier screens', () => {
       'Testowy numer paszportu – walidator i generator',
     )
     await expect(page).toHaveTitle('Testowy numer paszportu – walidator — DevNarzędzia')
+    await expect(page.locator('section.tool .id-test-notice p').nth(0)).toHaveText(
+      'Numer testowy – nie jest dokumentem ani jego wzorem.',
+    )
+    await expect(page.locator('section.tool .id-test-notice p').nth(1)).toHaveText('Zastrzeżenie poniżej ↓')
+    await expect(page.locator('section.tool .id-test-notice img')).toHaveCount(0)
+    await expect(page.locator('.disclaimer')).toContainText('nie jest to dokument ani jego wzór')
     await page.getByRole('button', { name: 'Generuj' }).click()
     const passport = (await page.getByLabel('Wynik').inputValue()).trim()
     expect(passport).toMatch(/^\[TEST\] [A-Z]{2} \d{7}$/)
@@ -185,8 +197,12 @@ test.describe('identifier screens', () => {
     await page.goto('/walidator-iban')
     await page.getByRole('button', { name: 'Generuj' }).click()
     const value = (await page.getByLabel('Wynik').inputValue()).trim()
-    expect(value).toMatch(/^\d{2}(?: \d{4}){6}$/)
-    expect(api.validateNrb(value).valid).toBe(true)
+    expect(value.startsWith('[TEST] ')).toBe(true)
+    expect(value).toMatch(/^\[TEST\] \d{2}(?: \d{4}){6}$/)
+    expect(api.validateNrb(value.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
+    await page.getByLabel('IBAN lub NRB').fill(value)
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
     await page.getByLabel('IBAN lub NRB').fill('09 1010 1010 0075 9122 2300 0000')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
