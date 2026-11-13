@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main, redesign/zeszyt]
+    branches: [main]
 
 permissions:
   contents: read
@@ -68,10 +68,25 @@ jobs:
         run: node scripts/check-dist-internal-links.mjs --self-test
       - name: Check dist internal links
         run: node scripts/check-dist-internal-links.mjs dist
-      - name: Check dist has no .example hosts
-        run: |
-          bash scripts/check-dist-example-hosts.sh --self-test
-          bash scripts/check-dist-example-hosts.sh dist
+      - name: Self-test dist example hosts
+        run: bash scripts/check-dist-example-hosts.sh --self-test
+      # Known example.com samples still fail this scan. Keep going so the
+      # publish guards run, then fail the job from the recorded outcome.
+      - name: Check dist example hosts
+        id: example-hosts
+        continue-on-error: true
+        run: bash scripts/check-dist-example-hosts.sh dist
+      - name: Self-test published tool counts
+        run: node scripts/check-dist-tool-counts.mjs --self-test
+      - name: Check published tool counts
+        run: node scripts/check-dist-tool-counts.mjs dist
+      - name: Self-test redirect destinations
+        run: node scripts/check-dist-redirects.mjs --self-test
+      - name: Check redirect destinations
+        run: node scripts/check-dist-redirects.mjs dist
+      - name: Fail when example hosts were found
+        if: steps.example-hosts.outcome == 'failure'
+        run: exit 1
       - uses: actions/upload-artifact@v4
         with:
           name: dist
