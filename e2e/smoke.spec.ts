@@ -2,11 +2,11 @@ import { expect, test } from '@playwright/test'
 import { tools } from '../src/registry'
 
 const shellPages = [
-  { path: '/', heading: 'Krótkie narzędzia na co dzień', title: /Krótkie narzędzia na co dzień — DevNarzędzia/ },
-  { path: '/regulamin', heading: 'Regulamin', title: /Regulamin — DevNarzędzia/ },
-  { path: '/polityka-prywatnosci', heading: 'Polityka prywatności', title: /Polityka prywatności — DevNarzędzia/ },
-  { path: '/operator', heading: 'Operator', title: /Operator — DevNarzędzia/ },
-  { path: '/404', heading: 'Nie ma takiej strony', title: /Nie ma takiej strony — DevNarzędzia/ },
+  { path: '/', heading: 'Narzędzia, które pokazują obliczenia.', title: /Narzędzia dla programistów — CurlySpare/ },
+  { path: '/regulamin', heading: 'Regulamin serwisu CurlySpare', title: /Regulamin — CurlySpare/ },
+  { path: '/polityka-prywatnosci', heading: 'Polityka prywatności serwisu CurlySpare', title: /Polityka prywatności — CurlySpare/ },
+  { path: '/operator', heading: 'Operator', title: /Operator — CurlySpare/ },
+  { path: '/404', heading: 'Nie ma takiej strony', title: /Nie ma takiej strony — CurlySpare/ },
 ]
 
 test('home is Polish and lists every registered tool', async ({ page }) => {
@@ -32,7 +32,7 @@ for (const tool of tools) {
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
     await page.goto(`/${tool.slug}`)
-    await expect(page).toHaveTitle(new RegExp(`${escapeRegExp(tool.title)} — DevNarzędzia`))
+    await expect(page).toHaveTitle(new RegExp(`${escapeRegExp(tool.title)} — CurlySpare`))
     await expect(page.getByRole('heading', { level: 1, name: tool.title })).toBeVisible()
     await expect(page.getByText(tool.description)).toBeVisible()
     expect(errors).toEqual([])
@@ -75,7 +75,7 @@ test('sitemap lists every tool slug and the shell pages', async ({ request }) =>
   const response = await request.get('/sitemap.xml')
   expect(response.ok()).toBeTruthy()
   const xml = await response.text()
-  for (const path of ['/', '/regulamin', '/polityka-prywatnosci', '/operator']) {
+  for (const path of ['/', '/regulamin', '/polityka-prywatnosci', '/operator', '/licencje']) {
     expect(xml, path).toContain(`https://devnarzedzia.example${path === '/' ? '/' : path}</loc>`)
   }
   for (const tool of tools) {

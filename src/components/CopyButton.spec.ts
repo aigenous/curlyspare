@@ -21,6 +21,21 @@ function setClipboard(writeText: (value: string) => Promise<void>) {
 }
 
 describe('CopyButton', () => {
+  it('nie kopiuje pustego wyniku i zostaje przy „Kopiuj”', async () => {
+    const writeText = vi.fn(() => Promise.resolve())
+    setClipboard(writeText)
+    const { host, app, button } = mount('')
+    expect(button.disabled).toBe(true)
+    expect(button.textContent?.trim()).toBe('Kopiuj')
+    button.click()
+    await nextTick()
+    expect(button.textContent?.trim()).toBe('Kopiuj')
+    expect(button.textContent).not.toContain('Skopiowano')
+    expect(writeText).not.toHaveBeenCalled()
+    app.unmount()
+    host.remove()
+  })
+
   it('pokazuje sukces dopiero, gdy writeText się powiedzie', async () => {
     const writeText = vi.fn((value: string) => {
       expect(value).toBe('abc')

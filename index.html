@@ -3,15 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DevNarzędzia</title>
+    <title>CurlySpare</title>
     <meta
       name="description"
       content="Narzędzia deweloperskie i polskie dane testowe liczone lokalnie w przeglądarce."
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script>
+      // Keys match THEME_STORAGE_KEY and LEGACY_THEME_STORAGE_KEY in src/composables/useTheme.ts.
+      // This only paints the first frame. The persistent migration lives in useTheme.
       try {
-        var stored = localStorage.getItem('devnarzedzia.theme')
+        var stored = localStorage.getItem('curlyspare.theme')
+        if (stored !== 'light' && stored !== 'dark') {
+          stored = localStorage.getItem('devnarzedzia.theme')
+        }
         var theme =
           stored === 'light' || stored === 'dark'
             ? stored

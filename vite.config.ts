@@ -1,17 +1,48 @@
 /// <reference types="vite-ssg" />
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig, type Plugin } from 'vite'
+import { assertOperatorReadyForLaunch } from './src/lib/operatorLaunch'
 import { site } from './src/site'
 
-const shellPaths = ['/', '/regulamin', '/polityka-prywatnosci', '/operator']
+const shellPaths = ['/', '/regulamin', '/polityka-prywatnosci', '/operator', '/licencje']
 
 function registeredSlugs(): string[] {
   const files = ['src/tools/misc/index.ts', 'src/tools/generators/index.ts', 'src/tools/converters/index.ts']
   return files.flatMap((file) =>
     [...readFileSync(resolve(file), 'utf8').matchAll(/slug:\s*'([^']+)'/g)].map((match) => match[1] ?? ''),
   )
+}
+
+function operatorLaunchGuard(): Plugin {
+  return {
+    name: 'operator-launch-guard',
+    buildStart() {
+      assertOperatorReadyForLaunch(site.operator, process.env.REQUIRE_OPERATOR_DATA)
+    },
+  }
+}
+
+function publishThirdPartyLicenses(): Plugin {
+  const serve = (req: { url?: string }, res: { setHeader: (name: string, value: string) => void, end: (body?: string) => void }, next: () => void) => {
+    const pathname = (req.url ?? '/').split('?')[0]
+    if (pathname !== '/THIRD-PARTY-LICENSES.txt') {
+      next()
+      return
+    }
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+    res.end(readFileSync(resolve('THIRD_PARTY_LICENSES.txt'), 'utf8'))
+  }
+  return {
+    name: 'third-party-licenses',
+    configureServer(server) {
+      server.middlewares.use(serve)
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(serve)
+    },
+  }
 }
 
 function previewNotFound(): Plugin {
@@ -49,7 +80,7 @@ function previewNotFound(): Plugin {
 const siteUrl = (process.env.VITE_SITE_URL || site.defaultSiteUrl).replace(/\/$/, '')
 
 export default defineConfig({
-  plugins: [vue(), previewNotFound()],
+  plugins: [vue(), operatorLaunchGuard(), publishThirdPartyLicenses(), previewNotFound()],
   ssgOptions: {
     dirStyle: 'flat',
     includedRoutes(paths) {
@@ -81,6 +112,7 @@ export default defineConfig({
         resolve(dist, 'robots.txt'),
         `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
       )
+      copyFileSync(resolve('THIRD_PARTY_LICENSES.txt'), resolve(dist, 'THIRD-PARTY-LICENSES.txt'))
     },
   },
 })

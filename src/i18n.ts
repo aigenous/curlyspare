@@ -16,7 +16,7 @@ const messages = {
     'Formatery, identyfikatory i polskie dane testowe. Wpisane i wygenerowane wartości nie opuszczają tej przeglądarki.',
   homeEmpty: 'Brak narzędzi w rejestrze.',
   homeNoResults: 'Nie znaleziono pasujących narzędzi.',
-  footerLocal: 'Obliczenia wyłącznie w przeglądarce. Bez analityki i bez ciasteczek.',
+  footerLocal: 'Obliczenia w przeglądarce. Bez analityki i bez ciasteczek.',
   footerTerms: 'Regulamin',
   footerPrivacy: 'Polityka prywatności',
   footerOperator: 'Operator',
@@ -27,8 +27,8 @@ const messages = {
   termsTitle: 'Regulamin',
   privacyTitle: 'Polityka prywatności',
   operatorTitle: 'Operator',
-  termsDescription: 'Zasady korzystania z narzędzi testowych DevNarzędzia.',
-  privacyDescription: 'Dane są liczone lokalnie w przeglądarce i nie są wysyłane na serwer.',
+  termsDescription: 'Zasady korzystania z narzędzi testowych CurlySpare.',
+  privacyDescription: 'Dane są przetwarzane w twojej przeglądarce. Nie wysyłamy ich na serwer.',
   operatorDescription: 'Dane identyfikacyjne operatora serwisu.',
 } as const
 

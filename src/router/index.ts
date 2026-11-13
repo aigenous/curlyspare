@@ -34,6 +34,11 @@ export const routes: RouteRecordRaw[] = [
     meta: { page: 'operator' },
   },
   {
+    path: '/licencje',
+    name: 'licences',
+    component: () => import('../pages/LicencesPage.vue'),
+  },
+  {
     path: '/404',
     name: 'not-found',
     component: () => import('../pages/NotFound.vue'),

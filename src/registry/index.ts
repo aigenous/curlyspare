@@ -14,7 +14,7 @@ export const categories: readonly ToolCategory[] = [
 
 export const tools: ToolDefinition[] = [...generatorTools, ...converterTools, ...miscTools]
 
-const reservedSlugs = new Set(['regulamin', 'polityka-prywatnosci', 'operator', '404'])
+const reservedSlugs = new Set(['regulamin', 'polityka-prywatnosci', 'operator', 'licencje', '404'])
 
 export function findTool(slug: string): ToolDefinition | undefined {
   return tools.find((tool) => tool.slug === slug)

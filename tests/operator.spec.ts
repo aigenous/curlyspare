@@ -27,14 +27,14 @@ function walk(directory: string): string[] {
 }
 
 describe('operator details', () => {
-  it('keeps the published name, legal form and NIP and adds REGON, address and contact email', () => {
+  it('keeps the name, legal form, NIP and REGON, and leaves address and email as Lawyer placeholders', () => {
     expect(site.operator).toEqual({
       name: 'Piotr Szewczyk',
       legalForm: 'jednoosobowa działalność gospodarcza',
       nip: '6222809805',
       regon: '368785970',
-      correspondenceAddress: 'Bobrowiecka 10/2, 00-728 Warszawa',
-      email: 'pszewczykpl@gmail.com',
+      correspondenceAddress: '[ADRES]',
+      email: '[E-MAIL KONTAKTOWY]',
     })
   })
 

@@ -1,15 +1,33 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
+import { marked } from 'marked'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { brand } from '../brand'
 import { pageHead } from '../composables/usePageMeta'
 import { t } from '../i18n'
+import { applyOperatorFields } from '../lib/operatorLaunch'
+import privacySource from '../content/legal/polityka-prywatnosci.md?raw'
+import termsSource from '../content/legal/regulamin.md?raw'
 
 type LegalPageId = 'terms' | 'privacy' | 'operator'
 
 const route = useRoute()
 const page = computed(() => route.meta.page as LegalPageId)
+
+function renderLegal(source: string): string {
+  const withOperator = applyOperatorFields(source)
+  const normalized = withOperator.replace(
+    /^(## 8\. Informacja o cookies i pamięci przeglądarki) \{#cookies\}\s*$/m,
+    '$1',
+  )
+  const parsed = marked.parse(normalized, { async: false, gfm: true })
+  if (typeof parsed !== 'string') return ''
+  return parsed.replace(
+    '<h2>8. Informacja o cookies i pamięci przeglądarki</h2>',
+    '<h2 id="cookies">8. Informacja o cookies i pamięci przeglądarki</h2>',
+  )
+}
 
 const copy = computed(() => {
   switch (page.value) {
@@ -18,21 +36,21 @@ const copy = computed(() => {
         title: t('termsTitle'),
         description: t('termsDescription'),
         path: '/regulamin',
-        paragraphs: ['Placeholder. Treść regulaminu zostanie uzupełniona.'],
+        html: renderLegal(termsSource),
       }
     case 'privacy':
       return {
         title: t('privacyTitle'),
         description: t('privacyDescription'),
         path: '/polityka-prywatnosci',
-        paragraphs: ['Placeholder. Treść polityki prywatności zostanie uzupełniona.'],
+        html: renderLegal(privacySource),
       }
     case 'operator':
       return {
         title: t('operatorTitle'),
         description: t('operatorDescription'),
         path: '/operator',
-        paragraphs: [] as string[],
+        html: '',
       }
     default: {
       const unreachable: never = page.value
@@ -40,8 +58,6 @@ const copy = computed(() => {
     }
   }
 })
-
-const contactEmail = `mailto:${brand.operator.email}`
 
 useHead(() => {
   const current = copy.value
@@ -54,44 +70,43 @@ useHead(() => {
 </script>
 
 <template>
-  <article>
-    <h1>{{ copy.title }}</h1>
-    <p
-      v-for="(paragraph, index) in copy.paragraphs"
-      :key="index"
-    >
-      {{ paragraph }}
-    </p>
-    <dl
-      v-if="page === 'operator'"
-      class="operator-details"
-    >
-      <div>
-        <dt>Operator</dt>
-        <dd>{{ brand.operator.name }}</dd>
-      </div>
-      <div>
-        <dt>Forma prawna</dt>
-        <dd>{{ brand.operator.legalForm }}</dd>
-      </div>
-      <div>
-        <dt>NIP</dt>
-        <dd>{{ brand.operator.nip }}</dd>
-      </div>
-      <div>
-        <dt>REGON</dt>
-        <dd>{{ brand.operator.regon }}</dd>
-      </div>
-      <div>
-        <dt>Adres korespondencyjny</dt>
-        <dd>{{ brand.operator.correspondenceAddress }}</dd>
-      </div>
-      <div>
-        <dt>Adres e-mail do kontaktu</dt>
-        <dd>
-          <a :href="contactEmail">{{ brand.operator.email }}</a>
-        </dd>
-      </div>
-    </dl>
+  <article class="wrap prose">
+    <!-- eslint-disable vue/no-v-html -- Lawyer markdown is a build-time file, not user input. -->
+    <div
+      v-if="copy.html"
+      v-html="copy.html"
+    />
+    <!-- eslint-enable vue/no-v-html -->
+    <template v-if="page === 'operator'">
+      <h1 class="h1">
+        {{ copy.title }}
+      </h1>
+      <dl class="operator-details">
+        <div>
+          <dt>Operator</dt>
+          <dd>{{ brand.operator.name }}</dd>
+        </div>
+        <div>
+          <dt>Forma prawna</dt>
+          <dd>{{ brand.operator.legalForm }}</dd>
+        </div>
+        <div>
+          <dt>NIP</dt>
+          <dd>{{ brand.operator.nip }}</dd>
+        </div>
+        <div>
+          <dt>REGON</dt>
+          <dd>{{ brand.operator.regon }}</dd>
+        </div>
+        <div>
+          <dt>Adres</dt>
+          <dd>{{ brand.operator.correspondenceAddress }}</dd>
+        </div>
+        <div>
+          <dt>Adres e-mail do kontaktu</dt>
+          <dd>{{ brand.operator.email }}</dd>
+        </div>
+      </dl>
+    </template>
   </article>
 </template>

@@ -17,4 +17,13 @@ describe('fold', () => {
   it('finds a tool when the query drops Polish diacritics', () => {
     expect(filterTools(tools, 'znakow').map((tool) => tool.slug)).toContain('generator-slug')
   })
+
+  it('ranks a name or slug match above a description-only match', () => {
+    const slugs = filterTools(tools, 'json').map((tool) => tool.slug)
+    const named = slugs.indexOf('formatowanie-json')
+    const described = slugs.indexOf('generator-danych-testowych')
+    expect(named).toBeGreaterThanOrEqual(0)
+    expect(described).toBeGreaterThan(named)
+    expect(slugs[0]).not.toBe('generator-danych-testowych')
+  })
 })
