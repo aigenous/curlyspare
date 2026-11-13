@@ -43,7 +43,7 @@ export function useTheme() {
   }
 
   onMounted(() => {
-    let stored: ThemeChoice | null = null
+    let stored: ThemeChoice | null
     try {
       stored = migrateTheme()
     } catch {

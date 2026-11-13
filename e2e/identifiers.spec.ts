@@ -140,7 +140,7 @@ test.describe('identifier screens', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Testowy numer paszportu – walidator i generator',
     )
-    await expect(page).toHaveTitle('Testowy numer paszportu – walidator — CurlySpare')
+    await expect(page).toHaveTitle('Testowy numer paszportu – walidator i generator — CurlySpare')
     await expect(page.locator('section.tool .id-test-notice p').nth(0)).toHaveText(
       'Numer testowy – nie jest dokumentem ani jego wzorem.',
     )
