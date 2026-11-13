@@ -68,6 +68,10 @@ jobs:
         run: node scripts/check-dist-internal-links.mjs --self-test
       - name: Check dist internal links
         run: node scripts/check-dist-internal-links.mjs dist
+      - name: Check dist has no .example hosts
+        run: |
+          bash scripts/check-dist-example-hosts.sh --self-test
+          bash scripts/check-dist-example-hosts.sh dist
       - uses: actions/upload-artifact@v4
         with:
           name: dist
