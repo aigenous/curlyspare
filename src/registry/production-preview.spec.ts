@@ -22,10 +22,16 @@ function productionEnv(): NodeJS.ProcessEnv {
     VITE_SHOW_DRAFTS: '',
   }
   delete env.VITE_SITE_URL
+  delete env.FORCE_COLOR
+  env.NO_COLOR = '1'
   for (const key of Object.keys(env)) {
     if (key.startsWith('VITEST')) delete env[key]
   }
   return env
+}
+
+function plain(value: string): string {
+  return value.replace(/\u001b\[[0-9;]*m/g, '')
 }
 
 function freePort(): Promise<number> {
@@ -85,10 +91,10 @@ function startPreview(port: number, env: NodeJS.ProcessEnv): Promise<ChildProces
       signal(child, 'SIGTERM')
       reject(error)
     }
-    const timer = setTimeout(() => fail(new Error(`Preview did not start.\n${output}`)), 30_000)
+    const timer = setTimeout(() => fail(new Error(`Preview did not start.\n${plain(output)}`)), 30_000)
     const onData = (chunk: Buffer) => {
       output += chunk.toString()
-      if (settled || !output.includes(`http://127.0.0.1:${port}`)) return
+      if (settled || !plain(output).includes(`http://127.0.0.1:${port}`)) return
       settled = true
       clearTimeout(timer)
       resolvePromise(child)
