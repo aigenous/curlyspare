@@ -59,6 +59,19 @@ expect() {
     passed=$((passed + 1)); echo "ok   - $name"
   else
     failed=$((failed + 1)); echo "FAIL - $name (expected $want)"
+    (cd "$dir" && GITHUB_ACTIONS='' bash "$SCRIPT" base HEAD || true)
+  fi
+}
+
+expect_with() {
+  local want="$1" name="$2" dir="$3" extra="$4"
+  local got=0
+  (cd "$dir" && GITHUB_ACTIONS='' COMMIT_IDENTITY_ALLOWLIST_EXTRA="$extra" bash "$SCRIPT" base HEAD >/dev/null 2>&1) || got=1
+  if { [ "$want" = pass ] && [ "$got" = 0 ]; } || { [ "$want" = fail ] && [ "$got" = 1 ]; }; then
+    passed=$((passed + 1)); echo "ok   - $name"
+  else
+    failed=$((failed + 1)); echo "FAIL - $name (expected $want)"
+    (cd "$dir" && GITHUB_ACTIONS='' COMMIT_IDENTITY_ALLOWLIST_EXTRA="$extra" bash "$SCRIPT" base HEAD || true)
   fi
 }
 
@@ -132,6 +145,27 @@ echo x > "$d/x.txt"; make_commit "$d" "Old bad" "Someone" "someone@example.com"
 git -C "$d" branch base
 echo a > "$d/a.txt"; make_commit "$d" "Add a"
 expect pass "bad commit outside range is ignored" "$d"
+
+d="$(base_repo noreply-merge)"
+git -C "$d" checkout -q -b topic
+echo t > "$d/t.txt"
+make_commit "$d" "Topic work"
+topic="$(git -C "$d" rev-parse HEAD)"
+git -C "$d" checkout -q main
+git -C "$d" merge -q --no-commit --no-ff topic >/dev/null 2>&1 || true
+make_commit "$d" "$(printf 'Merge pull request #99 from example/topic\n\nfeat: add the thing')" \
+  "Piotr Szewczyk" "42155234+pszewczykpl@users.noreply.github.com" \
+  "GitHub" "noreply@github.com" "$topic"
+expect fail "non-allowlisted noreply author" "$d"
+expect_with pass "allowlisted merge" "$d" "$(git -C "$d" rev-parse HEAD)"
+
+d="$(base_repo pr-title-body)"; echo a > "$d/a.txt"
+make_commit "$d" "$(printf 'Merge pull request #17 from example/branch\n\nops: pin Node 22, frozen-lockfile install, cache and security headers')"
+expect pass "PR-title-like line in the body is not a trailer" "$d"
+
+d="$(base_repo trailer-final)"; echo a > "$d/a.txt"
+make_commit "$d" "$(printf 'Add a\n\nops: pin Node 22, frozen-lockfile install, cache and security headers\n\nCo-authored-by: Pat Example <pat@example.com>')"
+expect fail "Co-authored-by trailer in the final paragraph" "$d"
 
 echo
 echo "check-commit-identity self-test: ${passed} passed, ${failed} failed"
