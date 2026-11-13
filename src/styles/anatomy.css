@@ -2,13 +2,53 @@
  * Digit anatomy. Segments wrap as a whole part; cells inside a part stay together.
  * Eleven PESEL cells, eight 2px gaps inside the parts and two 6px gaps between
  * parts leave 28px. At a 358px content box (a 390px viewport with 16px padding
- * on each side) the cell basis is 30px, so the PESEL row stays on one line.
- * A longer segment uses min(100%, n * 1.15rem) and wraps onto the next line.
+ * on each side) the cell basis is 30px, so the eleven digits stay on one line.
+ * The same floor still fits a 360px viewport. "kontrolna" needs about 4rem,
+ * wider than its single cell, so each part is at least 4rem and the label wraps
+ * onto its own lines instead of being clipped.
+ *
+ * These names are PR-A tokens. They are only referenced, with a fallback, and
+ * are never defined here: --color-mark, --color-on-mark, --color-mark-border,
+ * --radius-cell, --font-mono, --dur-slow, --ease.
+ * Every other custom property is local to .anatomy. Nothing is set on the
+ * document root. .anatomy__calc is a sibling, so it repeats the same literals
+ * as var() fallbacks.
  */
 .anatomy {
+  --color-border: light-dark(#6e7ba3, #7481b3);
+  --color-surface: light-dark(#ffffff, #161c40);
+  --color-text: light-dark(#131a3a, #eef1fb);
+  --color-text-muted: light-dark(#4a5578, #aeb8dc);
+  --color-error: light-dark(#b42318, #ff9a8c);
+  --color-error-soft: light-dark(#fdebe9, #45202b);
+  --color-primary: light-dark(#1f3fcc, #a9b9ff);
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+  position: relative;
+}
+
+.anatomy__summary {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.anatomy__visual {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  flex: 1 1 100%;
   min-width: 0;
   max-width: 100%;
   container-type: inline-size;
@@ -16,45 +56,45 @@
 
 .anatomy__part {
   flex: var(--n, 1) 1 0;
-  min-width: min(100%, calc(var(--n) * 1.15rem));
+  min-width: min(100%, max(calc(var(--n, 1) * 1.15rem), 4rem));
   max-width: 100%;
   display: grid;
   gap: 4px;
   align-content: start;
 }
 
-.cells {
+.anatomy__cells {
   display: flex;
   gap: 2px;
   min-width: 0;
   max-width: 100%;
 }
 
-.cell {
+.anatomy__cell {
   flex: 1 1 clamp(1.15rem, calc((100cqi - 28px) / 11), 2.5rem);
   min-width: 0;
   max-width: 100%;
   height: clamp(1.75rem, calc((100cqi - 28px) / 11), 2.5rem);
   display: grid;
   place-items: center;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-cell);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font: 700 clamp(0.75rem, calc((100cqi - 28px) / 18), 1.25rem) / 1 var(--font-mono);
+  border: 1.5px solid var(--color-border, light-dark(#6e7ba3, #7481b3));
+  border-radius: var(--radius-cell, 3px);
+  background: var(--color-surface, light-dark(#ffffff, #161c40));
+  color: var(--color-text, light-dark(#131a3a, #eef1fb));
+  font: 700 clamp(0.75rem, calc((100cqi - 28px) / 18), 1.25rem) / 1 var(--font-mono, ui-monospace, Menlo, Consolas, monospace);
 }
 
-.cell--empty {
+.anatomy__cell--empty {
   border-style: dashed;
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, light-dark(#4a5578, #aeb8dc));
   font-weight: 400;
 }
 
-.cell--mark {
-  background: linear-gradient(var(--color-mark), var(--color-mark)) no-repeat left / 100% 100% var(--color-surface);
-  color: var(--color-on-mark);
-  border-color: var(--color-text);
-  animation: swipe var(--dur-slow) var(--ease);
+.anatomy__cell--mark {
+  background: linear-gradient(var(--color-mark, #ffd83d), var(--color-mark, #ffd83d)) no-repeat left / 100% 100% var(--color-surface, light-dark(#ffffff, #161c40));
+  color: var(--color-on-mark, #131a3a);
+  border-color: var(--color-mark-border, light-dark(#131a3a, #eef1fb));
+  animation: swipe var(--dur-slow, 360ms) var(--ease, cubic-bezier(0.2, 0.7, 0.2, 1));
 }
 
 @keyframes swipe {
@@ -63,46 +103,46 @@
   }
 }
 
-.cell--bad {
-  border: 2.5px solid var(--color-error);
-  background: var(--color-error-soft);
-  color: var(--color-error);
+.anatomy__cell--bad {
+  border: 2.5px solid var(--color-error, light-dark(#b42318, #ff9a8c));
+  background: var(--color-error-soft, light-dark(#fdebe9, #45202b));
+  color: var(--color-error, light-dark(#b42318, #ff9a8c));
 }
 
-.brace {
+.anatomy__brace {
   display: flex;
   height: 12px;
-  color: var(--color-primary);
+  color: var(--color-primary, light-dark(#1f3fcc, #a9b9ff));
   min-width: 0;
   max-width: 100%;
 }
 
-.brace i {
+.anatomy__brace i {
   flex: 1 1 0;
   height: 7px;
   border: 0 solid currentcolor;
 }
 
-.brace i:nth-child(1) {
+.anatomy__brace i:nth-child(1) {
   border-width: 0 0 2px 2px;
   border-radius: 0 0 0 7px;
 }
 
-.brace i:nth-child(2) {
+.anatomy__brace i:nth-child(2) {
   flex: 0 0 7px;
   margin-top: 5px;
   border-width: 2px 2px 0 0;
   border-radius: 0 7px 0 0;
 }
 
-.brace i:nth-child(3) {
+.anatomy__brace i:nth-child(3) {
   flex: 0 0 7px;
   margin: 5px 0 0 -2px;
   border-width: 2px 0 0 2px;
   border-radius: 7px 0 0 0;
 }
 
-.brace i:nth-child(4) {
+.anatomy__brace i:nth-child(4) {
   border-width: 0 2px 2px 0;
   border-radius: 0 0 7px 0;
 }
@@ -111,43 +151,44 @@
   justify-self: center;
   min-width: 0;
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--text-xs);
+  overflow: visible;
+  font-size: var(--text-xs, 0.8125rem);
   line-height: 1.2;
-  color: var(--color-text);
-  white-space: nowrap;
+  color: var(--color-text, light-dark(#131a3a, #eef1fb));
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
-.calc {
+.anatomy__calc {
   max-width: 100%;
   min-width: 0;
-  font: var(--text-sm) / 1.9 var(--font-mono);
+  font: var(--text-sm, 0.875rem) / 1.9 var(--font-mono, ui-monospace, Menlo, Consolas, monospace);
   overflow-wrap: anywhere;
 }
 
-.calc i {
+.anatomy__calc i {
   font-style: normal;
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, light-dark(#4a5578, #aeb8dc));
 }
 
-.calc b {
+.anatomy__calc b {
   font-weight: 700;
 }
 
 @media (min-width: 60rem) {
-  .tool .cell {
+  .tool .anatomy__cell {
     height: 3.25rem;
     font-size: 1.5rem;
   }
 
   .tool .anatomy__label {
-    font-size: var(--text-sm);
+    font-size: var(--text-sm, 0.875rem);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cell--mark {
+  .anatomy .anatomy__cell--mark {
     animation: none;
   }
 }

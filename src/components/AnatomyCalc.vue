@@ -26,7 +26,7 @@ function showsComplement(step: AnatomyStep): boolean {
   <div
     v-for="(step, stepIndex) in steps"
     :key="stepIndex"
-    class="calc"
+    class="anatomy__calc"
   >
     <p>
       <template
