@@ -10,17 +10,35 @@ export function operatorPlaceholderFields(operator: OperatorDetails): string[] {
 }
 
 /**
+ * Bracket tokens left in legal markdown after operator substitution.
+ * Markdown links and the quoted `[TEST]` marker are copy, not fill-in tokens.
+ */
+export function legalPlaceholderTokens(markdown: string): string[] {
+  const visible = markdown.replace(/\[[^[\]]+\]\([^)\n]*\)/g, '').replaceAll('[TEST]', '')
+  return [...new Set(visible.match(/\[[^[\]]+\]/g) ?? [])]
+}
+
+/**
  * REQUIRE_OPERATOR_DATA is a build-time process env, not a VITE_ variable.
- * When it is 1, placeholders fail the build. Otherwise every build warns and passes.
+ * When it is 1, placeholders in operator fields or in the legal pages fail the build.
+ * Otherwise every build warns and passes.
  */
 export function assertOperatorReadyForLaunch(
   operator: OperatorDetails,
   requireOperatorData: string | undefined,
   warn: (message: string) => void = console.warn,
+  legalDocuments: readonly string[] = [],
 ): void {
   const fields = operatorPlaceholderFields(operator)
-  if (fields.length === 0) return
-  const message = `Operator data still has placeholders (${fields.join(', ')}). Replace [ADRES] and [E-MAIL KONTAKTOWY] before REQUIRE_OPERATOR_DATA=1.`
+  const tokens = [
+    ...new Set(legalDocuments.flatMap((source) => legalPlaceholderTokens(applyOperatorFields(source, operator)))),
+  ]
+  if (fields.length === 0 && tokens.length === 0) return
+  const details = [
+    fields.length > 0 ? `operator fields (${fields.join(', ')})` : '',
+    tokens.length > 0 ? `legal pages (${tokens.join(', ')})` : '',
+  ].filter((part) => part.length > 0)
+  const message = `Operator data still has placeholders in ${details.join(' and ')}. Replace them before REQUIRE_OPERATOR_DATA=1.`
   if (requireOperatorData === '1') {
     throw new Error(message)
   }

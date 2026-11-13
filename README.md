@@ -197,7 +197,7 @@ The shell has four legal routes. Regulamin and the privacy policy are Lawyer's d
 | `/licencje` | Font and third-party licences |
 | `/operator` | Operator (name, legal form, NIP, and REGON from `src/site.ts`; address and email stay as Lawyer placeholders) |
 
-The footer links to those routes. Address and contact email are `[ADRES]` and `[E-MAIL KONTAKTOWY]` until Lawyer approves them. A build with `REQUIRE_OPERATOR_DATA=1` fails while those placeholders remain. Without that flag every build warns and passes. Name, NIP and REGON `368785970` stay.
+The footer links to those routes. Address and contact email are `[ADRES]` and `[E-MAIL KONTAKTOWY]` until Lawyer approves them. A build with `REQUIRE_OPERATOR_DATA=1` fails while those placeholders remain, and also while any `[…]` placeholder remains in the regulamin or privacy policy after the operator fields are applied. Without that flag every build warns and passes. Name, NIP and REGON `368785970` stay.
 
 ## Licence
 

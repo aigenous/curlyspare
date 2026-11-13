@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import { site, type OperatorDetails } from '../site'
-import { applyOperatorFields, assertOperatorReadyForLaunch, operatorPlaceholderFields } from './operatorLaunch'
+import {
+  applyOperatorFields,
+  assertOperatorReadyForLaunch,
+  legalPlaceholderTokens,
+  operatorPlaceholderFields,
+} from './operatorLaunch'
 
 const filled = {
   name: 'Piotr Szewczyk',
@@ -31,6 +36,33 @@ describe('operator launch guard', () => {
     expect(operatorPlaceholderFields(filled)).toEqual([])
     expect(() => assertOperatorReadyForLaunch(filled, '1', warn)).not.toThrow()
     expect(warn).not.toHaveBeenCalled()
+  })
+})
+
+const filledLegal =
+  'Piotr Szewczyk, [ADRES], [E-MAIL KONTAKTOWY], REGON [REGON]. Wynik „[TEST]”. [Regulamin](/regulamin).'
+const leftoverLegal = 'Firma [PEŁNA NAZWA FIRMY], serwis [ADRES SERWISU], [UZUPEŁNIJ: brak].'
+
+describe('legal page placeholders', () => {
+  it('fails when REQUIRE_OPERATOR_DATA=1 and a legal placeholder remains', () => {
+    const warn = vi.fn()
+    expect(() => assertOperatorReadyForLaunch(filled, '1', warn, [leftoverLegal])).toThrow(/\[PEŁNA NAZWA FIRMY\]/)
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  it('passes without a warning when operator fields and legal pages are filled', () => {
+    const warn = vi.fn()
+    expect(legalPlaceholderTokens(applyOperatorFields(filledLegal, filled))).toEqual([])
+    expect(() => assertOperatorReadyForLaunch(filled, '1', warn, [filledLegal])).not.toThrow()
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  it('warns and passes when a legal placeholder remains and the launch flag is unset', () => {
+    const warn = vi.fn()
+    expect(() => assertOperatorReadyForLaunch(filled, undefined, warn, [leftoverLegal])).not.toThrow()
+    expect(warn).toHaveBeenCalledOnce()
+    expect(warn.mock.calls[0]?.[0]).toContain('[ADRES SERWISU]')
+    expect(warn.mock.calls[0]?.[0]).toContain('[UZUPEŁNIJ: brak]')
   })
 })
 
