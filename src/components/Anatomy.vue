@@ -39,6 +39,14 @@ function labelFor(key: string): string {
   }
   return label
 }
+
+function partStyle(part: { from: number; to: number }): { flex: string; minWidth: string } {
+  const count = part.to - part.from
+  return {
+    flex: `${count} 1 0`,
+    minWidth: `min(100%, max(calc(${count} * 1.15rem), 4rem))`,
+  }
+}
 </script>
 
 <template>
@@ -54,7 +62,7 @@ function labelFor(key: string): string {
         v-for="part in anatomy.parts"
         :key="part.labelKey"
         class="anatomy__part"
-        :style="{ '--n': String(part.to - part.from) }"
+        :style="partStyle(part)"
       >
         <div class="anatomy__cells">
           <span

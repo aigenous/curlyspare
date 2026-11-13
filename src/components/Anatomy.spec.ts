@@ -159,7 +159,6 @@ describe('Anatomy', () => {
     expect(css).toContain('min-width: 0')
     expect(css).toContain('max-width: 100%')
     expect(css).toContain('clamp(1.15rem, calc((100cqi - 28px) / 11), 2.5rem)')
-    expect(css).toContain('max(calc(var(--n, 1) * 1.15rem), 4rem)')
     expect(css).toMatch(/\.anatomy__label\s*\{[^}]*white-space:\s*normal/)
     expect(css).not.toMatch(/\.anatomy__label\s*\{[^}]*ellipsis/)
     expect(css).not.toMatch(/overflow-x\s*:\s*auto/)
@@ -172,9 +171,16 @@ describe('Anatomy', () => {
     expect(css).toContain('var(--font-mono, "Atkinson Hyperlegible Mono", ui-monospace, Menlo, Consolas, monospace)')
     expect(css).toContain('var(--dur-slow, 360ms)')
     expect(css).toContain('var(--ease, cubic-bezier(.2, .7, .2, 1))')
-    expect(css).toContain('var(--color-border, light-dark(#6e7ba3, #7481b3))')
-    expect(css).toContain('var(--color-error, light-dark(#b42318, #ff9a8c))')
-    expect(css).toContain('var(--n, 1)')
+    const referenced = [...css.matchAll(/var\(--([a-z0-9-]+)/g)].map((match) => match[1])
+    expect([...new Set(referenced)].sort()).toEqual([
+      'color-mark',
+      'color-mark-border',
+      'color-on-mark',
+      'dur-slow',
+      'ease',
+      'font-mono',
+      'radius-cell',
+    ])
     expect(css).not.toMatch(/--color-mark\s*:/)
     expect(css).not.toMatch(/--color-mark-border\s*:/)
     expect(css).not.toMatch(/--font-mono\s*:/)
@@ -189,13 +195,13 @@ describe('Anatomy', () => {
     expect(style.flexWrap).toBe('wrap')
     expect(style.minWidth === '0px' || style.minWidth === '0').toBe(true)
     expect(style.maxWidth).toBe('100%')
-    const part = view.root.querySelector('.anatomy__part')
-    if (!(part instanceof HTMLElement)) {
+    const parts = [...view.root.querySelectorAll('.anatomy__part')]
+    const checkPart = parts[2]
+    if (!(checkPart instanceof HTMLElement)) {
       throw new Error('Missing anatomy part')
     }
-    const partStyle = getComputedStyle(part)
-    expect(partStyle.maxWidth).toBe('100%')
-    expect(partStyle.minWidth === '0px' || partStyle.minWidth.includes('min')).toBe(true)
+    expect(getComputedStyle(checkPart).maxWidth).toBe('100%')
+    expect(checkPart.style.minWidth).toBe('min(100%, max(calc(1 * 1.15rem), 4rem))')
     const label = view.root.querySelector('.anatomy__label')
     if (!(label instanceof HTMLElement)) {
       throw new Error('Missing anatomy label')
