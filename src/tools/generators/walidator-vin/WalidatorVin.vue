@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { validateVin } from '../../../lib/generators'
+import CheckResult from '../CheckResult.vue'
 import { validationMessage } from '../messages'
-import { vinPassMessage } from '../verdicts'
+import { vinPassLabel } from '../verdicts'
 
 const probe = ref('')
 const verdict = ref('')
@@ -11,14 +12,17 @@ const verdictError = ref(false)
 function check() {
   const result = validateVin(probe.value)
   verdictError.value = !result.valid
-  verdict.value = result.valid ? vinPassMessage(result.vin) : validationMessage(result.error)
+  verdict.value = result.valid
+    ? vinPassLabel(result.checkDigitVerified)
+    : validationMessage(result.error)
 }
 </script>
 
 <template>
   <div class="stack">
     <p class="muted">
-      Sprawdza cyfrę kontrolną VIN (ISO 3779). Litery I, O i Q są niedozwolone.
+      Sprawdza format VIN (ISO 3779). Cyfrę kontrolną sprawdza tylko dla numerów z rynku północnoamerykańskiego.
+      Litery I, O i Q są niedozwolone.
     </p>
     <label>
       VIN
@@ -38,12 +42,9 @@ function check() {
     >
       Sprawdź
     </button>
-    <p
-      v-if="verdict"
-      :class="verdictError ? 'message-error' : 'muted'"
-      :role="verdictError ? 'alert' : 'status'"
-    >
-      {{ verdict }}
-    </p>
+    <CheckResult
+      :message="verdict"
+      :error="verdictError"
+    />
   </div>
 </template>

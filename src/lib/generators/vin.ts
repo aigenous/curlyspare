@@ -16,9 +16,16 @@ const WEIGHTS = [8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2]
 
 export interface VinDetails {
   vin: string
+  /** True only when the ISO check digit was checked, which is the North American rule. */
+  checkDigitVerified: boolean
 }
 
 export type VinValidation = ValidationResult<VinDetails>
+
+/** ISO 3780: the first character 1–5 is a North American manufacturer. */
+export function isNorthAmericanVin(vin: string): boolean {
+  return /^[1-5]/.test(vin)
+}
 
 export function validateVin(input: string): VinValidation {
   const vin = stripSeparators(input).toUpperCase()
@@ -34,10 +41,13 @@ export function validateVin(input: string): VinValidation {
   if (/[IOQ]/.test(vin)) {
     return invalid('invalid-format')
   }
+  if (!isNorthAmericanVin(vin)) {
+    return { valid: true, vin, checkDigitVerified: false }
+  }
   if (vin.charAt(8) !== vinCheckCharacter(vin)) {
     return invalid('invalid-checksum')
   }
-  return { valid: true, vin }
+  return { valid: true, vin, checkDigitVerified: true }
 }
 
 function vinCheckCharacter(vin: string): string {

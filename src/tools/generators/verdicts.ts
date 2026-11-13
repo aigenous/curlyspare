@@ -1,19 +1,15 @@
-export function euVatPassMessage(country: string, vat: string): string {
-  return `Format i suma kontrolna poprawne (${country}): ${vat}.`
-}
+export const GENERATED_NUMBER_LABEL =
+  'Poprawny format i suma kontrolna – dane fikcyjne (TEST)'
 
-export function vinPassMessage(vin: string): string {
-  return `Cyfra kontrolna poprawna: ${vin}.`
-}
+export const VALID_NUMBER_LABEL = 'Poprawny format i suma kontrolna'
 
-export function isbnPassMessage(kind: string, isbn10: string | null): string {
-  const summary = `Suma kontrolna poprawna (${kind}).`
-  if (isbn10 === null) {
-    return `${summary} Prefiks 979 nie ma odpowiednika ISBN-10.`
-  }
-  return summary
-}
+export const VALID_NUMBER_CAVEAT = 'Nie potwierdza, że numer istnieje ani do kogo należy.'
 
-export function ibanPassMessage(formatted: string, nrb: string): string {
-  return `Format i suma kontrolna poprawne: ${formatted}. NRB: ${nrb}.`
+export const INVALID_NUMBER_LABEL = 'Niepoprawny format lub suma kontrolna'
+
+export const VAT_VALID_LABEL =
+  'Poprawny format numeru VAT UE – nie sprawdzono w VIES (status podatnika nieznany)'
+
+export function vinPassLabel(checkDigitVerified: boolean): string {
+  return checkDigitVerified ? 'Poprawny format VIN i cyfra kontrolna' : 'Poprawny format VIN'
 }

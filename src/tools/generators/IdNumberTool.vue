@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import CopyButton from '../../components/CopyButton.vue'
 import type { ValidationErrorCode } from '../../lib/generators'
+import CheckResult from './CheckResult.vue'
 import { downloadText } from './download'
 import {
   idDocumentExportFilename,
@@ -12,6 +13,7 @@ import {
   type IdDocumentSlug,
 } from './id-document-copy'
 import { COUNT_RANGE_ERROR, readCount, validationMessage } from './messages'
+import { GENERATED_NUMBER_LABEL, VALID_NUMBER_LABEL } from './verdicts'
 
 type IdResult =
   | { valid: true; formatted: string; series: string }
@@ -20,7 +22,6 @@ type IdResult =
 const props = defineProps<{
   slug: IdDocumentSlug
   probeLabel: string
-  passText: (formatted: string, series: string) => string
   generateMany: (count: number) => string[]
   format: (value: string) => string
   validate: (input: string) => IdResult
@@ -32,6 +33,7 @@ const rows = ref<string[]>([])
 const error = ref('')
 const probe = ref('')
 const verdict = ref('')
+const verdictDetail = ref('')
 const verdictError = ref(false)
 
 function generate() {
@@ -49,11 +51,15 @@ function generate() {
 }
 
 function check() {
+  verdictDetail.value = ''
   const result = props.validate(stripTestPrefix(probe.value))
   verdictError.value = !result.valid
-  verdict.value = result.valid
-    ? props.passText(result.formatted, result.series)
-    : validationMessage(result.error)
+  if (!result.valid) {
+    verdict.value = validationMessage(result.error)
+    return
+  }
+  verdict.value = VALID_NUMBER_LABEL
+  verdictDetail.value = `Zapis: ${result.formatted}. Seria ${result.series}.`
 }
 
 function downloadCsv() {
@@ -94,13 +100,11 @@ function downloadJson() {
       >
         Sprawdź
       </button>
-      <p
-        v-if="verdict"
-        :class="verdictError ? 'message-error' : 'muted'"
-        :role="verdictError ? 'alert' : 'status'"
-      >
-        {{ verdict }}
-      </p>
+      <CheckResult
+        :message="verdict"
+        :error="verdictError"
+        :detail="verdictDetail"
+      />
     </section>
     <section class="stack">
       <h2>Generowanie</h2>
@@ -127,6 +131,12 @@ function downloadJson() {
         role="alert"
       >
         {{ error }}
+      </p>
+      <p
+        v-if="generated"
+        class="muted"
+      >
+        {{ GENERATED_NUMBER_LABEL }}
       </p>
       <label v-if="generated">
         Wynik

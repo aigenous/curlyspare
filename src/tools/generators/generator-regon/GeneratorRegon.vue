@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import CopyButton from '../../../components/CopyButton.vue'
 import { generateRegons, validateRegon, type RegonLength } from '../../../lib/generators'
+import CheckResult from '../CheckResult.vue'
 import { identifiersToCsv, identifiersToJson, downloadText } from '../download'
 import { COUNT_RANGE_ERROR, readCount, validationMessage } from '../messages'
+import { GENERATED_NUMBER_LABEL, VALID_NUMBER_LABEL } from '../verdicts'
 
 const length = ref<RegonLength>(9)
 const count = ref(1)
@@ -13,6 +15,7 @@ const note = ref('')
 const error = ref('')
 const probe = ref('')
 const verdict = ref('')
+const verdictDetail = ref('')
 const verdictError = ref(false)
 
 function selectedLength(): RegonLength {
@@ -50,16 +53,18 @@ function downloadJson() {
 }
 
 function check() {
+  verdictDetail.value = ''
   const result = validateRegon(probe.value)
   verdictError.value = !result.valid
   if (!result.valid) {
     verdict.value = validationMessage(result.error)
     return
   }
-  verdict.value =
+  verdict.value = VALID_NUMBER_LABEL
+  verdictDetail.value =
     result.length === 14
-      ? `Poprawny REGON (14 cyfr). REGON podmiotu: ${result.entityRegon}.`
-      : 'Poprawny REGON (9 cyfr).'
+      ? `REGON (14 cyfr). REGON podmiotu: ${result.entityRegon}.`
+      : 'REGON (9 cyfr).'
 }
 </script>
 
@@ -106,6 +111,12 @@ function check() {
         role="alert"
       >
         {{ error }}
+      </p>
+      <p
+        v-if="generated"
+        class="muted"
+      >
+        {{ GENERATED_NUMBER_LABEL }}
       </p>
       <label v-if="generated">
         Wynik
@@ -163,13 +174,11 @@ function check() {
       >
         Sprawdź
       </button>
-      <p
-        v-if="verdict"
-        :class="verdictError ? 'message-error' : 'muted'"
-        :role="verdictError ? 'alert' : 'status'"
-      >
-        {{ verdict }}
-      </p>
+      <CheckResult
+        :message="verdict"
+        :error="verdictError"
+        :detail="verdictDetail"
+      />
     </section>
   </div>
 </template>

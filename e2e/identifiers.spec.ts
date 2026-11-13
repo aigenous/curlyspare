@@ -35,15 +35,18 @@ test.describe('identifier screens', () => {
     const value = (await page.getByLabel('Wynik').inputValue()).trim()
     expect(value).toMatch(/^\d{11}$/)
     expect(api.validatePesel(value).valid).toBe(true)
+    await expect(page.getByText('Poprawny format i suma kontrolna – dane fikcyjne (TEST)')).toBeVisible()
     await expect(page.getByText(/\d{2}\.\d{2}\.\d{4}/)).toBeVisible()
 
     await page.getByLabel('Numer PESEL').fill('44051401359')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toContainText('14.05.1944')
-    await expect(page.getByRole('status')).toContainText('mężczyzna')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
+    await expect(page.getByText('Nie potwierdza, że numer istnieje ani do kogo należy.')).toBeVisible()
+    await expect(page.getByText('14.05.1944')).toBeVisible()
+    await expect(page.getByText('Płeć: mężczyzna.')).toBeVisible()
     await page.getByLabel('Numer PESEL').fill('44051401358')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
 
     const csvButton = page.getByRole('button', { name: 'Pobierz CSV' })
     if (await csvButton.count()) {
@@ -62,10 +65,11 @@ test.describe('identifier screens', () => {
     expect(api.validateNip(value).valid).toBe(true)
     await page.getByLabel('Numer NIP').fill('5260250274')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toContainText('Poprawny NIP')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
+    await expect(page.getByText('Nie potwierdza, że numer istnieje ani do kogo należy.')).toBeVisible()
     await page.getByLabel('Numer NIP').fill('1234563219')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
   })
 
   test('REGON generates both lengths and checks a known 9-digit number', async ({ page }) => {
@@ -84,10 +88,11 @@ test.describe('identifier screens', () => {
 
     await page.getByLabel('Numer REGON').fill('000002217')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toHaveText('Poprawny REGON (9 cyfr).')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
+    await expect(page.getByText('REGON (9 cyfr).')).toBeVisible()
     await page.getByLabel('Numer REGON').fill('000002218')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
   })
 
   test('ID card and passport screens generate values that pass their own check', async ({ page }) => {
@@ -120,10 +125,10 @@ test.describe('identifier screens', () => {
     expect(csv).toContain(card)
     await page.getByLabel('Seria i numer').fill('ABS123456')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toContainText('Poprawny numer dowodu')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
     await page.getByLabel('Seria i numer').fill('ZZC108202')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
 
     await page.goto('/numer-paszportu')
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
@@ -136,10 +141,10 @@ test.describe('identifier screens', () => {
     expect(api.validatePaszport(passport.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
     await page.getByLabel('Numer paszportu').fill('AA3234567')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toContainText('Poprawny numer paszportu')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
     await page.getByLabel('Numer paszportu').fill('AA3234568')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
   })
 
   test('KRS accepts a 10-digit number and says there is no checksum', async ({ page }) => {
@@ -152,10 +157,11 @@ test.describe('identifier screens', () => {
     expect(api.validateKrs(value).valid).toBe(true)
     await page.getByLabel('Numer KRS').fill('0123456789')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toContainText('nie ma cyfry kontrolnej')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
+    await expect(page.getByText('nie ma cyfry kontrolnej')).toBeVisible()
     await page.getByLabel('Numer KRS').fill('abcdefghij')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Numer zawiera niedozwolone znaki.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
   })
 
   test('IBAN validator accepts a Polish checksum and rejects another country', async ({ page }) => {
@@ -163,8 +169,8 @@ test.describe('identifier screens', () => {
     await expect(page.locator('.disclaimer')).toContainText('Nie łączy się z bankiem')
     await page.getByLabel('IBAN').fill('PL61109010140000071219812874')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toContainText('Format i suma kontrolna poprawne')
-    await expect(page.getByRole('status')).not.toContainText('Poprawny IBAN')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
+    await expect(page.getByText('Nie potwierdza, że numer istnieje ani do kogo należy.')).toBeVisible()
     await page.getByLabel('IBAN').fill('DE89370400440532013000')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('alert')).toHaveText('Ten kraj nie jest obsługiwany.')
@@ -183,8 +189,8 @@ test.describe('identifier screens', () => {
     expect(api.validateNrb(value).valid).toBe(true)
     await page.getByLabel('NRB lub IBAN PL').fill('09 1010 1010 0075 9122 2300 0000')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toContainText('Poprawny NRB')
-    await expect(page.getByRole('status')).toContainText('10101010')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
+    await expect(page.getByText('10101010')).toBeVisible()
   })
 
   test('EAN generator checks a published EAN-13 and rejects a bad digit', async ({ page }) => {
@@ -197,10 +203,11 @@ test.describe('identifier screens', () => {
     expect(api.validateGtin(value).valid).toBe(true)
     await page.getByRole('textbox', { name: 'Numer', exact: true }).fill('5901234123457')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toHaveText('Poprawny EAN-13: 5901234123457.')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
+    await expect(page.getByText('EAN-13: 5901234123457.')).toBeVisible()
     await page.getByRole('textbox', { name: 'Numer', exact: true }).fill('5901234123458')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
   })
 
   test('EU VAT accepts a Polish NIP and rejects a damaged checksum', async ({ page }) => {
@@ -210,10 +217,13 @@ test.describe('identifier screens', () => {
     await expect(page.locator('.disclaimer')).toContainText('Nie łączy się z VIES')
     await page.getByLabel('Numer VAT').fill('PL 526-025-02-74')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toHaveText('Format i suma kontrolna poprawne (PL): PL5260250274.')
+    await expect(page.getByRole('status')).toHaveText(
+      'Poprawny format numeru VAT UE – nie sprawdzono w VIES (status podatnika nieznany)',
+    )
+    await expect(page.getByText('Nie potwierdza, że numer istnieje ani do kogo należy.')).toBeVisible()
     await page.getByLabel('Numer VAT').fill('PL5260250275')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
   })
 
   test('test-person generator writes a fictional PESEL that validates', async ({ page }) => {
@@ -224,6 +234,7 @@ test.describe('identifier screens', () => {
     await page.getByRole('button', { name: 'Generuj' }).click()
     const line = await page.getByLabel('Wynik').inputValue()
     expect(line.startsWith('[TEST] ')).toBe(true)
+    await expect(page.getByText('Poprawny format i suma kontrolna – dane fikcyjne (TEST)')).toBeVisible()
     await expect(page.locator('.disclaimer')).toContainText('rekord jej nie dotyczy')
     const pesel = /PESEL (\d{11})/.exec(line)?.[1] ?? ''
     expect(pesel).toMatch(/^\d{11}$/)
@@ -236,10 +247,10 @@ test.describe('identifier screens', () => {
     await page.goto('/walidator-vin')
     await page.getByLabel('VIN').fill('1M8GDM9AXKP042788')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toHaveText('Cyfra kontrolna poprawna: 1M8GDM9AXKP042788.')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format VIN i cyfra kontrolna')
     await page.getByLabel('VIN').fill('1M8GDM9AXKP04278I')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Nieprawidłowy format numeru.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
   })
 
   test('ISBN converter turns ISBN-10 into ISBN-13 and rejects a bad check digit', async ({ page }) => {
@@ -247,11 +258,12 @@ test.describe('identifier screens', () => {
     await page.goto('/konwerter-isbn')
     await page.getByLabel('ISBN').fill('0-306-40615-2')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('status')).toHaveText('Suma kontrolna poprawna (ISBN-10).')
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
+    await expect(page.getByText('Nie potwierdza, że numer istnieje ani do kogo należy.')).toBeVisible()
     await expect(page.getByLabel('ISBN-13')).toHaveValue('9780306406157')
     await page.getByRole('textbox', { name: 'ISBN', exact: true }).fill('0306406153')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
-    await expect(page.getByRole('alert')).toHaveText('Suma kontrolna się nie zgadza.')
+    await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
   })
 })
 
