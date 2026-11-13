@@ -9,6 +9,7 @@ import {
   invalid,
   readDigits,
   toDigits,
+  weightedSum,
   type ValidationResult,
 } from './validation'
 
@@ -43,6 +44,28 @@ const MONTH_BANDS: readonly { from: number; to: number; baseYear: number; shift:
 
 export type PeselSex = 'kobieta' | 'mezczyzna'
 
+/** English sex code used by the progressive parser. F is female, M is male. */
+export type PeselSexCode = 'F' | 'M'
+
+/**
+ * Progressive read of a PESEL.
+ * Non-digits are ignored so the UI can render while the value is still incomplete.
+ * `sum` and `expected` appear once ten digits are present. Date and sex appear once eleven are.
+ */
+export interface PeselParse {
+  digits: readonly number[]
+  complete: boolean
+  valid: boolean
+  /** Weighted sum of the first ten digits. */
+  sum?: number
+  /** Check digit required by that sum. */
+  expected?: number
+  dateOk?: boolean
+  date?: CalendarDate
+  sex?: PeselSexCode
+  checksumOk?: boolean
+}
+
 export interface PeselDetails {
   pesel: string
   birthDate: CalendarDate
@@ -59,10 +82,7 @@ export interface PeselGenerateOptions {
 }
 
 export function peselCheckDigit(body: readonly number[]): number {
-  let sum = 0
-  for (let index = 0; index < PESEL_WEIGHTS.length; index += 1) {
-    sum += (body[index] ?? 0) * PESEL_WEIGHTS[index]
-  }
+  const sum = weightedSum(body, PESEL_WEIGHTS)
   return (10 - (sum % 10)) % 10
 }
 
@@ -97,6 +117,61 @@ export function generatePesels(
   rng: RandomInt = cryptoRandomInt,
 ): string[] {
   return generateUnique(count, () => generatePesel(options, rng))
+}
+
+const RANDOM_FROM: CalendarDate = { year: 1950, month: 1, day: 1 }
+const RANDOM_TO: CalendarDate = { year: 2010, month: 12, day: 31 }
+
+/**
+ * Uniform calendar day from 1950-01-01 through 2010-12-31.
+ * Uses the shared cryptographic RNG. The generator's own default range stays 1950–2005.
+ */
+export function randomPeselDate(rng: RandomInt = cryptoRandomInt): CalendarDate {
+  return randomDateBetween(RANDOM_FROM, RANDOM_TO, rng)
+}
+
+/**
+ * Builds a PESEL for a calendar day.
+ * `sex` is the English code, or `random` when the caller wants either sex.
+ * The digits come from `generatePesel`, including its cryptographic RNG.
+ */
+export function generatePeselOnDate(
+  date: CalendarDate | Date,
+  sex: PeselSexCode | 'random' = 'random',
+  rng: RandomInt = cryptoRandomInt,
+): string {
+  const birthDate = calendarDateOf(date)
+  const polishSex = toPeselSex(sex)
+  return generatePesel(polishSex === null ? { birthDate } : { birthDate, sex: polishSex }, rng)
+}
+
+/** Reads up to eleven digits. Separators and other non-digits are ignored. */
+export function parsePesel(input: string): PeselParse {
+  const compact = input.replace(/\D/g, '').slice(0, 11)
+  const digits = compact.length === 0 ? [] : toDigits(compact)
+  const parsed: PeselParse = {
+    digits,
+    complete: digits.length === 11,
+    valid: false,
+  }
+  if (digits.length >= 10) {
+    const body = digits.slice(0, 10)
+    parsed.sum = weightedSum(body, PESEL_WEIGHTS)
+    parsed.expected = peselCheckDigit(body)
+  }
+  if (!parsed.complete) {
+    return parsed
+  }
+
+  const decoded = decodePeselDigits(digits)
+  parsed.dateOk = decoded !== null
+  parsed.sex = toSexCode(sexFromDigit(digits[9] ?? 0))
+  if (decoded) {
+    parsed.date = decoded.birthDate
+  }
+  parsed.checksumOk = parsed.expected === digits[10]
+  parsed.valid = parsed.dateOk === true && parsed.checksumOk === true
+  return parsed
 }
 
 export function validatePesel(input: string): PeselValidation {
@@ -199,4 +274,46 @@ function appendTwoDigits(target: number[], value: number): void {
 
 function sexFromDigit(digit: number): PeselSex {
   return digit % 2 === 0 ? 'kobieta' : 'mezczyzna'
+}
+
+function toSexCode(sex: PeselSex): PeselSexCode {
+  switch (sex) {
+    case 'kobieta':
+      return 'F'
+    case 'mezczyzna':
+      return 'M'
+    default: {
+      const unexpected: never = sex
+      throw new RangeError(`Unsupported sex: ${String(unexpected)}`)
+    }
+  }
+}
+
+function toPeselSex(sex: PeselSexCode | 'random'): PeselSex | null {
+  switch (sex) {
+    case 'random':
+      return null
+    case 'F':
+      return 'kobieta'
+    case 'M':
+      return 'mezczyzna'
+    default: {
+      const unexpected: never = sex
+      throw new RangeError(`Unsupported sex: ${String(unexpected)}`)
+    }
+  }
+}
+
+function calendarDateOf(date: CalendarDate | Date): CalendarDate {
+  if (date instanceof Date) {
+    if (Number.isNaN(date.getTime())) {
+      throw new RangeError('PESEL birth date must be a real day between 1800 and 2299')
+    }
+    return {
+      year: date.getUTCFullYear(),
+      month: date.getUTCMonth() + 1,
+      day: date.getUTCDate(),
+    }
+  }
+  return date
 }
