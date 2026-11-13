@@ -32,7 +32,7 @@ test('VAT calculator adds 23 percent and extracts it from a gross amount', async
 })
 
 test('cron explainer describes a weekday schedule and rejects a broken expression', async ({ page }) => {
-  await page.goto('/wyjasniacz-cron')
+  await page.goto('/wyrazenie-cron')
   await expect(page.getByText('Co 15 minut, w godzinach od 9 do 17, każdego dnia miesiąca, w każdym miesiącu, od poniedziałku do piątku.')).toBeVisible()
   await expect(page.locator('ol.match-list li')).toHaveCount(5)
   await page.getByLabel('Wyrażenie cron').fill('nie cron')
@@ -46,7 +46,7 @@ test('cron explainer describes a weekday schedule and rejects a broken expressio
 })
 
 test('working-day calculator skips Independence Day and rejects a reversed range', async ({ page }) => {
-  await page.goto('/dni-robocze')
+  await page.goto('/kalkulator-dni-roboczych')
   await expect(stat(page, 'Dni robocze między datami')).toHaveText('3')
   await expect(page.getByText('2026-11-11 Narodowe Święto Niepodległości')).toBeVisible()
   await expect(page.getByText('Wypada:')).toContainText('2026-11-17')

@@ -6,7 +6,7 @@ The shell is Vue 3, TypeScript, Vite, and vite-ssg, installed with pnpm. The too
 
 ## Tools
 
-Sixty-two tools, in registry order (`generatorTools`, then `converterTools`, then `miscTools`), grouped by `category`. The title and the one-line description are the Polish copy from the registry.
+Sixty-one tools, in registry order (`generatorTools`, then `converterTools`, then `miscTools`), grouped by `category`. The title and the one-line description are the Polish copy from the registry.
 
 ### Generatory (`generatory`)
 
@@ -18,24 +18,22 @@ Sixty-two tools, in registry order (`generatorTools`, then `converterTools`, the
 | Testowy numer dowodu osobistego – walidator i generator | `numer-dowodu-osobistego` | Sprawdź, czy seria i numer dowodu mają poprawny format i cyfrę kontrolną, albo wygeneruj numer testowy. |
 | Testowy numer paszportu – walidator i generator | `numer-paszportu` | Sprawdź, czy numer paszportu ma poprawny format i cyfrę kontrolną, albo wygeneruj numer testowy. |
 | Generator numeru KRS | `generator-krs` | Losuje i sprawdza 10-cyfrowy numer KRS. Rejestr nie używa sumy kontrolnej. |
-| Generator NRB | `generator-nrb` | Generuje i sprawdza polski numer rachunku: suma IBAN oraz cyfra kontrolna numeru rozliczeniowego. |
 | Generator EAN i GTIN | `generator-ean` | Generuje i sprawdza EAN-8, EAN-13 oraz GTIN-14. Walidator przyjmuje też UPC-A. |
 | Walidator VAT UE | `walidator-vat-ue` | Sprawdza format i sumę kontrolną numeru VAT państw UE, bez zapytania do rejestru. |
 | Walidator VIN | `walidator-vin` | Sprawdza cyfrę kontrolną numeru VIN według ISO 3779. |
 | Konwerter ISBN | `konwerter-isbn` | Sprawdza ISBN-10 i ISBN-13 oraz przelicza jeden format na drugi. |
-| Generator osoby testowej | `generator-osoby-testowej` | Tworzy fikcyjną osobę: imię, nazwisko, PESEL zgodny z płcią i datą oraz adres o poprawnym formacie kodu. |
-| Walidator IBAN PL | `walidator-iban` | Sprawdza polski IBAN algorytmem mod 97. Nie generuje rachunku i nie łączy się z bankiem. |
+| Generator danych testowych (osoba) | `generator-danych-testowych` | Tworzy fikcyjną osobę: imię, nazwisko, PESEL zgodny z płcią i datą oraz adres o poprawnym formacie kodu. |
+| Walidator IBAN i NRB (numer konta) | `walidator-iban` | Sprawdza polski IBAN i NRB (mod 97 oraz cyfrę numeru rozliczeniowego) i może wylosować fikcyjny numer rachunku. Nie łączy się z bankiem. |
 
 ### Konwertery (`konwertery`)
 
 | Title | Slug | Description |
 | --- | --- | --- |
 | Formatowanie JSON | `formatowanie-json` | Formatuj, minimalizuj i sprawdzaj JSON. Błąd podaje wiersz i kolumnę. |
-| Znacznik czasu Unix | `znacznik-czasu` | Zamień znacznik Unix na datę i odwrotnie. Domyślna strefa to Europe/Warsaw. |
+| Unix timestamp na datę i odwrotnie | `unix-timestamp` | Zamień znacznik Unix na datę i odwrotnie. Domyślna strefa to Europe/Warsaw. |
 | JSON na YAML | `json-na-yaml` | Zamień JSON na YAML i YAML 1.2 z powrotem na JSON. |
 | JSON na CSV | `json-na-csv` | Zamień tablicę obiektów JSON na CSV i CSV z nagłówkiem z powrotem na JSON. |
 | Formatowanie XML | `formatowanie-xml` | Formatuj, minimalizuj i sprawdzaj dokument XML w przeglądarce. |
-| Parser adresu URL | `parser-adresu` | Rozłóż adres na części, edytuj parametry zapytania i złóż URL z powrotem. |
 | Formatowanie SQL | `formatowanie-sql` | Formatuj zapytanie SQL. Dialekty obejmują PostgreSQL, MySQL, MariaDB i SQLite. |
 | Walidator JSON Schema | `walidator-json-schema` | Sprawdź dokument JSON względem JSON Schema. Błędy podają ścieżkę pola. |
 | XML na JSON | `xml-na-json` | Zamień XML na JSON i obiekt JSON z powrotem na XML. |
@@ -44,9 +42,9 @@ Sixty-two tools, in registry order (`generatorTools`, then `converterTools`, the
 | TOML na JSON | `toml-na-json` | Zamień TOML na JSON i obiekt JSON z powrotem na TOML. |
 | cURL na fetch | `curl-na-fetch` | Zamień polecenie curl na wywołanie fetch oraz axios. |
 | CSV na Markdown | `csv-na-markdown` | Zamień CSV na tabelę Markdown. Pierwszy wiersz jest nagłówkiem. |
-| Jednostki danych | `jednostki-danych` | Przelicza bajty, kilobajty i kibibajty, od B do TiB. |
-| Strefy czasowe | `strefy-czasowe` | Przelicza datę i godzinę między strefami IANA. Domyślnie Europa/Warszawa. |
-| Systemy liczbowe | `systemy-liczbowe` | Przelicza liczbę między systemem dwójkowym, ósemkowym, dziesiętnym i szesnastkowym. |
+| Kalkulator bajtów: KB, MB, GB, KiB | `kalkulator-bajtow` | Przelicza bajty, kilobajty i kibibajty, od B do TiB. |
+| Konwerter stref czasowych | `konwerter-stref-czasowych` | Przelicza datę i godzinę między strefami IANA. Domyślnie Europa/Warszawa. |
+| Zamiana systemów liczbowych | `zamiana-systemow-liczbowych` | Przelicza liczbę między systemem dwójkowym, ósemkowym, dziesiętnym i szesnastkowym. |
 
 ### Kodowanie (`kodowanie`)
 
@@ -56,25 +54,25 @@ Sixty-two tools, in registry order (`generatorTools`, then `converterTools`, the
 | Dekoder JWT | `dekoder-jwt` | Odczytaj nagłówek i payload tokenu JWT oraz daty exp i iat. Podpis nie jest weryfikowany. |
 | Generator UUID | `generator-uuid` | Generuj UUID v4 i v7, także hurtowo, i sprawdź wersję identyfikatora. |
 | Kodowanie URL | `kodowanie-url` | Koduj i dekoduj składniki adresu URL oraz pola formularza. |
-| Skróty SHA | `generator-skrotow` | Policz skrót SHA-1, SHA-256 lub SHA-512 z tekstu albo pliku. Liczone lokalnie. |
+| Generator hash SHA-256 i SHA-512 | `generator-sha256` | Policz skrót SHA-1, SHA-256 lub SHA-512 z tekstu albo pliku. Liczone lokalnie. |
 | Generator HMAC | `generator-hmac` | Policz HMAC SHA-256 albo SHA-512 z klucza i wiadomości. Liczone lokalnie. |
 | Kodowanie Base32 | `kodowanie-base32` | Koduj i dekoduj Base32 (RFC 4648) dla tekstu UTF-8 i plików. |
-| Kodowanie szesnastkowe | `kodowanie-hex` | Zamień tekst albo bajty na hex i odczytaj hex z powrotem jako UTF-8. |
-| Ucieczki Unicode | `ucieczki-unicode` | Zamień znaki na \uXXXX albo \u{punkt} i pokaż bajty UTF-8. |
-| Koder JWT | `koder-jwt` | Podpisz payload JWT algorytmem HS256, HS384 albo HS512. Sekret zostaje w przeglądarce. |
-| Kompresja gzip | `kompresja` | Kompresuj i rozpakuj gzip albo deflate do Base64 w przeglądarce. |
+| Hex na tekst i tekst na hex | `hex-na-tekst` | Zamień tekst albo bajty na hex i odczytaj hex z powrotem jako UTF-8. |
+| Escape Unicode (\uXXXX) | `escape-unicode` | Zamień znaki na \uXXXX albo \u{punkt} i pokaż bajty UTF-8. |
+| Generator JWT (HS256) | `generator-jwt` | Podpisz payload JWT algorytmem HS256, HS384 albo HS512. Sekret zostaje w przeglądarce. |
+| Kompresja gzip i deflate online | `kompresja-gzip` | Kompresuj i rozpakuj gzip albo deflate do Base64 w przeglądarce. |
 | Encje HTML | `encje-html` | Koduje i dekoduje encje HTML, także polskie znaki. |
 
 ### Tekst (`tekst`)
 
 | Title | Slug | Description |
 | --- | --- | --- |
-| Wielkość liter | `wielkosc-liter` | Zamienia wielkość liter, także na camelCase, snake_case i kebab-case. |
-| Licznik tekstu | `licznik-tekstu` | Liczy znaki, słowa, linie i akapity bez wysyłania treści. |
+| Zmiana wielkości liter online | `zmiana-wielkosci-liter` | Zamienia wielkość liter, także na camelCase, snake_case i kebab-case. |
+| Licznik znaków i słów | `licznik-znakow` | Liczy znaki, słowa, linie i akapity bez wysyłania treści. |
 | Lorem ipsum po polsku | `lorem-ipsum` | Układa przykładowe polskie akapity do makiet i testów układu. |
-| Slug z polskich znaków | `slugify` | Robi adresowy slug i zamienia polskie znaki diakrytyczne. |
-| Linie tekstu | `linie-tekstu` | Sortuje linie po polsku, usuwa duplikaty i puste wiersze. |
-| Podgląd Markdown | `podglad-markdown` | Renderuje Markdown i czyści wynik w przeglądarce. |
+| Generator slug URL z polskich znaków | `generator-slug` | Robi adresowy slug i zamienia polskie znaki diakrytyczne. |
+| Sortowanie alfabetyczne linii | `sortowanie-alfabetyczne` | Sortuje linie po polsku, usuwa duplikaty i puste wiersze. |
+| Edytor Markdown z podglądem | `edytor-markdown` | Renderuje Markdown i czyści wynik w przeglądarce. |
 | Porównanie tekstu | `porownanie-tekstu` | Pokazuje różnice linia po linii albo słowo po słowie. Nic nie jest wysyłane. |
 | Tester wyrażeń regularnych | `tester-regex` | Sprawdza wyrażenie, flagi i grupy na tekście w przeglądarce. |
 
@@ -82,8 +80,9 @@ Sixty-two tools, in registry order (`generatorTools`, then `converterTools`, the
 
 | Title | Slug | Description |
 | --- | --- | --- |
+| Parser URL: parametry i części adresu | `parser-url` | Rozłóż adres na części, edytuj parametry zapytania i złóż URL z powrotem. |
 | Parser User-Agent | `parser-user-agent` | Odczytuje przeglądarkę, system i rodzaj urządzenia z nagłówka User-Agent. |
-| Kalkulator CIDR | `kalkulator-cidr` | Liczy adres sieci, maskę, rozgłoszenie i zakres hostów dla IPv4. |
+| Kalkulator podsieci IPv4 (CIDR) | `kalkulator-podsieci` | Liczy adres sieci, maskę, rozgłoszenie i zakres hostów dla IPv4. |
 
 ### Inne (`inne`)
 
@@ -92,13 +91,13 @@ Sixty-two tools, in registry order (`generatorTools`, then `converterTools`, the
 | Generator kodów QR | `generator-qr` | Rysuje kod QR w przeglądarce. Obraz nie jest wysyłany na serwer. |
 | Generator haseł | `generator-hasel` | Losuje hasło w przeglądarce i szacuje jego entropię. |
 | Kalkulator procentów | `kalkulator-procentow` | Liczy procent z liczby, udział, zmianę procentową oraz dodanie i odjęcie procentu. |
-| Kalkulator chmod | `chmod` | Przelicza uprawnienia pliku między zapisem ósemkowym i symbolicznym. |
+| Kalkulator chmod | `kalkulator-chmod` | Przelicza uprawnienia pliku między zapisem ósemkowym i symbolicznym. |
 | Różnica dat | `roznica-dat` | Liczy lata, miesiące i dni między dwiema datami, także wiek. |
-| Dni robocze | `dni-robocze` | Liczy dni robocze w Polsce, z świętami stałymi i ruchomymi, i dodaje ich liczbę do daty. |
+| Kalkulator dni roboczych | `kalkulator-dni-roboczych` | Liczy dni robocze w Polsce, ze świętami stałymi i ruchomymi, i dodaje ich liczbę do daty. |
 | Kalkulator VAT | `kalkulator-vat` | Liczy netto, VAT i brutto dla stawek 23, 8, 5 i 0 procent. |
 | Kwota słownie | `kwota-slownie` | Zapisuje kwotę w złotych i groszach słownie, do faktury. |
-| Wyjaśniacz cron | `wyjasniacz-cron` | Tłumaczy wyrażenie cron na polski i pokazuje pięć kolejnych uruchomień w strefie Europe/Warsaw. |
-| Konwerter kolorów | `konwerter-kolorow` | Przelicza kolor między HEX, RGB i HSL. |
+| Wyrażenie cron po polsku | `wyrazenie-cron` | Tłumaczy wyrażenie cron na polski i pokazuje pięć kolejnych uruchomień w strefie Europe/Warsaw. |
+| HEX na RGB i HSL: konwerter kolorów | `hex-na-rgb` | Przelicza kolor między HEX, RGB i HSL. |
 
 ## Requirements
 

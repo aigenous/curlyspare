@@ -14,13 +14,13 @@ test('every finished generator shows the disclaimer and every converter renders'
 
 test.describe('shell tools', () => {
   test('case tool converts Polish text to kebab-case', async ({ page }) => {
-    await page.goto('/wielkosc-liter')
+    await page.goto('/zmiana-wielkosci-liter')
     await page.getByLabel('Wielkość').selectOption('kebab')
     await expect(page.getByLabel('Wynik')).toHaveValue('zażółć-gęślą-jaźń')
   })
 
   test('counter counts words in pasted text', async ({ page }) => {
-    await page.goto('/licznik-tekstu')
+    await page.goto('/licznik-znakow')
     await page.getByLabel('Tekst').fill('a b\n\nc')
     await expect(stat(page, 'Słowa')).toHaveText('3')
     await expect(stat(page, 'Akapity')).toHaveText('2')
@@ -39,7 +39,7 @@ test.describe('shell tools', () => {
   })
 
   test('slug tool strips Polish diacritics', async ({ page }) => {
-    await page.goto('/slugify')
+    await page.goto('/generator-slug')
     await expect(page.getByLabel('Slug')).toHaveValue('zazolc-gesla-jazn-przykladowy-tytul')
     await page.getByLabel('Tekst').fill('---')
     await expect(page.getByLabel('Slug')).toHaveValue('')
@@ -98,7 +98,7 @@ test.describe('shell tools', () => {
   })
 
   test('number bases round-trip and reject a foreign digit', async ({ page }) => {
-    await page.goto('/systemy-liczbowe')
+    await page.goto('/zamiana-systemow-liczbowych')
     await expect(page.getByLabel('Wynik')).toHaveValue('FF')
     await page.getByLabel('Liczba').fill('2')
     await page.getByLabel('Z systemu').selectOption('2')
@@ -122,7 +122,7 @@ test.describe('shell tools', () => {
   })
 
   test('color tool converts HEX red into RGB', async ({ page }) => {
-    await page.goto('/konwerter-kolorow')
+    await page.goto('/hex-na-rgb')
     const hex = page.getByLabel('HEX')
     await hex.fill('#ff0000')
     await hex.blur()

@@ -56,9 +56,9 @@ test('Ctrl+K search opens a tool', async ({ page }) => {
     await expect(dialog).toBeVisible({ timeout: 250 })
   }).toPass()
   await dialog.getByRole('combobox').fill('slugify')
-  await dialog.getByRole('option', { name: 'Slug z polskich znaków' }).click()
-  await expect(page).toHaveURL(/\/slugify$/)
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Slug z polskich znaków')
+  await dialog.getByRole('option', { name: 'Generator slug URL z polskich znaków' }).click()
+  await expect(page).toHaveURL(/\/generator-slug$/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Generator slug URL z polskich znaków')
 })
 
 test('dark mode toggles and survives a reload', async ({ page }) => {

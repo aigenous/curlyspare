@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   generatorDisclaimer,
   gtinDisclaimer,
-  ibanValidatorDisclaimer,
   idDocumentDisclaimer,
   isbnValidatorDisclaimer,
   personTestDisclaimer,
@@ -69,7 +68,7 @@ describe('tool registry', () => {
       'generator-nip',
       'generator-regon',
       'generator-krs',
-      'generator-nrb',
+      'walidator-iban',
     ])
     const own: Record<string, string> = {
       'numer-dowodu-osobistego': idDocumentDisclaimer,
@@ -78,10 +77,9 @@ describe('tool registry', () => {
       'walidator-vat-ue': vatValidatorDisclaimer,
       'walidator-vin': vinValidatorDisclaimer,
       'konwerter-isbn': isbnValidatorDisclaimer,
-      'generator-osoby-testowej': personTestDisclaimer,
-      'walidator-iban': ibanValidatorDisclaimer,
+      'generator-danych-testowych': personTestDisclaimer,
     }
-    const identifier = /pesel|nip|regon|krs|iban|dowod|paszport|ean|isbn|vin|vat-ue|osoby-testowej/
+    const identifier = /pesel|nip|regon|krs|iban|dowod|paszport|ean|isbn|vin|vat-ue|danych-testowych/
     const generators = tools.filter(
       (tool) => tool.category === 'generatory' || identifier.test(tool.slug),
     )

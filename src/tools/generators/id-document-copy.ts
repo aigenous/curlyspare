@@ -80,7 +80,7 @@ export const dowodPage: IdDocumentPage = {
   related: [
     { href: '/numer-paszportu', label: 'Testowy numer paszportu' },
     { href: '/generator-pesel', label: 'Generator PESEL' },
-    { href: '/generator-osoby-testowej', label: 'Generator osoby testowej' },
+    { href: '/generator-danych-testowych', label: 'Generator danych testowych (osoba)' },
   ],
   breadcrumb: ['Strona główna', 'Dane testowe PL', 'Testowy numer dowodu osobistego'],
 }
@@ -124,7 +124,7 @@ export const paszportPage: IdDocumentPage = {
   related: [
     { href: '/numer-dowodu-osobistego', label: 'Testowy numer dowodu osobistego' },
     { href: '/generator-pesel', label: 'Generator PESEL' },
-    { href: '/generator-osoby-testowej', label: 'Generator osoby testowej' },
+    { href: '/generator-danych-testowych', label: 'Generator danych testowych (osoba)' },
   ],
   breadcrumb: ['Strona główna', 'Dane testowe PL', 'Testowy numer paszportu'],
 }

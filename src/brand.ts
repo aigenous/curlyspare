@@ -28,6 +28,3 @@ export const vinValidatorDisclaimer =
 
 export const isbnValidatorDisclaimer =
   'Narzędzie sprawdza sumę kontrolną i przelicza ISBN-10 ↔ ISBN-13. Nie sprawdza, czy publikacja o tym numerze istnieje.'
-
-export const ibanValidatorDisclaimer =
-  'Narzędzie sprawdza wyłącznie format i sumę kontrolną polskiego IBAN (mod 97). Nie łączy się z bankiem ani rejestrem, więc nie potwierdza, że rachunek został nadany ani że należy do określonego podmiotu.'
