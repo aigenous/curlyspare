@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
 test('CIDR calculator shows a /24, a single host, and rejects a bad address', async ({ page }) => {
-  await page.goto('/kalkulator-cidr')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kalkulator CIDR')
+  await page.goto('/kalkulator-podsieci')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kalkulator podsieci IPv4 (CIDR)')
   await expect(stat(page, 'Sieć')).toHaveText('192.168.1.0')
   await expect(stat(page, 'Rozgłoszenie')).toHaveText('192.168.1.255')
   await expect(stat(page, 'Maska')).toHaveText('255.255.255.0')
@@ -20,8 +20,8 @@ test('CIDR calculator shows a /24, a single host, and rejects a bad address', as
 })
 
 test('Markdown preview renders formatting and strips active HTML', async ({ page }) => {
-  await page.goto('/podglad-markdown')
-  await expect(page.getByRole('heading', { level: 1, name: 'Podgląd Markdown' })).toBeVisible()
+  await page.goto('/edytor-markdown')
+  await expect(page.getByRole('heading', { level: 1, name: 'Edytor Markdown z podglądem' })).toBeVisible()
   await expect(page.getByText('Skrypty i atrybuty zdarzeń są usuwane.')).toBeVisible()
 
   const preview = page.locator('.preview.md')
