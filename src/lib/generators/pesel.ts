@@ -9,6 +9,7 @@ import {
   invalid,
   readDigits,
   toDigits,
+  weightedSum,
   type ValidationResult,
 } from './validation'
 
@@ -22,8 +23,11 @@ export const PESEL_WEIGHTS = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3] as const
 const MIN_YEAR = 1800
 const MAX_YEAR = 2299
 
-const DEFAULT_FROM: CalendarDate = { year: 1950, month: 1, day: 1 }
-const DEFAULT_TO: CalendarDate = { year: 2005, month: 12, day: 31 }
+/** Inclusive range used when a caller does not supply a birth date. */
+export const PESEL_DEFAULT_YEAR_RANGE = {
+  from: { year: 1950, month: 1, day: 1 },
+  to: { year: 2005, month: 12, day: 31 },
+} as const satisfies { from: CalendarDate; to: CalendarDate }
 
 const CENTURY_MONTH_OFFSET: Readonly<Record<number, number>> = {
   18: 80,
@@ -43,6 +47,28 @@ const MONTH_BANDS: readonly { from: number; to: number; baseYear: number; shift:
 
 export type PeselSex = 'kobieta' | 'mezczyzna'
 
+/** English sex code used by the progressive parser. F is female, M is male. */
+export type PeselSexCode = 'F' | 'M'
+
+/**
+ * Progressive read of a PESEL.
+ * Non-digits are ignored so the UI can render while the value is still incomplete.
+ * `sum` and `expected` appear once ten digits are present. Date and sex appear once eleven are.
+ */
+export interface PeselParse {
+  digits: readonly number[]
+  complete: boolean
+  valid: boolean
+  /** Weighted sum of the first ten digits. */
+  sum?: number
+  /** Check digit required by that sum. */
+  expected?: number
+  dateOk?: boolean
+  date?: CalendarDate
+  sex?: PeselSexCode
+  checksumOk?: boolean
+}
+
 export interface PeselDetails {
   pesel: string
   birthDate: CalendarDate
@@ -59,10 +85,7 @@ export interface PeselGenerateOptions {
 }
 
 export function peselCheckDigit(body: readonly number[]): number {
-  let sum = 0
-  for (let index = 0; index < PESEL_WEIGHTS.length; index += 1) {
-    sum += (body[index] ?? 0) * PESEL_WEIGHTS[index]
-  }
+  const sum = weightedSum(body, PESEL_WEIGHTS)
   return (10 - (sum % 10)) % 10
 }
 
@@ -97,6 +120,63 @@ export function generatePesels(
   rng: RandomInt = cryptoRandomInt,
 ): string[] {
   return generateUnique(count, () => generatePesel(options, rng))
+}
+
+/**
+ * Uniform day inside `PESEL_DEFAULT_YEAR_RANGE`.
+ * Uses the shared cryptographic RNG.
+ */
+export function randomPeselDate(rng: RandomInt = cryptoRandomInt): CalendarDate {
+  return randomDateBetween(PESEL_DEFAULT_YEAR_RANGE.from, PESEL_DEFAULT_YEAR_RANGE.to, rng)
+}
+
+/**
+ * Builds a PESEL for a calendar day.
+ * `sex` is the English code, or `random` when the caller wants either sex.
+ * The date is `{ year, month, day }` so a local timezone cannot shift the day.
+ * The digits come from `generatePesel`, including its cryptographic RNG.
+ */
+export function generatePeselOnDate(
+  date: CalendarDate,
+  sex: PeselSexCode | 'random' = 'random',
+  rng: RandomInt = cryptoRandomInt,
+): string {
+  const polishSex = toPeselSex(sex)
+  return generatePesel(polishSex === null ? { birthDate: date } : { birthDate: date, sex: polishSex }, rng)
+}
+
+/**
+ * Reads digits and ignores other characters.
+ * More than eleven digits is not a PESEL: `valid` stays false.
+ * `sum` and `expected` appear once ten digits are present. Date and sex appear once eleven are.
+ * `valid` is decided only here.
+ */
+export function parsePesel(input: string): PeselParse {
+  const compact = input.replace(/\D/g, '')
+  const digits = compact.length === 0 ? [] : toDigits(compact)
+  const parsed: PeselParse = {
+    digits,
+    complete: digits.length === 11,
+    valid: false,
+  }
+  if (digits.length >= 10) {
+    const body = digits.slice(0, 10)
+    parsed.sum = weightedSum(body, PESEL_WEIGHTS)
+    parsed.expected = peselCheckDigit(body)
+  }
+  if (!parsed.complete) {
+    return parsed
+  }
+
+  const decoded = decodePeselDigits(digits)
+  parsed.dateOk = decoded !== null
+  parsed.sex = toSexCode(sexFromDigit(digits[9] ?? 0))
+  if (decoded) {
+    parsed.date = decoded.birthDate
+  }
+  parsed.checksumOk = parsed.expected === digits[10]
+  parsed.valid = parsed.dateOk === true && parsed.checksumOk === true
+  return parsed
 }
 
 export function validatePesel(input: string): PeselValidation {
@@ -147,8 +227,8 @@ function resolveBirthDate(options: PeselGenerateOptions, rng: RandomInt): Calend
     return options.birthDate
   }
 
-  const from = options.from ?? DEFAULT_FROM
-  const to = options.to ?? DEFAULT_TO
+  const from = options.from ?? PESEL_DEFAULT_YEAR_RANGE.from
+  const to = options.to ?? PESEL_DEFAULT_YEAR_RANGE.to
   assertPeselDate(from)
   assertPeselDate(to)
   if (compareDates(from, to) > 0) {
@@ -200,3 +280,32 @@ function appendTwoDigits(target: number[], value: number): void {
 function sexFromDigit(digit: number): PeselSex {
   return digit % 2 === 0 ? 'kobieta' : 'mezczyzna'
 }
+
+function toSexCode(sex: PeselSex): PeselSexCode {
+  switch (sex) {
+    case 'kobieta':
+      return 'F'
+    case 'mezczyzna':
+      return 'M'
+    default: {
+      const unexpected: never = sex
+      throw new RangeError(`Unsupported sex: ${String(unexpected)}`)
+    }
+  }
+}
+
+function toPeselSex(sex: PeselSexCode | 'random'): PeselSex | null {
+  switch (sex) {
+    case 'random':
+      return null
+    case 'F':
+      return 'kobieta'
+    case 'M':
+      return 'mezczyzna'
+    default: {
+      const unexpected: never = sex
+      throw new RangeError(`Unsupported sex: ${String(unexpected)}`)
+    }
+  }
+}
+
