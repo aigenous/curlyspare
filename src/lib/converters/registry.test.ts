@@ -10,16 +10,16 @@ const slugs = [
   'dekoder-jwt',
   'generator-uuid',
   'kodowanie-url',
-  'generator-skrotow',
-  'znacznik-czasu',
+  'generator-sha256',
+  'unix-timestamp',
   'json-na-yaml',
   'json-na-csv',
   'generator-hmac',
   'kodowanie-base32',
-  'kodowanie-hex',
-  'ucieczki-unicode',
+  'hex-na-tekst',
+  'escape-unicode',
   'formatowanie-xml',
-  'parser-adresu',
+  'parser-url',
   'formatowanie-sql',
   'walidator-json-schema',
   'xml-na-json',
@@ -27,8 +27,8 @@ const slugs = [
   'tester-jsonpath',
   'toml-na-json',
   'curl-na-fetch',
-  'koder-jwt',
-  'kompresja',
+  'generator-jwt',
+  'kompresja-gzip',
   'csv-na-markdown',
 ]
 
@@ -40,7 +40,7 @@ describe('converterTools', () => {
       expect(tool.title.length).toBeGreaterThan(0)
       expect(tool.description.length).toBeGreaterThan(0)
       expect(tool.keywords.length).toBeGreaterThan(0)
-      expect(['konwertery', 'kodowanie', 'tekst']).toContain(tool.category)
+      expect(['konwertery', 'kodowanie', 'tekst', 'siec']).toContain(tool.category)
       expect(typeof tool.component).toBe('function')
     }
   })
@@ -48,8 +48,8 @@ describe('converterTools', () => {
   it('states that a JWT signature is not verified and that SHA-1 is obsolete', () => {
     expect(converterTools.find((tool) => tool.slug === 'dekoder-jwt')?.disclaimer).toBe(JWT_NOTICE)
     expect(JWT_NOTICE.toLowerCase()).toContain('nie został zweryfikowany')
-    expect(converterTools.find((tool) => tool.slug === 'generator-skrotow')?.disclaimer).toBe(SHA1_NOTICE)
-    expect(converterTools.find((tool) => tool.slug === 'koder-jwt')?.disclaimer).toBe(JWT_SIGN_NOTICE)
+    expect(converterTools.find((tool) => tool.slug === 'generator-sha256')?.disclaimer).toBe(SHA1_NOTICE)
+    expect(converterTools.find((tool) => tool.slug === 'generator-jwt')?.disclaimer).toBe(JWT_SIGN_NOTICE)
     expect(JWT_SIGN_NOTICE.toLowerCase()).toContain('sekret zostaje w przeglądarce')
   })
 })

@@ -94,7 +94,7 @@ test.describe('converter screens', () => {
   })
 
   test('SHA-256 of abc matches the known vector', async ({ page }) => {
-    await page.goto('/generator-skrotow')
+    await page.goto('/generator-sha256')
     await expect(page.locator('.disclaimer')).toContainText('SHA-1')
     await page.getByLabel('Tekst').fill('abc')
     await page.getByRole('button', { name: 'Policz tekst' }).click()
@@ -105,7 +105,7 @@ test.describe('converter screens', () => {
   })
 
   test('Unix timestamp converts the epoch and a Warsaw winter hour', async ({ page }) => {
-    await page.goto('/znacznik-czasu')
+    await page.goto('/unix-timestamp')
     await page.getByLabel('Znacznik Unix').fill('0')
     await page.getByRole('button', { name: 'Przelicz na datę' }).click()
     await expect(stat(page, 'UTC')).toHaveText('1970-01-01T00:00:00.000Z')
@@ -167,7 +167,7 @@ test.describe('converter screens', () => {
     await page.getByRole('button', { name: 'Dekoduj tekst', exact: true }).click()
     await expect(page.getByText('Niepoprawny znak w Base32.')).toBeVisible()
 
-    await page.goto('/kodowanie-hex')
+    await page.goto('/hex-na-tekst')
     await page.getByLabel('Tekst albo hex').fill('foo')
     await page.getByRole('button', { name: 'Koduj tekst', exact: true }).click()
     await expect(output(page)).toHaveValue('666f6f')
@@ -181,7 +181,7 @@ test.describe('converter screens', () => {
 
   test('Unicode escapes round-trip ż and XML pretty-prints a document', async ({ page }) => {
     test.skip(!converterReady('ucieczki-unicode/UcieczkiUnicode.vue'), 'Unicode screen is not on this branch yet')
-    await page.goto('/ucieczki-unicode')
+    await page.goto('/escape-unicode')
     await page.getByRole('textbox', { name: 'Tekst', exact: true }).fill('ż')
     await page.getByRole('button', { name: 'Ucieknij' }).click()
     await expect(output(page)).toHaveValue('\\u017c')
@@ -205,7 +205,7 @@ test.describe('converter screens', () => {
 
   test('URL parser splits host, path, and query', async ({ page }) => {
     test.skip(!converterReady('parser-adresu/ParserAdresu.vue'), 'URL parser is not on this branch yet')
-    await page.goto('/parser-adresu')
+    await page.goto('/parser-url')
     await page.getByLabel('Adres URL albo parametry').fill('https://ala:hasło@example.com:8443/a/b?x=1#sekcja')
     await page.getByRole('button', { name: 'Rozłóż' }).click()
     await expect(stat(page, 'Host')).toHaveText('example.com')

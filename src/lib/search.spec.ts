@@ -15,6 +15,6 @@ describe('fold', () => {
   })
 
   it('finds a tool when the query drops Polish diacritics', () => {
-    expect(filterTools(tools, 'znakow').map((tool) => tool.slug)).toContain('slugify')
+    expect(filterTools(tools, 'znakow').map((tool) => tool.slug)).toContain('generator-slug')
   })
 })

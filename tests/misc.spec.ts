@@ -15,7 +15,7 @@ describe('search', () => {
   })
 
   it('uses „ze świętami” in the working-days description', () => {
-    const tool = tools.find((item) => item.slug === 'dni-robocze')
+    const tool = tools.find((item) => item.slug === 'kalkulator-dni-roboczych')
     expect(tool?.description).toContain('ze świętami')
     expect(tool?.description.includes('z świętami')).toBe(false)
   })
