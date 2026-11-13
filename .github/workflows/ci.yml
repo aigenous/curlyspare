@@ -52,6 +52,8 @@ jobs:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - run: pnpm build
+      - name: Check fonts are self-hosted
+        run: bash scripts/check-dist-fonts.sh dist
       - uses: actions/upload-artifact@v4
         with:
           name: dist
