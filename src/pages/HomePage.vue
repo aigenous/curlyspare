@@ -5,10 +5,17 @@ import { usePageMeta } from '../composables/usePageMeta'
 import { brand } from '../brand'
 import { categoryLabel, t } from '../i18n'
 import { filterTools } from '../lib/search'
-import { categories, tools } from '../registry'
+import { categories } from '../registry'
+import { publicTools, publishedSlugs } from '../registry/published'
 
 const query = ref('')
-const visible = computed(() => filterTools(tools, query.value))
+const visible = computed(() => filterTools(publicTools(), query.value))
+const groups = computed(() =>
+  categories.flatMap((category) => {
+    const items = visible.value.filter((tool) => tool.category === category)
+    return items.length > 0 ? [{ category, items }] : []
+  }),
+)
 
 usePageMeta({
   title: `${t('homeTitle')} — ${brand.name}`,
@@ -16,8 +23,8 @@ usePageMeta({
   path: '/',
 })
 
-function inCategory(category: (typeof categories)[number]) {
-  return visible.value.filter((tool) => tool.category === category)
+function isDraft(slug: string): boolean {
+  return !publishedSlugs.has(slug)
 }
 </script>
 
@@ -47,30 +54,34 @@ function inCategory(category: (typeof categories)[number]) {
       {{ query.trim() ? t('homeNoResults') : t('homeEmpty') }}
     </p>
     <section
-      v-for="category in categories"
-      :key="category"
+      v-for="group in groups"
+      :key="group.category"
       class="category"
     >
-      <template v-if="inCategory(category).length">
-        <h2 :id="category">
-          {{ categoryLabel(category) }}
-          <span class="count">({{ inCategory(category).length }})</span>
-        </h2>
-        <ul class="tool-grid">
-          <li
-            v-for="tool in inCategory(category)"
-            :key="tool.slug"
+      <h2 :id="group.category">
+        {{ categoryLabel(group.category) }}
+        <span class="count">({{ group.items.length }})</span>
+      </h2>
+      <ul class="tool-grid">
+        <li
+          v-for="tool in group.items"
+          :key="tool.slug"
+        >
+          <RouterLink
+            class="tool-card"
+            :to="`/${tool.slug}`"
           >
-            <RouterLink
-              class="tool-card"
-              :to="`/${tool.slug}`"
+            <p
+              v-if="isDraft(tool.slug)"
+              class="kicker"
             >
-              <h3>{{ tool.title }}</h3>
-              <p>{{ tool.description }}</p>
-            </RouterLink>
-          </li>
-        </ul>
-      </template>
+              {{ t('draftBadge') }}
+            </p>
+            <h3>{{ tool.title }}</h3>
+            <p>{{ tool.description }}</p>
+          </RouterLink>
+        </li>
+      </ul>
     </section>
   </section>
 </template>

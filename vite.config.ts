@@ -3,15 +3,20 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig, type Plugin } from 'vite'
+import { shellPaths, visibleSlugs } from './src/registry/published-slugs'
 import { site } from './src/site'
 
-const shellPaths = ['/', '/regulamin', '/polityka-prywatnosci', '/operator']
+const showDrafts = process.env.VITE_SHOW_DRAFTS === '1'
 
 function registeredSlugs(): string[] {
   const files = ['src/tools/misc/index.ts', 'src/tools/generators/index.ts', 'src/tools/converters/index.ts']
   return files.flatMap((file) =>
     [...readFileSync(resolve(file), 'utf8').matchAll(/slug:\s*'([^']+)'/g)].map((match) => match[1] ?? ''),
   )
+}
+
+function visibleToolPaths(): string[] {
+  return visibleSlugs(registeredSlugs(), showDrafts).map((slug) => `/${slug}`)
 }
 
 function previewNotFound(): Plugin {
@@ -53,7 +58,9 @@ export default defineConfig({
   ssgOptions: {
     dirStyle: 'flat',
     includedRoutes(paths) {
-      return paths.filter((path) => !path.includes(':'))
+      // Router paths come from publicTools(). Keep the same slug filter here.
+      const allowed = new Set<string>([...shellPaths, ...visibleToolPaths(), '/404'])
+      return paths.filter((path) => allowed.has(path))
     },
     onFinished() {
       const dist = resolve('dist')
@@ -61,16 +68,16 @@ export default defineConfig({
         .filter((file) => file.endsWith('.html') && file !== '404.html')
         .map((file) => (file === 'index.html' ? '/' : `/${file.replace(/\.html$/, '')}`))
         .sort((a, b) => a.localeCompare(b))
-      const expected = new Set([...shellPaths, ...registeredSlugs().map((slug) => `/${slug}`)])
-      const built = new Set(pages)
-      const missing = [...expected].filter((path) => !built.has(path))
-      if (missing.length > 0) {
-        throw new Error(`Brak stron w mapie witryny: ${missing.join(', ')}`)
+      const expected = [...shellPaths, ...visibleToolPaths()].sort((a, b) => a.localeCompare(b))
+      const missing = expected.filter((path) => !pages.includes(path))
+      const extra = pages.filter((path) => !expected.includes(path))
+      if (missing.length > 0 || extra.length > 0) {
+        throw new Error(`Sitemap pages do not match the allowlist. Missing: ${missing.join(', ') || 'none'}. Extra: ${extra.join(', ') || 'none'}.`)
       }
-      if (built.has('/404')) {
-        throw new Error('Mapa witryny nie może zawierać strony 404.')
+      if (!existsSync(resolve(dist, '404.html'))) {
+        throw new Error('Missing prerendered 404 page.')
       }
-      const urls = pages
+      const urls = expected
         .map((path) => `  <url><loc>${siteUrl}${path === '/' ? '/' : path}</loc></url>`)
         .join('\n')
       writeFileSync(
