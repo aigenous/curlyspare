@@ -9,7 +9,7 @@ export const brand = {
 } as const
 
 export const generatorDisclaimer =
-  'Dane wygenerowane losowo, wyłącznie do testowania oprogramowania. Numery mają jedynie poprawną sumę kontrolną i mogą przypadkowo pokrywać się z numerami istniejących osób lub firm; nie identyfikują nikogo, a serwis ich nie zapisuje. Zabronione jest używanie ich do podszywania się pod inne osoby, w dokumentach, formularzach urzędowych, bankowych lub finansowych – może to stanowić przestępstwo (m.in. art. 190a § 2, 270, 286 Kodeksu karnego).'
+  'Dane fikcyjne, wygenerowane losowo wyłącznie do testowania oprogramowania. Numery mają jedynie poprawny format i sumę kontrolną i mogą przypadkowo pokrywać się z numerami istniejących osób lub firm; nie identyfikują nikogo, a serwis ich nie zapisuje. Zabronione jest używanie ich do podszywania się pod inne osoby, w dokumentach, formularzach urzędowych, bankowych lub finansowych – może to stanowić przestępstwo (m.in. art. 190a § 2, 270, 275, 286 i 297 Kodeksu karnego).'
 
 export const personTestDisclaimer =
   'Fikcyjne dane wyłącznie do testowania oprogramowania. Imiona, nazwiska i adresy są wymyślone, a PESEL ma jedynie poprawną sumę kontrolną – może przypadkowo pokrywać się z numerem istniejącej osoby, ale rekord jej nie dotyczy. Serwis nie zapisuje wygenerowanych danych. Zabronione jest używanie ich jako danych prawdziwych: do podszywania się, zakładania lub weryfikowania kont, w dokumentach, formularzach urzędowych, bankowych, pożyczkowych lub innych finansowych – może to stanowić przestępstwo (m.in. art. 190a § 2, 270, 275, 286 i 297 Kodeksu karnego).'

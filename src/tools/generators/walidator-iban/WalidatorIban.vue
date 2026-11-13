@@ -2,8 +2,9 @@
 import { ref } from 'vue'
 import CopyButton from '../../../components/CopyButton.vue'
 import { formatIban, formatNrb, generateNrbs, validateIbanPl, validateNrb } from '../../../lib/generators'
+import CheckResult from '../CheckResult.vue'
 import { COUNT_RANGE_ERROR, readCount, validationMessage } from '../messages'
-import { ibanPassMessage } from '../verdicts'
+import { GENERATED_NUMBER_LABEL, VALID_NUMBER_LABEL } from '../verdicts'
 
 const count = ref(1)
 const bank = ref('')
@@ -11,6 +12,7 @@ const generated = ref('')
 const error = ref('')
 const probe = ref('')
 const verdict = ref('')
+const verdictDetail = ref('')
 const verdictError = ref(false)
 
 function generate() {
@@ -29,11 +31,8 @@ function generate() {
   }
 }
 
-function pass(formattedIban: string, nrb: string, settlement: string): string {
-  return `${ibanPassMessage(formattedIban, nrb)} Numer rozliczeniowy: ${settlement}.`
-}
-
 function check() {
+  verdictDetail.value = ''
   const compact = probe.value.replace(/[\s-]/g, '').toUpperCase()
   if (/^[A-Z]{2}/.test(compact)) {
     const iban = validateIbanPl(probe.value)
@@ -49,15 +48,19 @@ function check() {
       return
     }
     verdictError.value = false
-    verdict.value = pass(iban.formatted, iban.nrb, nrb.bank)
+    verdict.value = VALID_NUMBER_LABEL
+    verdictDetail.value = `Zapis: ${iban.formatted}. NRB: ${iban.nrb}. Numer rozliczeniowy: ${nrb.bank}.`
     return
   }
 
   const nrb = validateNrb(probe.value)
   verdictError.value = !nrb.valid
-  verdict.value = nrb.valid
-    ? pass(formatIban(nrb.iban), nrb.nrb, nrb.bank)
-    : validationMessage(nrb.error)
+  if (!nrb.valid) {
+    verdict.value = validationMessage(nrb.error)
+    return
+  }
+  verdict.value = VALID_NUMBER_LABEL
+  verdictDetail.value = `Zapis: ${nrb.formatted}. IBAN: ${formatIban(nrb.iban)}. Numer rozliczeniowy: ${nrb.bank}.`
 }
 </script>
 
@@ -109,6 +112,12 @@ function check() {
       >
         {{ error }}
       </p>
+      <p
+        v-if="generated"
+        class="muted"
+      >
+        {{ GENERATED_NUMBER_LABEL }}
+      </p>
       <label v-if="generated">
         Wynik
         <textarea
@@ -142,13 +151,11 @@ function check() {
       >
         Sprawdź
       </button>
-      <p
-        v-if="verdict"
-        :class="verdictError ? 'message-error' : 'muted'"
-        :role="verdictError ? 'alert' : 'status'"
-      >
-        {{ verdict }}
-      </p>
+      <CheckResult
+        :message="verdict"
+        :error="verdictError"
+        :detail="verdictDetail"
+      />
     </section>
   </div>
 </template>

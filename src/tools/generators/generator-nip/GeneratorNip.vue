@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import CopyButton from '../../../components/CopyButton.vue'
 import { formatNip, generateNips, validateNip } from '../../../lib/generators'
+import CheckResult from '../CheckResult.vue'
 import { identifiersToCsv, identifiersToJson, downloadText } from '../download'
 import { COUNT_RANGE_ERROR, readCount, validationMessage } from '../messages'
+import { GENERATED_NUMBER_LABEL, VALID_NUMBER_LABEL } from '../verdicts'
 
 const count = ref(1)
 const grouped = ref(false)
@@ -12,6 +14,7 @@ const rows = ref<string[]>([])
 const error = ref('')
 const probe = ref('')
 const verdict = ref('')
+const verdictDetail = ref('')
 const verdictError = ref(false)
 
 function present(nip: string): string {
@@ -40,11 +43,15 @@ function downloadJson() {
 }
 
 function check() {
+  verdictDetail.value = ''
   const result = validateNip(probe.value)
   verdictError.value = !result.valid
-  verdict.value = result.valid
-    ? `Poprawny NIP: ${result.formatted}.`
-    : validationMessage(result.error)
+  if (!result.valid) {
+    verdict.value = validationMessage(result.error)
+    return
+  }
+  verdict.value = VALID_NUMBER_LABEL
+  verdictDetail.value = `Zapis: ${result.formatted}.`
 }
 </script>
 
@@ -84,6 +91,12 @@ function check() {
         role="alert"
       >
         {{ error }}
+      </p>
+      <p
+        v-if="generated"
+        class="muted"
+      >
+        {{ GENERATED_NUMBER_LABEL }}
       </p>
       <label v-if="generated">
         Wynik
@@ -135,13 +148,11 @@ function check() {
       >
         Sprawdź
       </button>
-      <p
-        v-if="verdict"
-        :class="verdictError ? 'message-error' : 'muted'"
-        :role="verdictError ? 'alert' : 'status'"
-      >
-        {{ verdict }}
-      </p>
+      <CheckResult
+        :message="verdict"
+        :error="verdictError"
+        :detail="verdictDetail"
+      />
     </section>
   </div>
 </template>
