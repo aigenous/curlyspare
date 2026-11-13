@@ -1,0 +1,153 @@
+/*
+ * Digit anatomy. Segments wrap as a whole part; cells inside a part stay together.
+ * Eleven PESEL cells, eight 2px gaps inside the parts and two 6px gaps between
+ * parts leave 28px. At a 358px content box (a 390px viewport with 16px padding
+ * on each side) the cell basis is 30px, so the PESEL row stays on one line.
+ * A longer segment uses min(100%, n * 1.15rem) and wraps onto the next line.
+ */
+.anatomy {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  container-type: inline-size;
+}
+
+.anatomy__part {
+  flex: var(--n, 1) 1 0;
+  min-width: min(100%, calc(var(--n) * 1.15rem));
+  max-width: 100%;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+
+.cells {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cell {
+  flex: 1 1 clamp(1.15rem, calc((100cqi - 28px) / 11), 2.5rem);
+  min-width: 0;
+  max-width: 100%;
+  height: clamp(1.75rem, calc((100cqi - 28px) / 11), 2.5rem);
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-cell);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 700 clamp(0.75rem, calc((100cqi - 28px) / 18), 1.25rem) / 1 var(--font-mono);
+}
+
+.cell--empty {
+  border-style: dashed;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.cell--mark {
+  background: linear-gradient(var(--color-mark), var(--color-mark)) no-repeat left / 100% 100% var(--color-surface);
+  color: var(--color-on-mark);
+  border-color: var(--color-text);
+  animation: swipe var(--dur-slow) var(--ease);
+}
+
+@keyframes swipe {
+  from {
+    background-size: 0 100%;
+  }
+}
+
+.cell--bad {
+  border: 2.5px solid var(--color-error);
+  background: var(--color-error-soft);
+  color: var(--color-error);
+}
+
+.brace {
+  display: flex;
+  height: 12px;
+  color: var(--color-primary);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.brace i {
+  flex: 1 1 0;
+  height: 7px;
+  border: 0 solid currentcolor;
+}
+
+.brace i:nth-child(1) {
+  border-width: 0 0 2px 2px;
+  border-radius: 0 0 0 7px;
+}
+
+.brace i:nth-child(2) {
+  flex: 0 0 7px;
+  margin-top: 5px;
+  border-width: 2px 2px 0 0;
+  border-radius: 0 7px 0 0;
+}
+
+.brace i:nth-child(3) {
+  flex: 0 0 7px;
+  margin: 5px 0 0 -2px;
+  border-width: 2px 0 0 2px;
+  border-radius: 7px 0 0 0;
+}
+
+.brace i:nth-child(4) {
+  border-width: 0 2px 2px 0;
+  border-radius: 0 0 7px 0;
+}
+
+.anatomy__label {
+  justify-self: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--text-xs);
+  line-height: 1.2;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.calc {
+  max-width: 100%;
+  min-width: 0;
+  font: var(--text-sm) / 1.9 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.calc i {
+  font-style: normal;
+  color: var(--color-text-muted);
+}
+
+.calc b {
+  font-weight: 700;
+}
+
+@media (min-width: 60rem) {
+  .tool .cell {
+    height: 3.25rem;
+    font-size: 1.5rem;
+  }
+
+  .tool .anatomy__label {
+    font-size: var(--text-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell--mark {
+    animation: none;
+  }
+}

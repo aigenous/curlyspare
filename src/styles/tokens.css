@@ -39,3 +39,83 @@
   --danger-soft: #3a2428;
   --shadow: 0 10px 30px rgb(0 0 0 / 28%);
 }
+
+/*
+ * Squared-notebook tokens for the anatomy component.
+ * feat/redesign-foundation is not on origin yet, and the variables above are a
+ * different set, so these are added beside them. light-dark() follows the
+ * color-scheme already set on :root and :root[data-theme='dark'].
+ */
+:root {
+  --color-bg: light-dark(#f6f8fc, #0e1330);
+  --color-surface: light-dark(#ffffff, #161c40);
+  --color-surface-2: light-dark(#edf1f9, #1e2653);
+  --color-grid: light-dark(#dfe6f4, #1a2148);
+  --color-divider: light-dark(#d5dcec, #2b3569);
+  --color-border: light-dark(#6e7ba3, #7481b3); /* control outline, minimum 3:1 */
+  --color-text: light-dark(#131a3a, #eef1fb);
+  --color-text-muted: light-dark(#4a5578, #aeb8dc);
+  --color-primary: light-dark(#1f3fcc, #a9b9ff);
+  --color-primary-hover: light-dark(#162e99, #c8d2ff);
+  --color-on-primary: light-dark(#ffffff, #0e1330);
+  --color-primary-soft: light-dark(#e4eaff, #232d66);
+  --color-focus: light-dark(#1f3fcc, #ffd83d);
+  --color-mark: #ffd83d; /* highlighter: check digit, [TEST] */
+  --color-on-mark: #131a3a;
+  --color-ok: light-dark(#0a6640, #62d6a4);
+  --color-ok-soft: light-dark(#dff4ea, #113a33);
+  --color-error: light-dark(#b42318, #ff9a8c);
+  --color-error-soft: light-dark(#fdebe9, #45202b);
+  --color-warn: light-dark(#7a4b00, #f7c453);
+  --color-warn-soft: light-dark(#fff3cc, #3d3315);
+  --color-backdrop: rgb(9 12 32 / 0.6);
+  --font-display: 'Poltawski Nowy', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, Menlo, Consolas, monospace;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: clamp(2rem, 1.5rem + 2.2vw, 2.75rem);
+  --text-4xl: clamp(2.5rem, 1.4rem + 4.8vw, 4.5rem);
+  --leading-tight: 1.05;
+  --leading-snug: 1.3;
+  --leading-body: 1.55;
+  --kratka: 1.5rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6rem;
+  --control-h: 2.75rem;
+  --wrap: 72rem;
+  --measure: 68ch;
+  --radius-cell: 3px;
+  --radius-control: 6px;
+  --radius-panel: 10px;
+  --radius-pill: 999px;
+  --shadow-raise: 0 1px 2px rgb(9 12 32 / 0.08), 0 4px 14px rgb(9 12 32 / 0.08);
+  --shadow-overlay: 0 16px 48px rgb(9 12 32 / 0.28);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 360ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur: 0ms;
+    --dur-slow: 0ms;
+  }
+}
