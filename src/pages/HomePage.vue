@@ -71,14 +71,14 @@ function isDraft(slug: string): boolean {
             class="tool-card"
             :to="`/${tool.slug}`"
           >
+            <h3>{{ tool.title }}</h3>
+            <p>{{ tool.description }}</p>
             <p
               v-if="isDraft(tool.slug)"
               class="kicker"
             >
               {{ t('draftBadge') }}
             </p>
-            <h3>{{ tool.title }}</h3>
-            <p>{{ tool.description }}</p>
           </RouterLink>
         </li>
       </ul>
