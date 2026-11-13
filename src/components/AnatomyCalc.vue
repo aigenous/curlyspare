@@ -41,8 +41,7 @@ function showsComplement(step: AnatomyStep): boolean {
       = <b>{{ step.sum }}</b>
     </p>
     <p v-if="showsComplement(step)">
-      ({{ step.modulus }} − {{ step.sum }} mod {{ step.modulus }}) mod {{ step.modulus }} =
-      <b>{{ step.expected }}</b>
+      ({{ step.modulus }} − {{ step.sum }} mod {{ step.modulus }}) mod {{ step.modulus }}
       <template v-if="step.matches === true">
         {{ copy.match }}
       </template>

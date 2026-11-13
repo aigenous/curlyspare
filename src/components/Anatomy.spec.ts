@@ -15,12 +15,23 @@ const LABELS = {
   check: 'kontrolna',
 } as const
 
-const SUMMARY = 'Opis numeru.'
+/** Lawyer-approved summaries. The en dashes are U+2013, and the caller supplies the date and sex. */
+const SUMMARY = {
+  wrongCheck:
+    'Niepoprawny format lub suma kontrolna. Cyfra kontrolna na pozycji 11 nie zgadza się z pozostałymi cyframi.',
+  wrongLength:
+    'Niepoprawny format lub suma kontrolna. PESEL ma 11 cyfr – wpisana wartość ma inną długość lub zawiera znaki inne niż cyfry.',
+  badDate: 'Niepoprawny format lub suma kontrolna. Cyfry 1–6 nie tworzą poprawnej daty.',
+  validMale:
+    'Poprawny format i suma kontrolna. Zakodowana data: 14.05.1944, zakodowana płeć: mężczyzna. Nie potwierdza, że numer istnieje ani do kogo należy.',
+  validFemale:
+    'Poprawny format i suma kontrolna. Zakodowana data: 29.02.2000, zakodowana płeć: kobieta. Nie potwierdza, że numer istnieje ani do kogo należy.',
+} as const
 
 function mountAnatomy(
   input: string,
   labels: Readonly<Record<string, string>> = LABELS,
-  summary = SUMMARY,
+  summary: string = SUMMARY.wrongLength,
 ) {
   const host = document.createElement('div')
   document.body.append(host)
@@ -53,7 +64,7 @@ describe('Anatomy', () => {
     const view = mountAnatomy('')
     expect(view.root.getAttribute('aria-hidden')).toBeNull()
     expect(view.root.querySelector('.anatomy__visual')?.getAttribute('aria-hidden')).toBe('true')
-    expect(view.root.querySelector('.anatomy__summary')?.textContent).toBe(SUMMARY)
+    expect(view.root.querySelector('.anatomy__summary')?.textContent).toBe(SUMMARY.wrongLength)
     expect(view.root.querySelectorAll('.anatomy__part')).toHaveLength(3)
     const cells = [...view.root.querySelectorAll('.anatomy__cell')]
     expect(cells).toHaveLength(11)
@@ -96,25 +107,41 @@ describe('Anatomy', () => {
   })
 
   it('marks the check digit when the number is valid', () => {
-    const view = mountAnatomy('44 051-401 359')
+    const view = mountAnatomy('44 051-401 359', LABELS, SUMMARY.validMale)
     const cells = [...view.root.querySelectorAll('.anatomy__cell')]
     expect(cells[10]?.classList.contains('anatomy__cell--mark')).toBe(true)
     expect(cells[10]?.textContent).toBe('9')
     expect(view.root.querySelector('.anatomy__cell--bad')).toBeNull()
+    expect(view.root.querySelector('.anatomy__summary')?.textContent).toBe(SUMMARY.validMale)
     view.unmount()
+
+    const female = mountAnatomy('00222900009', LABELS, SUMMARY.validFemale)
+    expect(female.root.querySelector('.anatomy__summary')?.textContent).toBe(SUMMARY.validFemale)
+    female.unmount()
   })
 
-  it('marks a wrong check digit and leaves the date cells plain', () => {
-    const view = mountAnatomy('44051401358')
+  it('marks a wrong check digit and does not reveal the correct one', () => {
+    const view = mountAnatomy('44051401358', LABELS, SUMMARY.wrongCheck)
     const cells = [...view.root.querySelectorAll('.anatomy__cell')]
     expect(cells.slice(0, 6).every((cell) => !cell.classList.contains('anatomy__cell--bad'))).toBe(true)
     expect(cells[10]?.classList.contains('anatomy__cell--bad')).toBe(true)
     expect(cells[10]?.classList.contains('anatomy__cell--mark')).toBe(false)
+    expect(cells[10]?.textContent).toBe('8')
+    expect(view.root.querySelector('.anatomy__summary')?.textContent).toBe(SUMMARY.wrongCheck)
+    expect(view.host.textContent).not.toContain('9')
+    expect(view.host.textContent).not.toContain('powinna być')
+    for (const element of view.host.querySelectorAll('*')) {
+      for (const name of element.getAttributeNames()) {
+        expect(name.toLowerCase()).not.toContain('expected')
+        expect(element.getAttribute(name) ?? '').not.toContain('9')
+      }
+    }
     view.unmount()
   })
 
   it('marks the birth-date cells when the day cannot exist', () => {
-    const view = mountAnatomy('00022900003')
+    const view = mountAnatomy('00022900003', LABELS, SUMMARY.badDate)
+    expect(view.root.querySelector('.anatomy__summary')?.textContent).toBe(SUMMARY.badDate)
     const cells = [...view.root.querySelectorAll('.anatomy__cell')]
     expect(cells.slice(0, 6).every((cell) => cell.classList.contains('anatomy__cell--bad'))).toBe(true)
     expect(cells[10]?.classList.contains('anatomy__cell--mark')).toBe(true)

@@ -1,10 +1,13 @@
 // @vitest-environment jsdom
 import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { createApp } from 'vue'
 import AnatomyCalc from './AnatomyCalc.vue'
 import { peselAnatomy } from '../tools/anatomy/pesel'
+
+const here = dirname(fileURLToPath(import.meta.url))
 
 const COPY = {
   match: 'cyfra zgodna',
@@ -27,8 +30,9 @@ function mountCalc(input: string) {
 
 describe('AnatomyCalc', () => {
   it('does not decode the number', () => {
-    const source = readFileSync(resolve('src/components/AnatomyCalc.vue'), 'utf8')
+    const source = readFileSync(resolve(here, 'AnatomyCalc.vue'), 'utf8')
     expect(source).not.toMatch(/parsePesel|validatePesel|peselCheckDigit/)
+    expect(source).not.toMatch(/\.expected|powinna być/)
   })
 
   it('prints the weighted sum and the check-digit formula', () => {
@@ -36,14 +40,27 @@ describe('AnatomyCalc', () => {
     expect(valid.host.textContent).toContain('1·')
     expect(valid.host.textContent).toContain('4')
     expect(valid.host.textContent).toContain('101')
-    expect(valid.host.textContent).toContain('(10 − 101 mod 10) mod 10 =')
-    expect(valid.host.textContent).toContain('9')
+    expect(valid.host.textContent).toContain('(10 − 101 mod 10) mod 10')
+    expect(valid.host.textContent).not.toContain('mod 10 =')
     expect(valid.host.textContent).toContain('cyfra zgodna')
     valid.unmount()
 
     const bad = mountCalc('44051401358')
     expect(bad.host.textContent).toContain('cyfra niezgodna')
     expect(bad.host.textContent).not.toContain('cyfra zgodna')
+    expect(bad.host.textContent).not.toContain('powinna być')
+    const walker = document.createTreeWalker(bad.host, NodeFilter.SHOW_TEXT)
+    const texts: string[] = []
+    while (walker.nextNode()) {
+      texts.push((walker.currentNode.textContent ?? '').trim())
+    }
+    expect(texts).not.toContain('9')
+    for (const element of bad.host.querySelectorAll('*')) {
+      for (const name of element.getAttributeNames()) {
+        expect(name.toLowerCase()).not.toContain('expected')
+        expect(element.getAttribute(name) ?? '').not.toMatch(/(^|[^0-9])9([^0-9]|$)/)
+      }
+    }
     bad.unmount()
   })
 
