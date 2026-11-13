@@ -5,11 +5,11 @@ import { usePalette } from '../composables/usePalette'
 import { brand } from '../brand'
 import { categoryLabel, t } from '../i18n'
 import { publishedToolLeadStart, publishedToolSearchLabel } from '../lib/plural'
-import { categories, tools } from '../registry'
+import { categories } from '../registry'
+import { publicTools } from '../registry/published'
 
 const palette = usePalette()
-// Switches to publicTools() when the allowlist PR #21 lands.
-const publishedTools = tools
+const publishedTools = publicTools()
 const toolCount = publishedTools.length
 
 usePageMeta({
@@ -25,7 +25,7 @@ const chips = [
   { slug: 'formatowanie-json', label: 'JSON' },
   { slug: 'kodowanie-base64', label: 'Base64' },
   { slug: 'generator-uuid', label: 'UUID' },
-] as const
+].filter((chip) => publishedTools.some((tool) => tool.slug === chip.slug))
 
 function inCategory(category: (typeof categories)[number]) {
   return publishedTools.filter((tool) => tool.category === category)
@@ -72,6 +72,7 @@ function inCategory(category: (typeof categories)[number]) {
           <kbd class="kbd">Ctrl/⌘ K</kbd>
         </button>
         <nav
+          v-if="chips.length > 0"
           class="chips"
           aria-label="Na skróty"
         >
@@ -106,9 +107,20 @@ function inCategory(category: (typeof categories)[number]) {
           Wszystkie działają bez konta. Na telefonie też.
         </p>
       </div>
-      <div class="toc-groups">
+      <p
+        v-if="toolCount === 0"
+        class="lead"
+        role="status"
+      >
+        {{ t('homeEmpty') }}
+      </p>
+      <div
+        v-else
+        class="toc-groups"
+      >
         <section
           v-for="category in categories"
+          v-show="inCategory(category).length > 0"
           :key="category"
           class="toc-group"
         >

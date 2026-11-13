@@ -4,13 +4,18 @@ import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { brand } from '../brand'
 import { pageHead } from '../composables/usePageMeta'
-import { categoryLabel } from '../i18n'
+import { categoryLabel, t } from '../i18n'
 import { findTool } from '../registry'
+import { publishedSlugs } from '../registry/published'
 import IdDocumentGuide from '../tools/generators/IdDocumentGuide.vue'
 import { ID_TEST_NOTICE_LINES, documentTitleFor, idDocumentPage } from '../tools/generators/id-document-copy'
 
 const route = useRoute()
 const tool = computed(() => findTool(String(route.meta.slug ?? '')))
+const draft = computed(() => {
+  const current = tool.value
+  return Boolean(current && !publishedSlugs.has(current.slug))
+})
 const idCopy = computed(() => {
   const current = tool.value
   return current ? idDocumentPage(current.slug) : null
@@ -36,6 +41,7 @@ useHead(() => {
     description: page?.metaDescription ?? current?.description ?? '',
     ogTitle: page?.h1,
     path: current ? `/${current.slug}` : route.path,
+    robots: draft.value ? 'noindex,nofollow' : undefined,
   })
 })
 </script>
@@ -45,6 +51,12 @@ useHead(() => {
     v-if="tool"
     class="wrap tool-legacy"
   >
+    <p
+      v-if="draft"
+      class="kicker"
+    >
+      {{ t('draftBadge') }}
+    </p>
     <p class="kicker">
       {{ categoryLabel(tool.category) }}
     </p>

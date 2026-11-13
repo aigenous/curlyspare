@@ -3,7 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { categoryLabel, t } from '../i18n'
 import { filterTools } from '../lib/search'
-import { tools } from '../registry'
+import { publicTools } from '../registry/published'
 
 const emit = defineEmits<{ close: [] }>()
 const router = useRouter()
@@ -11,7 +11,7 @@ const query = ref('')
 const active = ref(0)
 const input = ref<HTMLInputElement | null>(null)
 const dialog = ref<HTMLElement | null>(null)
-const results = computed(() => filterTools(tools, query.value))
+const results = computed(() => filterTools(publicTools(), query.value))
 const listId = 'palette-listbox'
 const activeId = computed(() => {
   const tool = results.value[active.value]
