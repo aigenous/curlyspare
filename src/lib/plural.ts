@@ -1,9 +1,9 @@
 const polishRules = new Intl.PluralRules('pl')
 
-export type NarzedzieWord = 'narzędzie' | 'narzędzia' | 'narzędzi'
+export type ToolNoun = 'narzędzie' | 'narzędzia' | 'narzędzi'
 
-/** Polish plural for "narzędzie", via Intl.PluralRules('pl'). */
-export function narzedzieWord(count: number): NarzedzieWord {
+/** Polish plural of the tool noun, via Intl.PluralRules('pl'). */
+export function toolNoun(count: number): ToolNoun {
   const category = polishRules.select(count)
   switch (category) {
     case 'one':
@@ -23,19 +23,19 @@ export function narzedzieWord(count: number): NarzedzieWord {
 }
 
 /** Count plus the matching noun. Zero hides the number so the sentence can stand alone. */
-export function narzedzieCount(count: number): string {
+export function toolCountPhrase(count: number): string {
   if (count === 0) return ''
-  return `${count} ${narzedzieWord(count)}`
+  return `${count} ${toolNoun(count)}`
 }
 
 export function publishedToolLeadStart(count: number): string {
   if (count === 0) return 'Darmowe narzędzia'
-  const word = narzedzieWord(count)
+  const word = toolNoun(count)
   const adjective = word === 'narzędzi' ? 'darmowych' : 'darmowe'
   return `${count} ${adjective} ${word}`
 }
 
 export function publishedToolSearchLabel(count: number): string {
   if (count === 0) return 'Szukaj narzędzia'
-  return `Szukaj wśród ${narzedzieCount(count)}`
+  return `Szukaj wśród ${toolCountPhrase(count)}`
 }

@@ -44,7 +44,7 @@ function operatorLaunchGuard(): Plugin {
   return {
     name: 'operator-launch-guard',
     buildStart() {
-      const legalDocuments = ['src/content/legal/regulamin.md', 'src/content/legal/polityka-prywatnosci.md'].map((file) =>
+      const legalDocuments = ['src/content/legal/regulamin.md', 'src/content/legal/privacy-policy.md'].map((file) =>
         readFileSync(resolve(file), 'utf8'),
       )
       assertOperatorReadyForLaunch(site.operator, process.env.REQUIRE_OPERATOR_DATA, console.warn, legalDocuments)

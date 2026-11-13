@@ -8,8 +8,8 @@ interface IdentifierLibrary {
   validateNip: (value: string) => { valid: boolean }
   validateRegon: (value: string) => { valid: boolean }
   validateKrs: (value: string) => { valid: boolean }
-  validateDowodOsobisty: (value: string) => { valid: boolean }
-  validatePaszport: (value: string) => { valid: boolean }
+  validateIdCardNumber: (value: string) => { valid: boolean }
+  validatePassport: (value: string) => { valid: boolean }
   validateNrb: (value: string) => { valid: boolean }
   validateGtin: (value: string) => { valid: boolean }
 }
@@ -120,7 +120,7 @@ test.describe('identifier screens', () => {
     await page.getByRole('button', { name: 'Generuj' }).click()
     const card = (await page.getByLabel('Wynik').inputValue()).trim()
     expect(card).toMatch(/^\[TEST\] [A-Z]{3} \d{6}$/)
-    expect(api.validateDowodOsobisty(card.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
+    expect(api.validateIdCardNumber(card.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
     const [download] = await Promise.all([
       page.waitForEvent('download'),
       page.getByRole('button', { name: 'Pobierz CSV' }).click(),
@@ -150,7 +150,7 @@ test.describe('identifier screens', () => {
     await page.getByRole('button', { name: 'Generuj' }).click()
     const passport = (await page.getByLabel('Wynik').inputValue()).trim()
     expect(passport).toMatch(/^\[TEST\] [A-Z]{2} \d{7}$/)
-    expect(api.validatePaszport(passport.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
+    expect(api.validatePassport(passport.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
     await page.getByLabel('Numer paszportu').fill('AA3234567')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
@@ -215,7 +215,7 @@ test.describe('identifier screens', () => {
   })
 
   test('EAN generator checks a published EAN-13 and rejects a bad digit', async ({ page }) => {
-    test.skip(!screenReady('generator-ean/GeneratorEan.vue'), 'EAN screen is not on this branch yet')
+    test.skip(!screenReady('ean-generator/EanGenerator.vue'), 'EAN screen is not on this branch yet')
     const api = await loadIdentifiers()
     await page.goto('/generator-ean')
     await page.getByRole('button', { name: 'Generuj' }).click()
@@ -232,7 +232,7 @@ test.describe('identifier screens', () => {
   })
 
   test('EU VAT accepts a Polish NIP and rejects a damaged checksum', async ({ page }) => {
-    test.skip(!screenReady('walidator-vat-ue/WalidatorVatUe.vue'), 'EU VAT screen is not on this branch yet')
+    test.skip(!screenReady('eu-vat-validator/EuVatValidator.vue'), 'EU VAT screen is not on this branch yet')
     await page.goto('/walidator-vat-ue')
     await expect(page.getByText('Nie sprawdza statusu w VIES (aktywności podatnika VAT UE)')).toBeVisible()
     await expect(page.locator('.disclaimer')).toContainText('Nie łączy się z VIES')
@@ -248,7 +248,7 @@ test.describe('identifier screens', () => {
   })
 
   test('test-person generator writes a fictional PESEL that validates', async ({ page }) => {
-    test.skip(!screenReady('generator-osoby-testowej/GeneratorOsobyTestowej.vue'), 'test-person screen is not on this branch yet')
+    test.skip(!screenReady('test-person-generator/TestPersonGenerator.vue'), 'test-person screen is not on this branch yet')
     const api = await loadIdentifiers()
     await page.goto('/generator-danych-testowych')
     await expect(page.locator('.disclaimer')).toContainText('wyłącznie do testowania')
@@ -264,7 +264,7 @@ test.describe('identifier screens', () => {
   })
 
   test('VIN validator accepts the published example and rejects letter I', async ({ page }) => {
-    test.skip(!screenReady('walidator-vin/WalidatorVin.vue'), 'VIN screen is not on this branch yet')
+    test.skip(!screenReady('vin-validator/VinValidator.vue'), 'VIN screen is not on this branch yet')
     await page.goto('/walidator-vin')
     await page.getByLabel('VIN').fill('1M8GDM9AXKP042788')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
@@ -275,7 +275,7 @@ test.describe('identifier screens', () => {
   })
 
   test('ISBN converter turns ISBN-10 into ISBN-13 and rejects a bad check digit', async ({ page }) => {
-    test.skip(!screenReady('konwerter-isbn/KonwerterIsbn.vue'), 'ISBN screen is not on this branch yet')
+    test.skip(!screenReady('isbn-converter/IsbnConverter.vue'), 'ISBN screen is not on this branch yet')
     await page.goto('/konwerter-isbn')
     await page.getByLabel('ISBN').fill('0-306-40615-2')
     await page.getByRole('button', { name: 'Sprawdź' }).click()

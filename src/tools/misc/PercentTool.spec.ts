@@ -6,7 +6,7 @@ import PercentTool from './PercentTool.vue'
 function labeledInput(root: ParentNode, name: string): HTMLInputElement {
   const label = [...root.querySelectorAll('label')].find((element) => element.textContent?.includes(name))
   const input = label?.querySelector('input')
-  if (!(input instanceof HTMLInputElement)) throw new Error(`Brak pola „${name}”.`)
+  if (!(input instanceof HTMLInputElement)) throw new Error(`Missing field "${name}".`)
   return input
 }
 
@@ -16,8 +16,8 @@ async function setValue(input: HTMLInputElement, value: string) {
   await nextTick()
 }
 
-describe('kalkulator procentów', () => {
-  it('trzyma pola „Z liczby” i „Całość” niezależnie', async () => {
+describe('percent calculator', () => {
+  it('keeps the „Z liczby” and „Całość” fields independent', async () => {
     const host = document.createElement('div')
     document.body.append(host)
     const app = createApp(PercentTool)

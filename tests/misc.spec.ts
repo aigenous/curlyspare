@@ -8,13 +8,13 @@ import { filterTools, fold } from '../src/lib/search'
 import { tools } from '../src/registry'
 
 describe('search', () => {
-  it('folds Polish diacritics, including ł and ż', () => {
+  it('folds Polish diacritics, including l with stroke and z with dot', () => {
     expect(fold('Ąćęńóśź')).toBe('acenosz')
     expect(fold('Żółć')).toBe('zolc')
     expect(fold('Łódź')).toBe('lodz')
   })
 
-  it('uses „ze świętami” in the working-days description', () => {
+  it('uses the holiday wording in the working-days description', () => {
     const tool = tools.find((item) => item.slug === 'kalkulator-dni-roboczych')
     expect(tool?.description).toContain('ze świętami')
     expect(tool?.description.includes('z świętami')).toBe(false)

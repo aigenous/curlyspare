@@ -56,7 +56,7 @@ describe('static source guards', () => {
   it('does not make network calls from tool code', () => {
     const files = [...walk(join(root, 'src/tools')), ...walk(join(root, 'src/lib'))]
     expect(files.length).toBeGreaterThan(0)
-    // curl-na-fetch prints fetch() and axios snippets. Literals are not calls.
+    // curl-to-fetch prints fetch() and axios snippets. Literals are not calls.
     const imports =
       /\bfrom\s+['"](?:axios|node:(?:https?|net|http2|tls))['"]|\brequire\s*\(\s*['"]axios['"]|import\s*\(\s*['"]https?:/
     const calls =

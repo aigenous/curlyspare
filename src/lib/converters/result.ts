@@ -9,5 +9,5 @@ export function err(error: string): { ok: false; error: string } {
 }
 
 export function assertNever(value: never): never {
-  throw new Error(`Nieobsługiwany wariant: ${String(value)}`)
+  throw new Error(`Unhandled variant: ${String(value)}`)
 }
