@@ -49,6 +49,36 @@
   ],
   "redirects": [
     {
+      "source": "/generator-dowod-osobisty",
+      "destination": "/numer-dowodu-osobistego",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-dowod-osobisty/",
+      "destination": "/numer-dowodu-osobistego",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-dowod-osobisty.html",
+      "destination": "/numer-dowodu-osobistego",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-paszport",
+      "destination": "/numer-paszportu",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-paszport/",
+      "destination": "/numer-paszportu",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-paszport.html",
+      "destination": "/numer-paszportu",
+      "statusCode": 301
+    },
+    {
       "source": "/generator-nrb",
       "destination": "/walidator-iban",
       "statusCode": 301

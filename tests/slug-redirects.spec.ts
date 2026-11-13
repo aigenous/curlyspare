@@ -17,9 +17,12 @@ const sourcePattern = /^\/([a-z0-9]+(?:-[a-z0-9]+)*)(\/|\.html)?$/
 const destinationPattern = /^\/([a-z0-9]+(?:-[a-z0-9]+)*)$/
 const variants = ['', '/', '.html'] as const
 
-// Old -> new slugs from the #14 diff (8bcee21^1..8bcee21) of the tool registries.
-// generator-nrb was removed and its screen was merged into walidator-iban.
+// Old -> new slugs. The #14 registry diff (8bcee21^1..8bcee21) supplied every row
+// except the two ID documents, and removed generator-nrb by merging it into
+// walidator-iban. Commit 570deb8 (#15) renamed the ID document tools.
 const renamed: ReadonlyArray<readonly [string, string]> = [
+  ['generator-dowod-osobisty', 'numer-dowodu-osobistego'],
+  ['generator-paszport', 'numer-paszportu'],
   ['generator-nrb', 'walidator-iban'],
   ['generator-osoby-testowej', 'generator-danych-testowych'],
   ['generator-skrotow', 'generator-sha256'],
@@ -71,7 +74,7 @@ function readRedirects(value: unknown): SlugRedirect[] {
 
 describe('slug redirects', () => {
   it('sends every renamed slug to its new registry path with status 301', () => {
-    expect(renamed).toHaveLength(22)
+    expect(renamed).toHaveLength(24)
     const redirects = readRedirects(vercel.redirects)
     const registry = new Set(tools.map((tool) => tool.slug))
     const sources = redirects.map((redirect) => redirect.source)
