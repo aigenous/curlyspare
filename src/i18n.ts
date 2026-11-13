@@ -14,8 +14,9 @@ const messages = {
   homeTitle: 'Krótkie narzędzia na co dzień',
   homeLede:
     'Formatery, identyfikatory i polskie dane testowe. Wpisane i wygenerowane wartości nie opuszczają tej przeglądarki.',
-  homeEmpty: 'Brak narzędzi w rejestrze.',
+  homeEmpty: 'Żadne narzędzie nie jest jeszcze opublikowane.',
   homeNoResults: 'Nie znaleziono pasujących narzędzi.',
+  draftBadge: 'Wersja robocza',
   footerLocal: 'Obliczenia wyłącznie w przeglądarce. Bez analityki i bez ciasteczek.',
   footerTerms: 'Regulamin',
   footerPrivacy: 'Polityka prywatności',

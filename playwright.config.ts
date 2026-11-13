@@ -14,7 +14,8 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: `test -s dist/index.html || pnpm build; pnpm exec vite preview --host 127.0.0.1 --port ${port} --strictPort`,
+    // Production prerender follows the allowlist. E2E rebuilds with drafts so every registered tool stays covered.
+    command: `VITE_SHOW_DRAFTS=1 pnpm build && pnpm exec vite preview --host 127.0.0.1 --port ${port} --strictPort`,
     port,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
