@@ -167,7 +167,7 @@ describe('Anatomy', () => {
     expect(css).not.toMatch(/var\(--[a-z0-9-]+\)/)
     expect(css).toContain('var(--color-mark, #FFD83D)')
     expect(css).toContain('var(--color-on-mark, #131A3A)')
-    expect(css).toContain('var(--color-mark-border, light-dark(#131a3a, #eef1fb))')
+    expect(css).toContain('var(--color-mark-border, light-dark(#8A6700, #D9AB00))')
     expect(css).toContain('var(--radius-cell, 3px)')
     expect(css).toContain('var(--font-mono, "Atkinson Hyperlegible Mono", ui-monospace, Menlo, Consolas, monospace)')
     expect(css).toContain('var(--dur-slow, 360ms)')

@@ -93,7 +93,7 @@
 .anatomy__cell--mark {
   background: linear-gradient(var(--color-mark, #FFD83D), var(--color-mark, #FFD83D)) no-repeat left / 100% 100% var(--color-surface, light-dark(#ffffff, #161c40));
   color: var(--color-on-mark, #131A3A);
-  border-color: var(--color-mark-border, light-dark(#131a3a, #eef1fb));
+  border-color: var(--color-mark-border, light-dark(#8A6700, #D9AB00));
   animation: swipe var(--dur-slow, 360ms) var(--ease, cubic-bezier(.2, .7, .2, 1));
 }
 
