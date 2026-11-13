@@ -1,9 +1,17 @@
 import { spawn, type ChildProcess } from 'node:child_process'
 import { createServer } from 'node:net'
 import { describe, expect, it } from 'vitest'
+import { tools } from './index'
+import { publishedSlugList } from './published-slugs'
 
-const draftPath = '/numer-dowodu-osobistego'
 const sitemapPaths = ['/', '/operator', '/polityka-prywatnosci', '/regulamin']
+
+function draftToolPath(): string {
+  const allowed = new Set<string>(publishedSlugList)
+  const slug = tools.map((tool) => tool.slug).find((item) => !allowed.has(item))
+  if (!slug) throw new Error('Expected an unpublished tool in the registry.')
+  return `/${slug}`
+}
 
 function productionEnv(): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = {
@@ -116,7 +124,7 @@ describe('production preview', () => {
     try {
       const home = await fetch(`http://127.0.0.1:${port}/`)
       expect(home.status).toBe(200)
-      const draft = await fetch(`http://127.0.0.1:${port}${draftPath}`)
+      const draft = await fetch(`http://127.0.0.1:${port}${draftToolPath()}`)
       expect(draft.status).toBe(404)
       expect(await draft.text()).toContain('Nie ma takiej strony')
       const sitemap = await fetch(`http://127.0.0.1:${port}/sitemap.xml`)

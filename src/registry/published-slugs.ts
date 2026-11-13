@@ -3,7 +3,8 @@
  * tool until its slug is listed here.
  *
  * TODO: Product Manager provides this list in a separate PR.
- * Keep the list empty until that list lands. Examples already registered:
+ * Keep the list empty until that list lands. The examples below are copied
+ * from the tool registry:
  * walidator-iban, numer-dowodu-osobistego, numer-paszportu.
  *
  * This module stays free of Vue imports so the Vite config can read it.

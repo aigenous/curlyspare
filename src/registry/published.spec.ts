@@ -24,17 +24,24 @@ describe('publish allowlist', () => {
   })
 
   it('accepts only slugs that exist in the registry', () => {
+    const registered = tools.map((tool) => tool.slug)
+    const sample = registered[0]
+    expect(sample).toBeDefined()
     expect(missingPublishedSlugs()).toEqual([])
-    expect(missingPublishedSlugs(['walidator-iban'])).toEqual([])
+    expect(missingPublishedSlugs(registered)).toEqual([])
+    expect(missingPublishedSlugs([sample ?? ''])).toEqual([])
+    expect(() => assertPublishedSlugs(registered)).not.toThrow()
     expect(missingPublishedSlugs(['nie-ma-takiego-narzedzia'])).toEqual(['nie-ma-takiego-narzedzia'])
     expect(() => assertPublishedSlugs(['nie-ma-takiego-narzedzia'])).toThrow(/nie-ma-takiego-narzedzia/)
   })
 
   it('accepts every slug named in the allowlist comment', () => {
+    const registered = new Set(tools.map((tool) => tool.slug))
     const source = readFileSync(new URL('./published-slugs.ts', import.meta.url), 'utf8')
     const header = source.match(/^\/\*\*[\s\S]*?\*\//)?.[0] ?? ''
     const examples = [...header.matchAll(/[a-z0-9]+(?:-[a-z0-9]+)+/g)].map((match) => match[0])
-    expect(examples).toEqual(['walidator-iban', 'numer-dowodu-osobistego', 'numer-paszportu'])
+    expect(examples.length).toBeGreaterThan(0)
+    expect(examples.every((slug) => registered.has(slug))).toBe(true)
     expect(() => assertPublishedSlugs(examples)).not.toThrow()
   })
 
