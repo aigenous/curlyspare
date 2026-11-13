@@ -1,8 +1,10 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { routes } from '../router'
 import { tools } from './index'
 import { visibleSlugs } from './published-slugs'
 import {
+  assertPublishedSlugs,
   missingPublishedSlugs,
   prerenderPaths,
   publicTools,
@@ -25,6 +27,15 @@ describe('publish allowlist', () => {
     expect(missingPublishedSlugs()).toEqual([])
     expect(missingPublishedSlugs(['walidator-iban'])).toEqual([])
     expect(missingPublishedSlugs(['nie-ma-takiego-narzedzia'])).toEqual(['nie-ma-takiego-narzedzia'])
+    expect(() => assertPublishedSlugs(['nie-ma-takiego-narzedzia'])).toThrow(/nie-ma-takiego-narzedzia/)
+  })
+
+  it('accepts every slug named in the allowlist comment', () => {
+    const source = readFileSync(new URL('./published-slugs.ts', import.meta.url), 'utf8')
+    const header = source.match(/^\/\*\*[\s\S]*?\*\//)?.[0] ?? ''
+    const examples = [...header.matchAll(/[a-z0-9]+(?:-[a-z0-9]+)+/g)].map((match) => match[0])
+    expect(examples).toEqual(['walidator-iban', 'generator-dowod-osobisty', 'generator-paszport'])
+    expect(() => assertPublishedSlugs(examples)).not.toThrow()
   })
 
   it('keeps sitemap and prerender paths to the allowlist plus static pages', () => {

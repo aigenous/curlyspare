@@ -13,10 +13,8 @@ export interface PublicToolsOptions {
 }
 
 function showingDrafts(): boolean {
-  const vite = import.meta.env as { DEV?: boolean; VITE_SHOW_DRAFTS?: string } | undefined
-  if (vite?.DEV) return true
-  if (vite?.VITE_SHOW_DRAFTS === '1') return true
-  return typeof process !== 'undefined' && process.env.VITE_SHOW_DRAFTS === '1'
+  if (import.meta.env.DEV) return true
+  return import.meta.env.VITE_SHOW_DRAFTS === '1'
 }
 
 function includeDrafts(options?: PublicToolsOptions): boolean {
@@ -33,8 +31,8 @@ export function missingPublishedSlugs(slugs: Iterable<string> = publishedSlugs):
   return [...slugs].filter((slug) => !known.has(slug))
 }
 
-export function assertPublishedSlugs(): void {
-  const missing = missingPublishedSlugs()
+export function assertPublishedSlugs(slugs: Iterable<string> = publishedSlugs): void {
+  const missing = missingPublishedSlugs(slugs)
   if (missing.length > 0) {
     throw new Error(`Published slug is not in the registry: ${missing.join(', ')}`)
   }

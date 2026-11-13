@@ -2,11 +2,9 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
 import { shellPaths, visibleSlugs } from './src/registry/published-slugs'
 import { site } from './src/site'
-
-const showDrafts = process.env.VITE_SHOW_DRAFTS === '1'
 
 function registeredSlugs(): string[] {
   const files = ['src/tools/misc/index.ts', 'src/tools/generators/index.ts', 'src/tools/converters/index.ts']
@@ -15,8 +13,12 @@ function registeredSlugs(): string[] {
   )
 }
 
-function visibleToolPaths(): string[] {
+function visibleToolPaths(showDrafts: boolean): string[] {
   return visibleSlugs(registeredSlugs(), showDrafts).map((slug) => `/${slug}`)
+}
+
+function concretePaths(paths: readonly string[]): string[] {
+  return paths.filter((path) => !path.includes(':') && !path.includes('*'))
 }
 
 function previewNotFound(): Plugin {
@@ -51,43 +53,57 @@ function previewNotFound(): Plugin {
   }
 }
 
-const siteUrl = (process.env.VITE_SITE_URL || site.defaultSiteUrl).replace(/\/$/, '')
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd())
+  const showDrafts = env.VITE_SHOW_DRAFTS === '1'
+  const siteUrl = (env.VITE_SITE_URL || site.defaultSiteUrl).replace(/\/$/, '')
+  const prerendered = [...shellPaths, ...visibleToolPaths(showDrafts), '/404']
 
-export default defineConfig({
-  plugins: [vue(), previewNotFound()],
-  ssgOptions: {
-    dirStyle: 'flat',
-    includedRoutes(paths) {
-      // Router paths come from publicTools(). Keep the same slug filter here.
-      const allowed = new Set<string>([...shellPaths, ...visibleToolPaths(), '/404'])
-      return paths.filter((path) => allowed.has(path))
+  return {
+    plugins: [vue(), previewNotFound()],
+    ssgOptions: {
+      dirStyle: 'flat',
+      includedRoutes(paths) {
+        // Router paths come from publicTools(). Keep the same slug filter here.
+        const linked = concretePaths(paths)
+        const allowed = new Set<string>(prerendered)
+        const linkedSet = new Set(linked)
+        const notPrerendered = linked.filter((path) => !allowed.has(path))
+        const notLinked = prerendered.filter((path) => !linkedSet.has(path))
+        if (notPrerendered.length > 0 || notLinked.length > 0) {
+          throw new Error(
+            `Linked pages and prerendered pages disagree. Linked but not prerendered: ${notPrerendered.join(', ') || 'none'}. Prerendered but not linked: ${notLinked.join(', ') || 'none'}.`,
+          )
+        }
+        return linked
+      },
+      onFinished() {
+        const dist = resolve('dist')
+        const pages = readdirSync(dist)
+          .filter((file) => file.endsWith('.html') && file !== '404.html')
+          .map((file) => (file === 'index.html' ? '/' : `/${file.replace(/\.html$/, '')}`))
+          .sort((a, b) => a.localeCompare(b))
+        const expected = prerendered.filter((path) => path !== '/404').sort((a, b) => a.localeCompare(b))
+        const missing = expected.filter((path) => !pages.includes(path))
+        const extra = pages.filter((path) => !expected.includes(path))
+        if (missing.length > 0 || extra.length > 0) {
+          throw new Error(`Sitemap pages do not match the allowlist. Missing: ${missing.join(', ') || 'none'}. Extra: ${extra.join(', ') || 'none'}.`)
+        }
+        if (!existsSync(resolve(dist, '404.html'))) {
+          throw new Error('Missing prerendered 404 page.')
+        }
+        const urls = expected
+          .map((path) => `  <url><loc>${siteUrl}${path === '/' ? '/' : path}</loc></url>`)
+          .join('\n')
+        writeFileSync(
+          resolve(dist, 'sitemap.xml'),
+          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+        )
+        writeFileSync(
+          resolve(dist, 'robots.txt'),
+          `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
+        )
+      },
     },
-    onFinished() {
-      const dist = resolve('dist')
-      const pages = readdirSync(dist)
-        .filter((file) => file.endsWith('.html') && file !== '404.html')
-        .map((file) => (file === 'index.html' ? '/' : `/${file.replace(/\.html$/, '')}`))
-        .sort((a, b) => a.localeCompare(b))
-      const expected = [...shellPaths, ...visibleToolPaths()].sort((a, b) => a.localeCompare(b))
-      const missing = expected.filter((path) => !pages.includes(path))
-      const extra = pages.filter((path) => !expected.includes(path))
-      if (missing.length > 0 || extra.length > 0) {
-        throw new Error(`Sitemap pages do not match the allowlist. Missing: ${missing.join(', ') || 'none'}. Extra: ${extra.join(', ') || 'none'}.`)
-      }
-      if (!existsSync(resolve(dist, '404.html'))) {
-        throw new Error('Missing prerendered 404 page.')
-      }
-      const urls = expected
-        .map((path) => `  <url><loc>${siteUrl}${path === '/' ? '/' : path}</loc></url>`)
-        .join('\n')
-      writeFileSync(
-        resolve(dist, 'sitemap.xml'),
-        `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
-      )
-      writeFileSync(
-        resolve(dist, 'robots.txt'),
-        `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
-      )
-    },
-  },
+  }
 })
