@@ -10,7 +10,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Formatuj, minimalizuj i sprawdzaj JSON. Błąd podaje wiersz i kolumnę.',
     category: 'konwertery',
     keywords: ['json', 'formatowanie', 'formatter', 'minify', 'minimalizacja', 'walidacja', 'pretty'],
-    component: () => import('./formatowanie-json/FormatowanieJson.vue'),
+    component: () => import('./json-formatter/JsonFormatter.vue'),
   },
   {
     slug: 'kodowanie-base64',
@@ -18,7 +18,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Koduj i dekoduj Base64 w UTF-8, także wariant URL-safe i pliki.',
     category: 'kodowanie',
     keywords: ['base64', 'base64url', 'kodowanie', 'dekodowanie', 'plik', 'utf-8', 'url-safe'],
-    component: () => import('./kodowanie-base64/KodowanieBase64.vue'),
+    component: () => import('./base64-encoding/Base64Encoding.vue'),
   },
   {
     slug: 'dekoder-jwt',
@@ -27,7 +27,7 @@ export const converterTools: ToolDefinition[] = [
     category: 'kodowanie',
     keywords: ['jwt', 'json web token', 'dekoder', 'payload', 'nagłówek', 'exp', 'iat'],
     disclaimer: JWT_NOTICE,
-    component: () => import('./dekoder-jwt/DekoderJwt.vue'),
+    component: () => import('./jwt-decoder/JwtDecoder.vue'),
   },
   {
     slug: 'generator-uuid',
@@ -35,7 +35,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Generuj UUID v4 i v7, także hurtowo, i sprawdź wersję identyfikatora.',
     category: 'kodowanie',
     keywords: ['uuid', 'guid', 'uuidv4', 'uuidv7', 'identyfikator', 'walidator'],
-    component: () => import('./generator-uuid/GeneratorUuid.vue'),
+    component: () => import('./uuid-generator/UuidGenerator.vue'),
   },
   {
     slug: 'kodowanie-url',
@@ -43,7 +43,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Koduj i dekoduj składniki adresu URL oraz pola formularza.',
     category: 'kodowanie',
     keywords: ['url', 'uri', 'encode', 'decode', 'kodowanie procentowe', 'query', 'formularz'],
-    component: () => import('./kodowanie-url/KodowanieUrl.vue'),
+    component: () => import('./url-encoding/UrlEncoding.vue'),
   },
   {
     slug: 'generator-sha256',
@@ -52,7 +52,7 @@ export const converterTools: ToolDefinition[] = [
     category: 'kodowanie',
     keywords: ['hash', 'sha', 'sha-1', 'sha-256', 'sha-512', 'skrót', 'webcrypto', 'generator sha256', 'hash sha256', 'sha256'],
     disclaimer: SHA1_NOTICE,
-    component: () => import('./generator-skrotow/GeneratorSkrotow.vue'),
+    component: () => import('./hash-generator/HashGenerator.vue'),
   },
   {
     slug: 'unix-timestamp',
@@ -60,7 +60,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień znacznik Unix na datę i odwrotnie. Domyślna strefa to Europe/Warsaw.',
     category: 'konwertery',
     keywords: ['unix', 'timestamp', 'epoch', 'czas', 'data', 'strefa czasowa', 'warsaw', 'utc', 'unix timestamp', 'unix timestamp to date', 'konwerter timestamp'],
-    component: () => import('./znacznik-czasu/ZnacznikCzasu.vue'),
+    component: () => import('./unix-timestamp/UnixTimestamp.vue'),
   },
   {
     slug: 'json-na-yaml',
@@ -68,7 +68,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień JSON na YAML i YAML 1.2 z powrotem na JSON.',
     category: 'konwertery',
     keywords: ['json', 'yaml', 'yml', 'konwersja'],
-    component: () => import('./json-na-yaml/JsonNaYaml.vue'),
+    component: () => import('./json-to-yaml/JsonToYaml.vue'),
   },
   {
     slug: 'json-na-csv',
@@ -76,7 +76,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień tablicę obiektów JSON na CSV i CSV z nagłówkiem z powrotem na JSON.',
     category: 'konwertery',
     keywords: ['json', 'csv', 'excel', 'przecinek', 'średnik', 'tabela'],
-    component: () => import('./json-na-csv/JsonNaCsv.vue'),
+    component: () => import('./json-to-csv/JsonToCsv.vue'),
   },
   {
     slug: 'generator-hmac',
@@ -84,7 +84,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Policz HMAC SHA-256 albo SHA-512 z klucza i wiadomości. Liczone lokalnie.',
     category: 'kodowanie',
     keywords: ['hmac', 'sha-256', 'sha-512', 'klucz', 'podpis', 'webcrypto'],
-    component: () => import('./generator-hmac/GeneratorHmac.vue'),
+    component: () => import('./hmac-generator/HmacGenerator.vue'),
   },
   {
     slug: 'kodowanie-base32',
@@ -92,7 +92,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Koduj i dekoduj Base32 (RFC 4648) dla tekstu UTF-8 i plików.',
     category: 'kodowanie',
     keywords: ['base32', 'rfc 4648', 'kodowanie', 'dekodowanie', 'plik'],
-    component: () => import('./kodowanie-base32/KodowanieBase32.vue'),
+    component: () => import('./base32-encoding/Base32Encoding.vue'),
   },
   {
     slug: 'hex-na-tekst',
@@ -100,7 +100,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień tekst albo bajty na hex i odczytaj hex z powrotem jako UTF-8.',
     category: 'kodowanie',
     keywords: ['hex', 'szesnastkowo', 'bajty', 'utf-8', 'kodowanie', 'hex na tekst', 'tekst na hex'],
-    component: () => import('./kodowanie-hex/KodowanieHex.vue'),
+    component: () => import('./hex-encoding/HexEncoding.vue'),
   },
   {
     slug: 'escape-unicode',
@@ -108,7 +108,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień znaki na \\uXXXX albo \\u{punkt} i pokaż bajty UTF-8.',
     category: 'kodowanie',
     keywords: ['unicode', 'utf-8', 'ucieczka', 'escape', 'punkt kodowy', '\\u', 'escape unicode', 'escape unicode online'],
-    component: () => import('./ucieczki-unicode/UcieczkiUnicode.vue'),
+    component: () => import('./unicode-escape/UnicodeEscape.vue'),
   },
   {
     slug: 'formatowanie-xml',
@@ -116,7 +116,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Formatuj, minimalizuj i sprawdzaj dokument XML w przeglądarce.',
     category: 'konwertery',
     keywords: ['xml', 'formatowanie', 'minify', 'walidacja', 'pretty'],
-    component: () => import('./formatowanie-xml/FormatowanieXml.vue'),
+    component: () => import('./xml-formatter/XmlFormatter.vue'),
   },
   {
     slug: 'parser-url',
@@ -124,7 +124,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Rozłóż adres na części, edytuj parametry zapytania i złóż URL z powrotem.',
     category: 'siec',
     keywords: ['url', 'query', 'parametry', 'host', 'ścieżka', 'parser', 'parser url', 'parser url online'],
-    component: () => import('./parser-adresu/ParserAdresu.vue'),
+    component: () => import('./address-parser/AddressParser.vue'),
   },
   {
     slug: 'formatowanie-sql',
@@ -132,7 +132,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Formatuj zapytanie SQL. Dialekty obejmują PostgreSQL, MySQL, MariaDB i SQLite.',
     category: 'konwertery',
     keywords: ['sql', 'postgresql', 'mysql', 'mariadb', 'sqlite', 'formatowanie', 'formatter'],
-    component: () => import('./formatowanie-sql/FormatowanieSql.vue'),
+    component: () => import('./sql-formatter/SqlFormatter.vue'),
   },
   {
     slug: 'walidator-json-schema',
@@ -140,7 +140,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Sprawdź dokument JSON względem JSON Schema. Błędy podają ścieżkę pola.',
     category: 'konwertery',
     keywords: ['json', 'json schema', 'walidacja', 'schemat', 'ajv'],
-    component: () => import('./walidator-json-schema/WalidatorJsonSchema.vue'),
+    component: () => import('./json-schema-validator/JsonSchemaValidator.vue'),
   },
   {
     slug: 'xml-na-json',
@@ -148,7 +148,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień XML na JSON i obiekt JSON z powrotem na XML.',
     category: 'konwertery',
     keywords: ['xml', 'json', 'atrybuty', 'konwersja'],
-    component: () => import('./xml-na-json/XmlNaJson.vue'),
+    component: () => import('./xml-to-json/XmlToJson.vue'),
   },
   {
     slug: 'json-na-typescript',
@@ -156,7 +156,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zbuduj interfejsy TypeScript z przykładowego dokumentu JSON.',
     category: 'konwertery',
     keywords: ['json', 'typescript', 'interfejs', 'typ', 'interface'],
-    component: () => import('./json-na-typescript/JsonNaTypescript.vue'),
+    component: () => import('./json-to-typescript/JsonToTypescript.vue'),
   },
   {
     slug: 'tester-jsonpath',
@@ -164,7 +164,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Wykonaj zapytanie JSONPath na dokumencie JSON i zobacz trafienia.',
     category: 'konwertery',
     keywords: ['jsonpath', 'json', 'zapytanie', 'filtr', 'ścieżka'],
-    component: () => import('./tester-jsonpath/TesterJsonpath.vue'),
+    component: () => import('./jsonpath-tester/JsonPathTester.vue'),
   },
   {
     slug: 'toml-na-json',
@@ -172,7 +172,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień TOML na JSON i obiekt JSON z powrotem na TOML.',
     category: 'konwertery',
     keywords: ['toml', 'json', 'konwersja'],
-    component: () => import('./toml-na-json/TomlNaJson.vue'),
+    component: () => import('./toml-to-json/TomlToJson.vue'),
   },
   {
     slug: 'curl-na-fetch',
@@ -180,7 +180,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień polecenie curl na wywołanie fetch oraz axios.',
     category: 'konwertery',
     keywords: ['curl', 'fetch', 'axios', 'http', 'nagłówki'],
-    component: () => import('./curl-na-fetch/CurlNaFetch.vue'),
+    component: () => import('./curl-to-fetch/CurlToFetch.vue'),
   },
   {
     slug: 'generator-jwt',
@@ -189,7 +189,7 @@ export const converterTools: ToolDefinition[] = [
     category: 'kodowanie',
     keywords: ['jwt', 'hs256', 'hs384', 'hs512', 'podpis', 'hmac', 'generator jwt', 'generator jwt token', 'jwt generator hs256'],
     disclaimer: JWT_SIGN_NOTICE,
-    component: () => import('./koder-jwt/KoderJwt.vue'),
+    component: () => import('./jwt-encoder/JwtEncoder.vue'),
   },
   {
     slug: 'kompresja-gzip',
@@ -197,7 +197,7 @@ export const converterTools: ToolDefinition[] = [
     description: 'Kompresuj i rozpakuj gzip albo deflate do Base64 w przeglądarce.',
     category: 'kodowanie',
     keywords: ['gzip', 'deflate', 'kompresja', 'base64', 'compressionstream', 'gzip online', 'kompresja gzip'],
-    component: () => import('./kompresja/Kompresja.vue'),
+    component: () => import('./compression/Compression.vue'),
   },
   {
     slug: 'csv-na-markdown',
@@ -205,6 +205,6 @@ export const converterTools: ToolDefinition[] = [
     description: 'Zamień CSV na tabelę Markdown. Pierwszy wiersz jest nagłówkiem.',
     category: 'konwertery',
     keywords: ['csv', 'markdown', 'tabela', 'separator'],
-    component: () => import('./csv-na-markdown/CsvNaMarkdown.vue'),
+    component: () => import('./csv-to-markdown/CsvToMarkdown.vue'),
   },
 ]

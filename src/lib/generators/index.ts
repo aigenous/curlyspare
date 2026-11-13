@@ -8,13 +8,13 @@ export {
   type CalendarDate,
 } from './dates'
 export {
-  generateDowodOsobisty,
-  generateDowodyOsobiste,
-  formatDowodOsobisty,
-  validateDowodOsobisty,
-  type DowodDetails,
-  type DowodValidation,
-} from './dowod-osobisty'
+  generateIdCardNumber,
+  generateIdCardNumbers,
+  formatIdCardNumber,
+  validateIdCardNumber,
+  type IdCardDetails,
+  type IdCardValidation,
+} from './id-card'
 export {
   generateGtin,
   generateGtins,
@@ -72,13 +72,13 @@ export {
   type NipValidation,
 } from './nip'
 export {
-  formatPaszport,
-  generatePaszport,
-  generatePaszporty,
-  validatePaszport,
-  type PaszportDetails,
-  type PaszportValidation,
-} from './paszport'
+  formatPassport,
+  generatePassport,
+  generatePassports,
+  validatePassport,
+  type PassportDetails,
+  type PassportValidation,
+} from './passport'
 export {
   encodePeselMonth,
   generatePesel,

@@ -14,12 +14,12 @@ function mount() {
   const app = createApp(QrTool)
   app.mount(host)
   const button = host.querySelector('button')
-  if (!button) throw new Error('Brak przycisku generowania.')
+  if (!button) throw new Error('Generate button is missing.')
   return { host, app, button }
 }
 
-describe('generator QR', () => {
-  it('wstawia przykładowy tekst bez adresu', () => {
+describe('QR generator', () => {
+  it('inserts sample text that is not an address', () => {
     const { host, app } = mount()
     const textarea = host.querySelector('textarea')
     expect(textarea).toBeInstanceOf(HTMLTextAreaElement)
@@ -32,7 +32,7 @@ describe('generator QR', () => {
     host.remove()
   })
 
-  it('pokazuje polski komunikat, gdy generowanie się nie uda', async () => {
+  it('shows the Polish message when generation fails', async () => {
     vi.mocked(toDataURL).mockRejectedValueOnce(new Error('za dużo danych'))
     const { host, app, button } = mount()
     button.click()
@@ -44,7 +44,7 @@ describe('generator QR', () => {
     host.remove()
   })
 
-  it('pokazuje obraz, gdy generowanie się uda', async () => {
+  it('shows the image when generation succeeds', async () => {
     vi.mocked(toDataURL).mockResolvedValueOnce('data:image/png;base64,abc')
     const { host, app, button } = mount()
     button.click()

@@ -66,7 +66,7 @@ describe('signed status wording', () => {
         expect(source.contents.includes(claim), `${source.path} contains ${claim}`).toBe(false)
       }
     }
-    const vat = sources.find((source) => source.path.endsWith('WalidatorVatUe.vue'))
+    const vat = sources.find((source) => source.path.endsWith('EuVatValidator.vue'))
     expect(vat?.contents).toContain('Nie sprawdza statusu w VIES (aktywności podatnika VAT UE)')
     expect(vat?.contents).toContain('VAT_VALID_LABEL')
   })

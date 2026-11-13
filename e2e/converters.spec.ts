@@ -141,7 +141,7 @@ test.describe('converter screens', () => {
   })
 
   test('HMAC of a Polish word matches the local SHA-256 vector and rejects an empty key', async ({ page }) => {
-    test.skip(!converterReady('generator-hmac/GeneratorHmac.vue'), 'HMAC screen is not on this branch yet')
+    test.skip(!converterReady('hmac-generator/HmacGenerator.vue'), 'HMAC screen is not on this branch yet')
     await page.goto('/generator-hmac')
     await page.getByLabel('Klucz').fill('klucz')
     await page.getByLabel('Wiadomość').fill('zażółć')
@@ -155,7 +155,7 @@ test.describe('converter screens', () => {
   })
 
   test('Base32 and hex round-trip text and reject a bad alphabet', async ({ page }) => {
-    test.skip(!converterReady('kodowanie-base32/KodowanieBase32.vue'), 'Base32 screen is not on this branch yet')
+    test.skip(!converterReady('base32-encoding/Base32Encoding.vue'), 'Base32 screen is not on this branch yet')
     await page.goto('/kodowanie-base32')
     await page.getByLabel('Tekst albo Base32').fill('foo')
     await page.getByRole('button', { name: 'Koduj tekst', exact: true }).click()
@@ -179,8 +179,8 @@ test.describe('converter screens', () => {
     await expect(page.getByText('Niepoprawny znak w hex.')).toBeVisible()
   })
 
-  test('Unicode escapes round-trip ż and XML pretty-prints a document', async ({ page }) => {
-    test.skip(!converterReady('ucieczki-unicode/UcieczkiUnicode.vue'), 'Unicode screen is not on this branch yet')
+  test('Unicode escapes round-trip a dotted z and XML pretty-prints a document', async ({ page }) => {
+    test.skip(!converterReady('unicode-escape/UnicodeEscape.vue'), 'Unicode screen is not on this branch yet')
     await page.goto('/escape-unicode')
     await page.getByRole('textbox', { name: 'Tekst', exact: true }).fill('ż')
     await page.getByRole('button', { name: 'Ucieknij' }).click()
@@ -204,7 +204,7 @@ test.describe('converter screens', () => {
   })
 
   test('URL parser splits host, path, and query', async ({ page }) => {
-    test.skip(!converterReady('parser-adresu/ParserAdresu.vue'), 'URL parser is not on this branch yet')
+    test.skip(!converterReady('address-parser/AddressParser.vue'), 'URL parser is not on this branch yet')
     await page.goto('/parser-url')
     await page.getByLabel('Adres URL albo parametry').fill('https://ala:hasło@example.com:8443/a/b?x=1#sekcja')
     await page.getByRole('button', { name: 'Rozłóż' }).click()
@@ -218,7 +218,7 @@ test.describe('converter screens', () => {
   })
 
   test('JSON Schema accepts a matching object and lists the missing field', async ({ page }) => {
-    test.skip(!converterReady('walidator-json-schema/WalidatorJsonSchema.vue'), 'JSON Schema screen is not on this branch yet')
+    test.skip(!converterReady('json-schema-validator/JsonSchemaValidator.vue'), 'JSON Schema screen is not on this branch yet')
     const schema = JSON.stringify({
       type: 'object',
       additionalProperties: false,
@@ -240,7 +240,7 @@ test.describe('converter screens', () => {
   })
 
   test('SQL formatter uppercases PostgreSQL clauses and rejects an empty query', async ({ page }) => {
-    test.skip(!converterReady('formatowanie-sql/FormatowanieSql.vue'), 'SQL screen is not on this branch yet')
+    test.skip(!converterReady('sql-formatter/SqlFormatter.vue'), 'SQL screen is not on this branch yet')
     await page.goto('/formatowanie-sql')
     await page.getByLabel('Zapytanie SQL').fill("select a, b from users where id = 1 and name = 'Ala' order by a")
     await page.getByRole('button', { name: 'Formatuj' }).click()
