@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite-ssg build",
+    "build": "vite-ssg build && rm -rf dist/.vite && bash scripts/check-site-url.sh",
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run --passWithNoTests",
