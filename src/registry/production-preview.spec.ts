@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { tools } from './index'
 import { publishedSlugList } from './published-slugs'
 
-const sitemapPaths = ['/', '/operator', '/polityka-prywatnosci', '/regulamin']
+const sitemapPaths = ['/', '/licencje', '/operator', '/polityka-prywatnosci', '/regulamin']
 
 function draftToolPath(): string {
   const allowed = new Set<string>(publishedSlugList)
@@ -123,7 +123,7 @@ async function stop(child: ChildProcess): Promise<void> {
 }
 
 describe('production preview', () => {
-  it('returns 404 for a draft tool and lists four sitemap urls', async () => {
+  it('returns 404 for a draft tool and lists the shell pages in the sitemap', async () => {
     const port = await freePort()
     const env = productionEnv()
     await run(['exec', 'vite-ssg', 'build'], env)

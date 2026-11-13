@@ -13,7 +13,7 @@ import {
   sitemapPaths,
 } from './published'
 
-const reservedPaths = new Set<string>(['/', '/regulamin', '/polityka-prywatnosci', '/operator', '/404', '/:pathMatch(.*)*'])
+const reservedPaths = new Set<string>(['/', '/regulamin', '/polityka-prywatnosci', '/operator', '/licencje', '/404', '/:pathMatch(.*)*'])
 
 describe('publish allowlist', () => {
   it('publishes no tools until the product list lands', () => {

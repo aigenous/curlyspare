@@ -19,17 +19,25 @@ import {
 } from './id-document-copy'
 
 describe('ID document page copy', () => {
-  it('fits the document title in 60 characters, dropping the passport generator clause', () => {
+  it('fits the document title in 60 characters', () => {
     const suffix = ` — ${brand.name}`
     const dowodTitle = documentTitleFor(dowodPage)
-    const passportPreferred = `${paszportPage.metaTitlePhrase}${suffix}`
     const passportTitle = documentTitleFor(paszportPage)
     expect(dowodTitle).toBe(`${dowodPage.metaTitlePhrase}${suffix}`)
+    expect(passportTitle).toBe(`${paszportPage.metaTitlePhrase}${suffix}`)
     expect(dowodTitle.length).toBeLessThanOrEqual(META_TITLE_LIMIT)
-    expect(passportPreferred.length).toBeGreaterThan(META_TITLE_LIMIT)
-    expect(passportTitle).toBe(`${paszportPage.metaTitleFallback}${suffix}`)
     expect(passportTitle.length).toBeLessThanOrEqual(META_TITLE_LIMIT)
-    expect(passportTitle).not.toContain('i generator')
+  })
+
+  it('drops to the fallback phrase when the preferred title exceeds 60 characters', () => {
+    const suffix = ` — ${brand.name}`
+    const title = documentTitleFor({
+      ...paszportPage,
+      metaTitlePhrase: `${paszportPage.metaTitlePhrase} dodatkowo`,
+    })
+    expect(title).toBe(`${paszportPage.metaTitleFallback}${suffix}`)
+    expect(title.length).toBeLessThanOrEqual(META_TITLE_LIMIT)
+    expect(title).not.toContain('i generator')
   })
 
   it('keeps validator-first headings and the open-graph title equal to the H1', () => {

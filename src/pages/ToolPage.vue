@@ -47,7 +47,10 @@ useHead(() => {
 </script>
 
 <template>
-  <article v-if="tool">
+  <article
+    v-if="tool"
+    class="wrap tool-legacy"
+  >
     <p
       v-if="draft"
       class="kicker"
@@ -57,7 +60,9 @@ useHead(() => {
     <p class="kicker">
       {{ categoryLabel(tool.category) }}
     </p>
-    <h1>{{ tool.title }}</h1>
+    <h1 class="h1">
+      {{ tool.title }}
+    </h1>
     <p class="lede">
       {{ tool.description }}
     </p>

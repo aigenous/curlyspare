@@ -1,41 +1,120 @@
+/* CurlySpare — design tokens
+   Kierunek: „Zeszyt w kratkę". Papier, atrament, długopis, zakreślacz.
+   Kolory przełącza natywne light-dark(): jedna definicja na token.
+   Motyw wymusza atrybut data-theme na <html>, domyślnie decyduje system. */
+
 :root {
-  color-scheme: light;
-  --bg: #f4f1ea;
-  --bg-elevated: #fffdf8;
-  --ink: #1b2430;
-  --ink-muted: #4d5968;
-  --line: #e0d9cc;
-  --primary: #315cb4;
-  --navy: #254779;
-  --primary-soft: #e7eef9;
-  --button-bg: #315cb4;
-  --button-fg: #ffffff;
-  --button-bg-hover: #254779;
-  --focus: #315cb4;
-  --danger: #8f3d3d;
-  --danger-soft: #f8ecec;
-  --shadow: 0 10px 30px rgb(37 71 121 / 8%);
-  --radius: 14px;
-  --font: 'Inter', 'Segoe UI', sans-serif;
-  --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-  --header-h: 4.25rem;
+  color-scheme: light dark;
+
+  /* ── Kolor: powierzchnie ─────────────────────────────── */
+  --color-bg:         light-dark(#F6F8FC, #0E1330); /* papier / nocny zeszyt */
+  --color-surface:    light-dark(#FFFFFF, #161C40); /* karta, pole */
+  --color-surface-2:  light-dark(#EDF1F9, #1E2653); /* wypełnienie: hover, kbd, kod */
+  --color-grid:       light-dark(#DFE6F4, #1A2148); /* kratka — tylko dekoracja */
+  --color-divider:    light-dark(#D5DCEC, #2B3569); /* linia dekoracyjna */
+  --color-border:     light-dark(#6E7BA3, #7481B3); /* obrys kontrolek, min. 3:1 */
+
+  /* ── Kolor: treść ────────────────────────────────────── */
+  --color-text:       light-dark(#131A3A, #EEF1FB); /* atrament */
+  --color-text-muted: light-dark(#4A5578, #AEB8DC); /* ołówek */
+
+  /* ── Kolor: akcja (długopis) ─────────────────────────── */
+  --color-primary:       light-dark(#1F3FCC, #A9B9FF);
+  --color-primary-hover: light-dark(#162E99, #C8D2FF);
+  --color-on-primary:    light-dark(#FFFFFF, #0E1330);
+  --color-primary-soft:  light-dark(#E4EAFF, #232D66);
+  --color-focus:         light-dark(#1F3FCC, #FFD83D);
+
+  /* ── Kolor: zakreślacz (cyfra kontrolna, [TEST]) ─────── */
+  --color-mark:    #FFD83D;
+  --color-on-mark: #131A3A;
+  --color-mark-border: light-dark(#8A6700, #D9AB00); /* ochre, same hue as the highlighter (48°): ≥ 3:1 vs every surface in both themes */
+
+  /* ── Kolor: stany (zawsze razem z ikoną i tekstem) ───── */
+  --color-ok:         light-dark(#0A6640, #62D6A4);
+  --color-ok-soft:    light-dark(#DFF4EA, #113A33);
+  --color-error:      light-dark(#B42318, #FF9A8C);
+  --color-error-soft: light-dark(#FDEBE9, #45202B);
+  --color-warn:       light-dark(#7A4B00, #F7C453);
+  --color-warn-soft:  light-dark(#FFF3CC, #3D3315);
+
+  --color-backdrop: rgb(9 12 32 / .6);
+
+  /* ── Typografia ──────────────────────────────────────── */
+  --font-display: "Poltawski Nowy", "Iowan Old Style", Georgia, serif; /* tylko h1, h2, logo */
+  --font-body:    "Atkinson Hyperlegible Next", system-ui, sans-serif;
+  --font-mono:    "Atkinson Hyperlegible Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --text-xs:  .8125rem;  /* 13 — etykiety klamer, kbd */
+  --text-sm:  .875rem;   /* 14 — podpowiedzi */
+  --text-md:  1rem;      /* 16 — tekst */
+  --text-lg:  1.125rem;  /* 18 — lead */
+  --text-xl:  1.375rem;  /* 22 — h3, h1 narzędzia na telefonie */
+  --text-2xl: 1.75rem;   /* 28 — h2 */
+  --text-3xl: clamp(2rem, 1.5rem + 2.2vw, 2.75rem);    /* h1 podstron */
+  --text-4xl: clamp(2.5rem, 1.4rem + 4.8vw, 4.5rem);   /* h1 strony głównej */
+
+  --leading-tight: 1.05;
+  --leading-snug:  1.3;
+  --leading-body:  1.55;
+
+  /* ── Odstępy: kratka 24 px i jej ułamki ──────────────── */
+  --kratka:  1.5rem;
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6rem;
+
+  --control-h: 2.75rem;   /* 44 px — minimalny cel dotyku */
+  --wrap:      72rem;
+  --measure:   68ch;
+
+  /* ── Promienie ───────────────────────────────────────── */
+  --radius-cell:    3px;   /* kratka z cyfrą */
+  --radius-control: 6px;   /* przycisk, pole */
+  --radius-panel:   10px;  /* karta, okno */
+  --radius-pill:    999px;
+
+  /* ── Cienie: tylko dla warstw nad stroną ─────────────── */
+  --shadow-raise:   0 1px 2px rgb(9 12 32 / .08), 0 4px 14px rgb(9 12 32 / .08);
+  --shadow-overlay: 0 16px 48px rgb(9 12 32 / .28);
+
+  /* ── Ruch ────────────────────────────────────────────── */
+  --dur-fast: 120ms;
+  --dur:      200ms;
+  --dur-slow: 360ms;  /* pociągnięcie zakreślacza */
+  --ease:     cubic-bezier(.2, .7, .2, 1);
+
+  /* Names still used by the existing tool screens. */
+  --bg: var(--color-bg);
+  --bg-elevated: var(--color-surface);
+  --ink: var(--color-text);
+  --ink-muted: var(--color-text-muted);
+  --line: var(--color-divider);
+  --primary: var(--color-primary);
+  --navy: var(--color-text);
+  --primary-soft: var(--color-primary-soft);
+  --button-bg: var(--color-primary);
+  --button-fg: var(--color-on-primary);
+  --button-bg-hover: var(--color-primary-hover);
+  --focus: var(--color-focus);
+  --danger: var(--color-error);
+  --danger-soft: var(--color-error-soft);
+  --shadow: var(--shadow-raise);
+  --radius: var(--radius-panel);
+  --font: var(--font-body);
+  --mono: var(--font-mono);
+  --header-h: 3.5rem;
 }
 
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --bg: #121820;
-  --bg-elevated: #1a2330;
-  --ink: #f4f1ea;
-  --ink-muted: #c3c9d4;
-  --line: #2c3848;
-  --primary: #9ebaf2;
-  --navy: #d5e2f8;
-  --primary-soft: #24344c;
-  --button-bg: #9ebaf2;
-  --button-fg: #121820;
-  --button-bg-hover: #d5e2f8;
-  --focus: #9ebaf2;
-  --danger: #f0b4b4;
-  --danger-soft: #3a2428;
-  --shadow: 0 10px 30px rgb(0 0 0 / 28%);
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur: 0ms; --dur-slow: 0ms; }
 }

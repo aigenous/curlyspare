@@ -8,16 +8,16 @@ export interface OperatorDetails {
 }
 
 export const site = {
-  name: 'DevNarzędzia',
-  workingName: true,
+  name: 'CurlySpare',
+  workingName: false,
   defaultSiteUrl: 'https://devnarzedzia.example',
-  storagePrefix: 'devnarzedzia',
+  storagePrefix: 'curlyspare',
   operator: {
     name: 'Piotr Szewczyk',
     legalForm: 'jednoosobowa działalność gospodarcza',
     nip: '6222809805',
     regon: '368785970',
-    correspondenceAddress: 'Bobrowiecka 10/2, 00-728 Warszawa',
-    email: 'pszewczykpl@gmail.com',
+    correspondenceAddress: '[ADRES]',
+    email: '[E-MAIL KONTAKTOWY]',
   } satisfies OperatorDetails,
 } as const

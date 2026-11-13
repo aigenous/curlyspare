@@ -1,6 +1,6 @@
 # CurlySpare
 
-CurlySpare is a set of free tools for developers. Everything runs in the browser. Values you type, files you pick, and data the tools generate stay in that browser; they are not sent to a server. The working name of the site is **DevNarzędzia**.
+CurlySpare is a set of free tools for developers. Everything runs in the browser. Values you type, files you pick, and data the tools generate stay in that browser; they are not sent to a server. The product name is **CurlySpare**.
 
 The shell is Vue 3, TypeScript, Vite, and vite-ssg, installed with pnpm. The tool list, routes, and search all come from `src/registry`. Agent rules for that contract live in [AGENTS.md](AGENTS.md).
 
@@ -73,7 +73,7 @@ Sixty-one tools, in registry order (`generatorTools`, then `converterTools`, the
 | Generator slug URL z polskich znaków | `generator-slug` | Robi adresowy slug i zamienia polskie znaki diakrytyczne. |
 | Sortowanie alfabetyczne linii | `sortowanie-alfabetyczne` | Sortuje linie po polsku, usuwa duplikaty i puste wiersze. |
 | Edytor Markdown z podglądem | `edytor-markdown` | Renderuje Markdown i czyści wynik w przeglądarce. |
-| Porównanie tekstu | `porownanie-tekstu` | Pokazuje różnice linia po linii albo słowo po słowie. Nic nie jest wysyłane. |
+| Porównanie tekstu | `porownanie-tekstu` | Pokazuje różnice linia po linii albo słowo po słowie. Działa w przeglądarce, nie wysyłamy danych na serwer. |
 | Tester wyrażeń regularnych | `tester-regex` | Sprawdza wyrażenie, flagi i grupy na tekście w przeglądarce. |
 
 ### Sieć (`siec`)
@@ -113,7 +113,7 @@ pnpm dev
 
 `pnpm dev` starts the Vite dev server. Copy `.env.example` to `.env.local` when the canonical origin should differ from the default in `src/site.ts`.
 
-Ctrl or Cmd+K searches the registry. The only `localStorage` key is `devnarzedzia.theme`.
+Ctrl or Cmd+K searches the registry. The theme `localStorage` key is `curlyspare.theme`. A value stored under the previous key `devnarzedzia.theme` is copied once and then removed.
 
 ## Scripts
 
@@ -158,7 +158,7 @@ export interface ToolDefinition {
 
 1. Put pure logic in the matching `src/lib/...` folder and the screen in the matching `src/tools/...` folder.
 2. Append a `ToolDefinition` to `generatorTools`, `converterTools`, or `miscTools`. `src/registry/index.ts` spreads those arrays in that order.
-3. `slug` is lowercase words separated by single hyphens, unique, and not `regulamin`, `polityka-prywatnosci`, `operator`, or `404`.
+3. `slug` is lowercase words separated by single hyphens, unique, and not `regulamin`, `polityka-prywatnosci`, `operator`, `licencje`, or `404`.
 4. `component` must resolve to a Vue module (`{ default: Component }`). The shell renders the title, description, and optional disclaimer, then the component.
 5. `keywords` feed search. No server calls and no analytics.
 6. Generators that invent identifiers set `disclaimer` to `generatorDisclaimer` from `src/brand.ts`.
@@ -188,15 +188,16 @@ This repository records the hosting settings. It does not create, link, or deplo
 
 ## Legal
 
-The shell has three legal routes. Their copy is still a placeholder:
+The shell has four legal routes. Regulamin and the privacy policy are Lawyer's drafts pending sign-off (due 2026-11-25). Do not deploy them to production before that sign-off.
 
 | Route | Page |
 | --- | --- |
 | `/regulamin` | Regulamin |
 | `/polityka-prywatnosci` | Polityka prywatności |
-| `/operator` | Operator (name, legal form, NIP, and email from `src/site.ts`) |
+| `/licencje` | Font and third-party licences |
+| `/operator` | Operator (name, legal form, NIP, and REGON from `src/site.ts`; address and email stay as Lawyer placeholders) |
 
-The footer links to those three routes. Licence texts are the files in the next section. This repository does not add a licence page.
+The footer links to those routes. Address and contact email are `[ADRES]` and `[E-MAIL KONTAKTOWY]` until Lawyer approves them. A build with `REQUIRE_OPERATOR_DATA=1` fails while those placeholders remain, and also while any `[…]` placeholder remains in the regulamin or privacy policy after the operator fields are applied. Without that flag every build warns and passes. Name, NIP and REGON `368785970` stay.
 
 ## Licence
 
@@ -206,8 +207,8 @@ The project is [MIT](LICENSE):
 Copyright (c) 2026 Piotr Szewczyk
 ```
 
-Production dependencies, including transitive ones, are listed in [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt). The file follows `pnpm licenses list --prod` (84 packages on this tree). Each entry has the installed version, the copyright line, and the licence text from that package.
+Production dependencies, including transitive ones, are listed in [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt). The file follows `pnpm licenses list --prod`. Each entry has the installed version, the copyright line, and the licence text from that package. The same file also records the three self-hosted font families (Poltawski Nowy, Atkinson Hyperlegible Next, Atkinson Hyperlegible Mono) and the SIL Open Font License 1.1 text.
 
-Inter is self-hosted with `@fontsource/inter` and stays under the SIL Open Font License 1.1. DOMPurify is `(MPL-2.0 OR Apache-2.0)`; both texts are in the notices file. Other licences in the tree include BSD-3-Clause (`diff`, `smol-toml`, `fast-uri`, and others), BSD-2-Clause (`entities`), ISC (`yaml` and others), Apache-2.0 (`typescript`), Python-2.0 (`argparse`), and CC0-1.0 (`railroad-diagrams`).
+DOMPurify is `(MPL-2.0 OR Apache-2.0)`; both texts are in the notices file. Other licences in the tree include BSD-3-Clause (`diff`, `smol-toml`, `fast-uri`, and others), BSD-2-Clause (`entities`), ISC (`yaml` and others), Apache-2.0 (`typescript`), Python-2.0 (`argparse`), and CC0-1.0 (`railroad-diagrams`).
 
 The notices file is maintained from the lockfile. A build-time generator that needs a new dependency, such as `rollup-plugin-license`, is not part of this repository.

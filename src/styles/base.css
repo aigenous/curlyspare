@@ -243,6 +243,13 @@ h2 {
   margin: 0;
 }
 
+/* The first notice sentence is one line at 390px. text-xs is the smallest design size that fits the panel; narrower viewports may wrap. */
+@media (max-width: 28.5rem) {
+  .id-test-notice p:first-child {
+    font-size: var(--text-xs);
+  }
+}
+
 .disclaimer {
   margin-top: 1rem;
   padding: 0.9rem 1rem;

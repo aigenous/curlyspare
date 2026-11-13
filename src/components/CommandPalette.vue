@@ -108,31 +108,35 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="palette-backdrop"
+    class="cmdk-layer"
     @click.self="close"
   >
     <div
       ref="dialog"
-      class="palette"
+      class="dialog cmdk"
       role="dialog"
       aria-modal="true"
       :aria-label="t('paletteLabel')"
       @keydown="onDialogKey"
     >
-      <input
-        ref="input"
-        v-model="query"
-        type="text"
-        role="combobox"
-        aria-autocomplete="list"
-        aria-expanded="true"
-        :aria-controls="listId"
-        :aria-activedescendant="activeId"
-        :aria-label="t('paletteLabel')"
-        :placeholder="t('palettePlaceholder')"
-      >
+      <div class="cmdk__input-row">
+        <input
+          ref="input"
+          v-model="query"
+          class="cmdk__input"
+          type="text"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="true"
+          :aria-controls="listId"
+          :aria-activedescendant="activeId"
+          :aria-label="t('paletteLabel')"
+          :placeholder="t('palettePlaceholder')"
+        >
+      </div>
       <ul
         :id="listId"
+        class="cmdk__list"
         role="listbox"
         tabindex="-1"
       >
@@ -140,30 +144,31 @@ onBeforeUnmount(() => {
           v-for="(tool, index) in results"
           :id="`palette-option-${tool.slug}`"
           :key="tool.slug"
+          class="cmdk__opt"
           role="option"
           tabindex="-1"
           :aria-selected="index === active"
           @click="go(index)"
         >
-          <strong>{{ tool.title }}</strong>
-          <span class="muted"> — {{ categoryLabel(tool.category) }}</span>
+          <span>{{ tool.title }}</span>
+          <span class="cmdk__kind">{{ categoryLabel(tool.category) }}</span>
         </li>
       </ul>
       <p
         v-if="results.length === 0"
-        class="muted"
-        style="padding: 0 1rem 1rem"
+        class="cmdk__empty"
       >
         {{ t('paletteEmpty') }}
       </p>
-      <button
-        class="button-ghost"
-        type="button"
-        style="margin: 0 0.6rem 0.6rem"
-        @click="close"
-      >
-        {{ t('paletteClose') }}
-      </button>
+      <div class="cmdk__foot">
+        <button
+          class="btn btn--ghost"
+          type="button"
+          @click="close"
+        >
+          {{ t('paletteClose') }}
+        </button>
+      </div>
     </div>
   </div>
 </template>

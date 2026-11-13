@@ -1,8 +1,9 @@
 /// <reference types="vite-ssg" />
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
+import { assertOperatorReadyForLaunch } from './src/lib/operatorLaunch'
 import { shellPaths, visibleSlugs } from './src/registry/published-slugs'
 import { site } from './src/site'
 
@@ -19,6 +20,57 @@ function visibleToolPaths(showDrafts: boolean): string[] {
 
 function concretePaths(paths: readonly string[]): string[] {
   return paths.filter((path) => !path.includes(':') && !path.includes('*'))
+}
+
+/** Strip HTML comments from Lawyer markdown before it is bundled as a raw import. */
+export function stripLegalComments(): Plugin {
+  return {
+    name: 'strip-legal-html-comments',
+    enforce: 'pre',
+    load(id) {
+      const queryAt = id.indexOf('?')
+      const filename = queryAt === -1 ? id : id.slice(0, queryAt)
+      const query = queryAt === -1 ? '' : id.slice(queryAt + 1)
+      if (!new URLSearchParams(query).has('raw')) return null
+      const normalized = filename.replaceAll('\\', '/')
+      if (!/\/src\/content\/legal\/[^/]+\.md$/.test(normalized)) return null
+      const stripped = readFileSync(filename, 'utf8').replace(/<!--[\s\S]*?-->/g, '')
+      return `export default ${JSON.stringify(stripped)}`
+    },
+  }
+}
+
+function operatorLaunchGuard(): Plugin {
+  return {
+    name: 'operator-launch-guard',
+    buildStart() {
+      const legalDocuments = ['src/content/legal/regulamin.md', 'src/content/legal/polityka-prywatnosci.md'].map((file) =>
+        readFileSync(resolve(file), 'utf8'),
+      )
+      assertOperatorReadyForLaunch(site.operator, process.env.REQUIRE_OPERATOR_DATA, console.warn, legalDocuments)
+    },
+  }
+}
+
+function publishThirdPartyLicenses(): Plugin {
+  const serve = (req: { url?: string }, res: { setHeader: (name: string, value: string) => void, end: (body?: string) => void }, next: () => void) => {
+    const pathname = (req.url ?? '/').split('?')[0]
+    if (pathname !== '/THIRD-PARTY-LICENSES.txt') {
+      next()
+      return
+    }
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+    res.end(readFileSync(resolve('THIRD_PARTY_LICENSES.txt'), 'utf8'))
+  }
+  return {
+    name: 'third-party-licenses',
+    configureServer(server) {
+      server.middlewares.use(serve)
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(serve)
+    },
+  }
 }
 
 function previewNotFound(): Plugin {
@@ -60,7 +112,7 @@ export default defineConfig(({ mode }) => {
   const prerendered = [...shellPaths, ...visibleToolPaths(showDrafts), '/404']
 
   return {
-    plugins: [vue(), previewNotFound()],
+    plugins: [stripLegalComments(), vue(), operatorLaunchGuard(), publishThirdPartyLicenses(), previewNotFound()],
     ssgOptions: {
       dirStyle: 'flat',
       includedRoutes(paths) {
@@ -103,6 +155,7 @@ export default defineConfig(({ mode }) => {
           resolve(dist, 'robots.txt'),
           `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
         )
+        copyFileSync(resolve('THIRD_PARTY_LICENSES.txt'), resolve(dist, 'THIRD-PARTY-LICENSES.txt'))
       },
     },
   }

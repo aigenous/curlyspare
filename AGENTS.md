@@ -1,6 +1,6 @@
 # Agent notes
 
-DevNarzędzia (working name, repo CurlySpare) is a Polish-first, client-only developer tools site. This branch is the shell. Tool implementations, CI, and browser tests belong to other agents.
+CurlySpare is a Polish-first, client-only developer tools site. This branch is the shell. Tool implementations, CI, and browser tests belong to other agents.
 
 ## Frozen contract
 
@@ -32,7 +32,7 @@ export interface ToolDefinition {
 
 `component` must resolve to a Vue module (`{ default: Component }`). The shell route renders the title, description, and optional `disclaimer`, then the component. Put only the tool UI in the component.
 
-Slugs are lowercase words separated by single hyphens. They must be unique. Do not use `regulamin`, `polityka-prywatnosci`, `operator`, or `404`.
+Slugs are lowercase words separated by single hyphens. They must be unique. Do not use `regulamin`, `polityka-prywatnosci`, `operator`, `licencje`, or `404`.
 
 Generators that invent identifiers (PESEL, NIP, REGON, KRS, dowód osobisty, paszport, NRB) must set `disclaimer` to `generatorDisclaimer` exported from `src/brand.ts`. That string is fixed legal copy. The fictional-person generator, the EAN/GTIN generator, and the VAT UE, VIN, ISBN and IBAN checkers use the other disclaimer constants in that file. Do not assign `generatorDisclaimer` to those checkers.
 

@@ -29,9 +29,9 @@ describe('home with an empty allowlist', () => {
     app.mount(host)
     await nextTick()
 
-    expect(host.querySelector('h1')?.textContent).toBe(t('homeTitle'))
+    expect(host.querySelector('h1')?.textContent).toContain('Narzędzia, które')
     expect(host.textContent).toContain(t('homeEmpty'))
-    expect(host.querySelectorAll('.tool-card')).toHaveLength(0)
+    expect(host.querySelectorAll('.toc__link')).toHaveLength(0)
     expect(host.querySelector('.tool-grid')).toBeNull()
 
     app.unmount()

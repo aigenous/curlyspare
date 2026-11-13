@@ -1,0 +1,39 @@
+<template>
+  <svg
+    viewBox="0 0 32 32"
+    fill="none"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <rect
+      class="logo-ink"
+      x="3"
+      y="5"
+      width="6"
+      height="8"
+      rx="1"
+    />
+    <rect
+      class="logo-ink"
+      x="13"
+      y="5"
+      width="6"
+      height="8"
+      rx="1"
+    />
+    <rect
+      class="logo-mark"
+      x="23"
+      y="5"
+      width="6"
+      height="8"
+      rx="1"
+    />
+    <path
+      class="logo-brace"
+      stroke-width="2.2"
+      stroke-linecap="round"
+      d="M3 19q0 4 4 4h5q4 0 4 4q0-4 4-4h5q4 0 4-4"
+    />
+  </svg>
+</template>

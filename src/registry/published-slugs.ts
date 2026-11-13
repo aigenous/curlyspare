@@ -11,7 +11,7 @@
  */
 export const publishedSlugList = [] as const
 
-export const shellPaths = ['/', '/regulamin', '/polityka-prywatnosci', '/operator'] as const
+export const shellPaths = ['/', '/regulamin', '/polityka-prywatnosci', '/operator', '/licencje'] as const
 
 export function visibleSlugs(registered: readonly string[], includeDrafts: boolean): string[] {
   if (includeDrafts) return [...registered]
