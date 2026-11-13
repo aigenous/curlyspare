@@ -1,7 +1,9 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { assertRegistry, tools } from '../registry'
+import { assertRegistry } from '../registry'
+import { assertPublishedSlugs, publicTools } from '../registry/published'
 
 assertRegistry()
+assertPublishedSlugs()
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -9,7 +11,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'home',
     component: () => import('../pages/HomePage.vue'),
   },
-  ...tools.map((tool) => ({
+  ...publicTools().map((tool) => ({
     path: `/${tool.slug}`,
     name: tool.slug,
     component: () => import('../pages/ToolPage.vue'),
