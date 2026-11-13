@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { formatIsoDate } from './dates'
-import { generatePesel, generatePesels, validatePesel, type PeselSex } from './pesel'
+import { formatIsoDate, toEpochDay, type CalendarDate } from './dates'
+import {
+  generatePesel,
+  generatePeselOnDate,
+  generatePesels,
+  parsePesel,
+  PESEL_DEFAULT_YEAR_RANGE,
+  peselCheckDigit,
+  randomPeselDate,
+  validatePesel,
+  type PeselSex,
+  type PeselSexCode,
+} from './pesel'
 import { sequenceRng } from './sequence-rng'
 
 describe('PESEL', () => {
@@ -139,6 +150,184 @@ describe('PESEL', () => {
       expect(validatePesel(flipDigit(pesel, index)).valid).toBe(false)
     }
     expect(formatIsoDate({ year: 2012, month: 11, day: 3 })).toBe('2012-11-03')
+  })
+})
+
+describe('PESEL parse and dated generation', () => {
+  it('parses the published male number and ignores separators', () => {
+    expect(parsePesel('44 051-401 359')).toEqual({
+      digits: [4, 4, 0, 5, 1, 4, 0, 1, 3, 5, 9],
+      complete: true,
+      valid: true,
+      sum: 101,
+      expected: 9,
+      dateOk: true,
+      date: { year: 1944, month: 5, day: 14 },
+      sex: 'M',
+      checksumOk: true,
+    })
+    expect(validatePesel('44051401359').valid).toBe(true)
+  })
+
+  it('parses the leap-day number and rejects 29 February 1900', () => {
+    expect(parsePesel('00222900009')).toMatchObject({
+      valid: true,
+      dateOk: true,
+      date: { year: 2000, month: 2, day: 29 },
+      sex: 'F',
+      checksumOk: true,
+    })
+    const notLeap = parsePesel('00022900003')
+    expect(notLeap).toMatchObject({
+      valid: false,
+      dateOk: false,
+      sex: 'F',
+      checksumOk: true,
+    })
+    expect(notLeap.date).toBeUndefined()
+  })
+
+  it('reports a bad check digit without dropping a valid date', () => {
+    expect(parsePesel('44051401358')).toMatchObject({
+      complete: true,
+      valid: false,
+      expected: 9,
+      dateOk: true,
+      date: { year: 1944, month: 5, day: 14 },
+      sex: 'M',
+      checksumOk: false,
+    })
+  })
+
+  it('rejects 31 February and a month that is outside 1-12 after the century offset', () => {
+    const february = parsePesel(withCheckDigit('0002310000'))
+    expect(february.dateOk).toBe(false)
+    expect(february.date).toBeUndefined()
+    expect(february.valid).toBe(false)
+
+    const offset = parsePesel(withCheckDigit('0015010000'))
+    expect(offset.dateOk).toBe(false)
+    expect(offset.valid).toBe(false)
+  })
+
+  it('supports a partial value and starts the sum at ten digits', () => {
+    expect(parsePesel('   ')).toEqual({ digits: [], complete: false, valid: false })
+    const partial = parsePesel('44051')
+    expect(partial).toMatchObject({
+      digits: [4, 4, 0, 5, 1],
+      complete: false,
+      valid: false,
+    })
+    expect(partial.sum).toBeUndefined()
+    expect(partial.expected).toBeUndefined()
+    expect(parsePesel('4405140135')).toMatchObject({
+      digits: [4, 4, 0, 5, 1, 4, 0, 1, 3, 5],
+      complete: false,
+      valid: false,
+      sum: 101,
+      expected: 9,
+    })
+    const overlong = parsePesel('44051401359999')
+    expect(overlong.digits).toEqual([4, 4, 0, 5, 1, 4, 0, 1, 3, 5, 9, 9, 9, 9])
+    expect(overlong.complete).toBe(false)
+    expect(overlong.valid).toBe(false)
+    expect(overlong.date).toBeUndefined()
+  })
+
+  it('round-trips both sexes across the PESEL centuries', () => {
+    const dates: readonly CalendarDate[] = [
+      { year: 1899, month: 12, day: 31 },
+      { year: 1990, month: 5, day: 12 },
+      { year: 2000, month: 2, day: 29 },
+      { year: 2024, month: 7, day: 8 },
+      { year: 2299, month: 1, day: 1 },
+    ]
+    for (const date of dates) {
+      for (const sex of ['F', 'M'] as const satisfies readonly PeselSexCode[]) {
+        const pesel = generatePeselOnDate(date, sex, sequenceRng([1, 2, 3, 0]))
+        const parsed = parsePesel(pesel)
+        expect(parsed).toMatchObject({ valid: true, date, sex, checksumOk: true })
+        expect(validatePesel(pesel)).toMatchObject({
+          valid: true,
+          birthDate: date,
+          sex: sex === 'F' ? 'kobieta' : 'mezczyzna',
+        })
+        expect(peselCheckDigit(parsed.digits.slice(0, 10))).toBe(parsed.expected)
+      }
+    }
+  })
+
+  it('draws a random sex through the shared generator', () => {
+    const pesel = generatePeselOnDate({ year: 1990, month: 5, day: 12 }, 'random', sequenceRng([0, 4, 5, 6, 1]))
+    expect(parsePesel(pesel)).toMatchObject({
+      valid: true,
+      date: { year: 1990, month: 5, day: 12 },
+      sex: 'F',
+    })
+    expect(pesel.slice(6, 10)).toBe('4562')
+  })
+
+  it('uses the same default year range for generation and randomPeselDate', () => {
+    const from = toEpochDay(PESEL_DEFAULT_YEAR_RANGE.from)
+    const to = toEpochDay(PESEL_DEFAULT_YEAR_RANGE.to)
+    const span = to - from
+    expect(PESEL_DEFAULT_YEAR_RANGE).toEqual({
+      from: { year: 1950, month: 1, day: 1 },
+      to: { year: 2005, month: 12, day: 31 },
+    })
+    expect(randomPeselDate(sequenceRng([0]))).toEqual(PESEL_DEFAULT_YEAR_RANGE.from)
+    expect(randomPeselDate(sequenceRng([span]))).toEqual(PESEL_DEFAULT_YEAR_RANGE.to)
+    expect(validatePesel(generatePesel({}, sequenceRng([0, 0, 0, 0, 0, 0])))).toMatchObject({
+      valid: true,
+      birthDate: PESEL_DEFAULT_YEAR_RANGE.from,
+    })
+    expect(validatePesel(generatePesel({}, sequenceRng([span, 0, 0, 0, 0, 0])))).toMatchObject({
+      valid: true,
+      birthDate: PESEL_DEFAULT_YEAR_RANGE.to,
+    })
+  })
+
+  it('keeps calendar days under Europe/Warsaw, including 1900-01-01 and 2000-02-29', () => {
+    const previous = process.env.TZ
+    process.env.TZ = 'Europe/Warsaw'
+    try {
+      const newYear = new Date(1900, 0, 1)
+      expect(newYear.getUTCFullYear()).toBe(1899)
+      expect(newYear.getUTCMonth()).toBe(11)
+      expect(newYear.getUTCDate()).toBe(31)
+      const leap = new Date(2000, 1, 29)
+      expect(leap.getUTCFullYear()).toBe(2000)
+      expect(leap.getUTCMonth()).toBe(1)
+      expect(leap.getUTCDate()).toBe(28)
+
+      const dates: readonly CalendarDate[] = [
+        { year: 1800, month: 1, day: 1 },
+        { year: 1899, month: 12, day: 31 },
+        { year: 1900, month: 1, day: 1 },
+        { year: 1999, month: 12, day: 31 },
+        { year: 2000, month: 2, day: 29 },
+        { year: 2000, month: 3, day: 1 },
+        { year: 2099, month: 12, day: 31 },
+        { year: 2100, month: 1, day: 1 },
+        { year: 2200, month: 1, day: 1 },
+        { year: 2299, month: 1, day: 1 },
+        { year: 2299, month: 12, day: 31 },
+      ]
+      for (const date of dates) {
+        for (const sex of ['F', 'M'] as const satisfies readonly PeselSexCode[]) {
+          const pesel = generatePeselOnDate(date, sex, sequenceRng([0, 0, 0, 0]))
+          expect(parsePesel(pesel)).toMatchObject({ valid: true, date, sex })
+          expect(validatePesel(pesel)).toMatchObject({ valid: true, birthDate: date })
+        }
+      }
+    } finally {
+      process.env.TZ = previous ?? 'UTC'
+    }
+  })
+
+  it('rejects a date the PESEL calendar cannot encode', () => {
+    expect(() => generatePeselOnDate({ year: 1990, month: 2, day: 31 }, 'F')).toThrow(RangeError)
+    expect(() => generatePeselOnDate({ year: 1900, month: 2, day: 29 }, 'M')).toThrow(RangeError)
   })
 })
 

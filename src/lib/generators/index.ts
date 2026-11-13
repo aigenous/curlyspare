@@ -82,11 +82,17 @@ export {
 export {
   encodePeselMonth,
   generatePesel,
+  generatePeselOnDate,
   generatePesels,
+  parsePesel,
+  PESEL_DEFAULT_YEAR_RANGE,
+  randomPeselDate,
   validatePesel,
   type PeselDetails,
   type PeselGenerateOptions,
+  type PeselParse,
   type PeselSex,
+  type PeselSexCode,
   type PeselValidation,
 } from './pesel'
 export {
