@@ -19,6 +19,19 @@ function mount() {
 }
 
 describe('generator QR', () => {
+  it('wstawia przykładowy tekst bez adresu', () => {
+    const { host, app } = mount()
+    const textarea = host.querySelector('textarea')
+    expect(textarea).toBeInstanceOf(HTMLTextAreaElement)
+    if (!(textarea instanceof HTMLTextAreaElement)) return
+    expect(textarea.value).toBe('Przykładowy tekst do kodu QR')
+    expect(textarea.value).not.toMatch(/https?:\/\//i)
+    expect(textarea.value.toLowerCase()).not.toContain('.example')
+    expect(textarea.value).not.toMatch(/\b(?:[a-z0-9-]+\.)+[a-z]{2,}\b/i)
+    app.unmount()
+    host.remove()
+  })
+
   it('pokazuje polski komunikat, gdy generowanie się nie uda', async () => {
     vi.mocked(toDataURL).mockRejectedValueOnce(new Error('za dużo danych'))
     const { host, app, button } = mount()

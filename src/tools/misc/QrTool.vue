@@ -2,7 +2,7 @@
 import { toDataURL } from 'qrcode'
 import { ref } from 'vue'
 
-const input = ref('https://devnarzedzia.example')
+const input = ref('Przykładowy tekst do kodu QR')
 const image = ref('')
 const error = ref('')
 
