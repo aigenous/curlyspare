@@ -7,12 +7,18 @@ import { pageHead } from '../composables/usePageMeta'
 import { categoryLabel, t } from '../i18n'
 import { findTool } from '../registry'
 import { publishedSlugs } from '../registry/published'
+import IdDocumentGuide from '../tools/generators/IdDocumentGuide.vue'
+import { ID_TEST_NOTICE_LINES, documentTitleFor, idDocumentPage } from '../tools/generators/id-document-copy'
 
 const route = useRoute()
 const tool = computed(() => findTool(String(route.meta.slug ?? '')))
 const draft = computed(() => {
   const current = tool.value
   return Boolean(current && !publishedSlugs.has(current.slug))
+})
+const idCopy = computed(() => {
+  const current = tool.value
+  return current ? idDocumentPage(current.slug) : null
 })
 
 const AsyncTool = computed(() => {
@@ -29,9 +35,11 @@ const AsyncTool = computed(() => {
 
 useHead(() => {
   const current = tool.value
+  const page = current ? idDocumentPage(current.slug) : null
   return pageHead({
-    title: current ? `${current.title} — ${brand.name}` : brand.name,
-    description: current?.description ?? '',
+    title: page ? documentTitleFor(page) : current ? `${current.title} — ${brand.name}` : brand.name,
+    description: page?.metaDescription ?? current?.description ?? '',
+    ogTitle: page?.h1,
     path: current ? `/${current.slug}` : route.path,
     robots: draft.value ? 'noindex,nofollow' : undefined,
   })
@@ -53,17 +61,35 @@ useHead(() => {
     <p class="lede">
       {{ tool.description }}
     </p>
-    <div class="panel">
+    <component
+      :is="idCopy ? 'section' : 'div'"
+      :class="idCopy ? 'tool panel' : 'panel'"
+    >
+      <div
+        v-if="idCopy"
+        class="id-test-notice"
+      >
+        <p
+          v-for="line in ID_TEST_NOTICE_LINES"
+          :key="line"
+        >
+          {{ line }}
+        </p>
+      </div>
       <component
         :is="AsyncTool"
         v-if="AsyncTool"
       />
-    </div>
+    </component>
     <p
       v-if="tool.disclaimer"
       class="disclaimer"
     >
       {{ tool.disclaimer }}
     </p>
+    <IdDocumentGuide
+      v-if="idCopy"
+      :page="idCopy"
+    />
   </article>
 </template>

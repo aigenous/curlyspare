@@ -1,12 +1,14 @@
 import {
   generatorDisclaimer,
   gtinDisclaimer,
+  idDocumentDisclaimer,
   isbnValidatorDisclaimer,
   personTestDisclaimer,
   vatValidatorDisclaimer,
   vinValidatorDisclaimer,
 } from '../../brand'
 import type { ToolDefinition } from '../../registry/types'
+import { dowodPage, paszportPage } from './id-document-copy'
 
 export const generatorTools: ToolDefinition[] = [
   {
@@ -37,22 +39,22 @@ export const generatorTools: ToolDefinition[] = [
     component: () => import('./generator-regon/GeneratorRegon.vue'),
   },
   {
-    slug: 'generator-dowod-osobisty',
-    title: 'Generator dowodu osobistego',
-    description: 'Generuje i sprawdza serię i numer dowodu osobistego.',
+    slug: 'numer-dowodu-osobistego',
+    title: dowodPage.h1,
+    description: dowodPage.lead,
     category: 'generatory',
-    keywords: ['dowód', 'dowód osobisty', 'seria', 'numer dowodu', 'generator dowodu'],
-    disclaimer: generatorDisclaimer,
-    component: () => import('./generator-dowod-osobisty/GeneratorDowodOsobisty.vue'),
+    keywords: [...dowodPage.keywords],
+    disclaimer: idDocumentDisclaimer,
+    component: () => import('./numer-dowodu-osobistego/NumerDowoduOsobistego.vue'),
   },
   {
-    slug: 'generator-paszport',
-    title: 'Generator numeru paszportu',
-    description: 'Generuje i sprawdza numer polskiego paszportu (dwie litery i siedem cyfr).',
+    slug: 'numer-paszportu',
+    title: paszportPage.h1,
+    description: paszportPage.lead,
     category: 'generatory',
-    keywords: ['paszport', 'numer paszportu', 'generator paszportu', 'walidator paszportu'],
-    disclaimer: generatorDisclaimer,
-    component: () => import('./generator-paszport/GeneratorPaszport.vue'),
+    keywords: [...paszportPage.keywords],
+    disclaimer: idDocumentDisclaimer,
+    component: () => import('./numer-paszportu/NumerPaszportu.vue'),
   },
   {
     slug: 'generator-krs',

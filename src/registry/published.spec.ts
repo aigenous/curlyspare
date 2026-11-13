@@ -34,7 +34,7 @@ describe('publish allowlist', () => {
     const source = readFileSync(new URL('./published-slugs.ts', import.meta.url), 'utf8')
     const header = source.match(/^\/\*\*[\s\S]*?\*\//)?.[0] ?? ''
     const examples = [...header.matchAll(/[a-z0-9]+(?:-[a-z0-9]+)+/g)].map((match) => match[0])
-    expect(examples).toEqual(['walidator-iban', 'generator-dowod-osobisty', 'generator-paszport'])
+    expect(examples).toEqual(['walidator-iban', 'numer-dowodu-osobistego', 'numer-paszportu'])
     expect(() => assertPublishedSlugs(examples)).not.toThrow()
   })
 

@@ -2,7 +2,7 @@ import { spawn, type ChildProcess } from 'node:child_process'
 import { createServer } from 'node:net'
 import { describe, expect, it } from 'vitest'
 
-const draftPath = '/generator-dowod-osobisty'
+const draftPath = '/numer-dowodu-osobistego'
 const sitemapPaths = ['/', '/operator', '/polityka-prywatnosci', '/regulamin']
 
 function productionEnv(): NodeJS.ProcessEnv {

@@ -4,7 +4,7 @@
  *
  * TODO: Product Manager provides this list in a separate PR.
  * Keep the list empty until that list lands. Examples already registered:
- * walidator-iban, generator-dowod-osobisty, generator-paszport.
+ * walidator-iban, numer-dowodu-osobistego, numer-paszportu.
  *
  * This module stays free of Vue imports so the Vite config can read it.
  */

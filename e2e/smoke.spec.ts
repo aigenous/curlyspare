@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { idDocumentDocumentTitle } from '../src/tools/generators/id-document-copy'
 import { tools } from '../src/registry'
 
 const shellPages = [
@@ -32,7 +33,7 @@ for (const tool of tools) {
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
     await page.goto(`/${tool.slug}`)
-    await expect(page).toHaveTitle(new RegExp(`${escapeRegExp(tool.title)} — DevNarzędzia`))
+    await expect(page).toHaveTitle(idDocumentDocumentTitle(tool.slug) ?? `${tool.title} — DevNarzędzia`)
     await expect(page.getByRole('heading', { level: 1, name: tool.title })).toBeVisible()
     await expect(page.getByText(tool.description)).toBeVisible()
     expect(errors).toEqual([])
