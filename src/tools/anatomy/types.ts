@@ -31,14 +31,16 @@ export interface WeightedTerm {
   value: number
 }
 
-/** One weighted-sum line. `expected` is null when a remainder cannot be issued as a digit. */
+/**
+ * One weighted-sum line.
+ * The correct check digit stays inside validation and is not part of this payload.
+ */
 export interface WeightedSumStep {
   kind: 'weighted-sum'
   terms: readonly WeightedTerm[]
   sum: number
   modulus: number
   formula: 'mod10-complement'
-  expected: string | null
   actual: string | null
   /** Null while the check digit has not been typed. */
   matches: boolean | null

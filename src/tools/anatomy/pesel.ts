@@ -64,7 +64,7 @@ function stateAt(index: number, parsed: PeselParse): CellState {
 }
 
 function stepsOf(parsed: PeselParse): WeightedSumStep[] {
-  if (parsed.sum === undefined || parsed.expected === undefined) {
+  if (parsed.sum === undefined) {
     return []
   }
   const terms = PESEL_WEIGHTS.map((weight, index) => ({
@@ -78,7 +78,6 @@ function stepsOf(parsed: PeselParse): WeightedSumStep[] {
       sum: parsed.sum,
       modulus: 10,
       formula: 'mod10-complement',
-      expected: String(parsed.expected),
       actual: parsed.complete ? String(parsed.digits[10] ?? '') : null,
       matches: parsed.complete ? parsed.checksumOk === true : null,
     },

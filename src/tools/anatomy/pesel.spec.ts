@@ -51,7 +51,6 @@ describe('PESEL anatomy', () => {
         sum: 101,
         modulus: 10,
         formula: 'mod10-complement',
-        expected: '9',
         actual: null,
         matches: null,
       },
@@ -65,7 +64,8 @@ describe('PESEL anatomy', () => {
     expect(anatomy.valid).toBe(validatePesel('44051401359').valid)
     expect(anatomy.cells[10]).toMatchObject({ char: '9', state: 'check-ok' })
     expect(anatomy.cells.slice(0, 10).every((cell) => cell.state === 'filled')).toBe(true)
-    expect(anatomy.steps[0]).toMatchObject({ sum: 101, expected: '9', actual: '9', matches: true })
+    expect(anatomy.steps[0]).toMatchObject({ sum: 101, actual: '9', matches: true })
+    expect(anatomy.steps[0]).not.toHaveProperty('expected')
   })
 
   it('flags only the check digit when the date is real and the sum is not', () => {
@@ -73,7 +73,9 @@ describe('PESEL anatomy', () => {
     expect(anatomy.valid).toBe(false)
     expect(anatomy.cells.slice(0, 6).every((cell) => cell.state === 'filled')).toBe(true)
     expect(anatomy.cells[10]).toMatchObject({ char: '8', state: 'bad' })
-    expect(anatomy.steps[0]).toMatchObject({ expected: '9', actual: '8', matches: false })
+    expect(anatomy.steps[0]).toMatchObject({ actual: '8', matches: false })
+    expect(anatomy.steps[0]).not.toHaveProperty('expected')
+    expect(JSON.stringify(anatomy)).not.toContain('"expected"')
   })
 
   it('flags the birth-date cells when the day cannot exist', () => {
