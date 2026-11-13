@@ -8,7 +8,7 @@ import {
   vinValidatorDisclaimer,
 } from '../../brand'
 import type { ToolDefinition } from '../../registry/types'
-import { dowodPage, paszportPage } from './id-document-copy'
+import { idCardPage, passportPage } from './id-document-copy'
 
 export const generatorTools: ToolDefinition[] = [
   {
@@ -18,7 +18,7 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['pesel', 'generator pesel', 'walidator pesel', 'data urodzenia', 'płeć', 'suma kontrolna'],
     disclaimer: generatorDisclaimer,
-    component: () => import('./generator-pesel/GeneratorPesel.vue'),
+    component: () => import('./pesel-generator/PeselGenerator.vue'),
   },
   {
     slug: 'generator-nip',
@@ -27,7 +27,7 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['nip', 'generator nip', 'walidator nip', 'podatek', 'myślniki'],
     disclaimer: generatorDisclaimer,
-    component: () => import('./generator-nip/GeneratorNip.vue'),
+    component: () => import('./nip-generator/NipGenerator.vue'),
   },
   {
     slug: 'generator-regon',
@@ -36,25 +36,25 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['regon', 'generator regon', 'walidator regon', 'gus', 'jednostka lokalna'],
     disclaimer: generatorDisclaimer,
-    component: () => import('./generator-regon/GeneratorRegon.vue'),
+    component: () => import('./regon-generator/RegonGenerator.vue'),
   },
   {
     slug: 'numer-dowodu-osobistego',
-    title: dowodPage.h1,
-    description: dowodPage.lead,
+    title: idCardPage.h1,
+    description: idCardPage.lead,
     category: 'generatory',
-    keywords: [...dowodPage.keywords],
+    keywords: [...idCardPage.keywords],
     disclaimer: idDocumentDisclaimer,
-    component: () => import('./numer-dowodu-osobistego/NumerDowoduOsobistego.vue'),
+    component: () => import('./id-card-number/IdCardNumber.vue'),
   },
   {
     slug: 'numer-paszportu',
-    title: paszportPage.h1,
-    description: paszportPage.lead,
+    title: passportPage.h1,
+    description: passportPage.lead,
     category: 'generatory',
-    keywords: [...paszportPage.keywords],
+    keywords: [...passportPage.keywords],
     disclaimer: idDocumentDisclaimer,
-    component: () => import('./numer-paszportu/NumerPaszportu.vue'),
+    component: () => import('./passport-number/PassportNumber.vue'),
   },
   {
     slug: 'generator-krs',
@@ -63,7 +63,7 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['krs', 'krajowy rejestr sądowy', 'generator krs', 'numer krs'],
     disclaimer: generatorDisclaimer,
-    component: () => import('./generator-krs/GeneratorKrs.vue'),
+    component: () => import('./krs-generator/KrsGenerator.vue'),
   },
   {
     slug: 'generator-ean',
@@ -72,7 +72,7 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['ean', 'ean-13', 'ean-8', 'gtin', 'gtin-14', 'upc', 'kod kreskowy'],
     disclaimer: gtinDisclaimer,
-    component: () => import('./generator-ean/GeneratorEan.vue'),
+    component: () => import('./ean-generator/EanGenerator.vue'),
   },
   {
     slug: 'walidator-vat-ue',
@@ -81,7 +81,7 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['vat', 'nip ue', 'vies', 'numer vat', 'podatek'],
     disclaimer: vatValidatorDisclaimer,
-    component: () => import('./walidator-vat-ue/WalidatorVatUe.vue'),
+    component: () => import('./eu-vat-validator/EuVatValidator.vue'),
   },
   {
     slug: 'walidator-vin',
@@ -90,7 +90,7 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['vin', 'numer nadwozia', 'pojazd', 'cyfra kontrolna'],
     disclaimer: vinValidatorDisclaimer,
-    component: () => import('./walidator-vin/WalidatorVin.vue'),
+    component: () => import('./vin-validator/VinValidator.vue'),
   },
   {
     slug: 'konwerter-isbn',
@@ -99,7 +99,7 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['isbn', 'isbn-10', 'isbn-13', 'książka', 'ean'],
     disclaimer: isbnValidatorDisclaimer,
-    component: () => import('./konwerter-isbn/KonwerterIsbn.vue'),
+    component: () => import('./isbn-converter/IsbnConverter.vue'),
   },
   {
     slug: 'generator-danych-testowych',
@@ -108,7 +108,7 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['osoba testowa', 'dane testowe', 'pesel', 'adres', 'csv', 'json', 'generator danych testowych', 'generator danych osobowych'],
     disclaimer: personTestDisclaimer,
-    component: () => import('./generator-osoby-testowej/GeneratorOsobyTestowej.vue'),
+    component: () => import('./test-person-generator/TestPersonGenerator.vue'),
   },
   {
     slug: 'walidator-iban',
@@ -117,6 +117,6 @@ export const generatorTools: ToolDefinition[] = [
     category: 'generatory',
     keywords: ['iban', 'walidator iban', 'walidacja iban', 'sprawdzanie iban', 'nrb', 'numer konta', 'generator numeru konta bankowego', 'iban pl generator', 'mod 97', 'numer rozliczeniowy'],
     disclaimer: generatorDisclaimer,
-    component: () => import('./walidator-iban/WalidatorIban.vue'),
+    component: () => import('./iban-validator/IbanValidator.vue'),
   },
 ]

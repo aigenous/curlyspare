@@ -24,15 +24,15 @@ interface Generators {
   generateNip: (rng?: RandomInt) => string
   generateRegon: (length?: 9 | 14, rng?: RandomInt) => string
   generateKrs: (rng?: RandomInt) => string
-  generateDowodOsobisty: (rng?: RandomInt) => string
-  generatePaszport: (rng?: RandomInt) => string
+  generateIdCardNumber: (rng?: RandomInt) => string
+  generatePassport: (rng?: RandomInt) => string
   validatePesel: (input: string) => { valid: boolean; sex?: PeselSex; birthDate?: CalendarDate }
   validateNip: (input: string) => { valid: boolean }
   validateRegon: (input: string) => { valid: boolean; length?: 9 | 14 }
   validateKrs: (input: string) => { valid: boolean } | ValidationFailure
   validateIbanPl: (input: string) => { valid: boolean; iban?: string } | ValidationFailure
-  validateDowodOsobisty: (input: string) => { valid: boolean } | ValidationFailure
-  validatePaszport: (input: string) => { valid: boolean } | ValidationFailure
+  validateIdCardNumber: (input: string) => { valid: boolean } | ValidationFailure
+  validatePassport: (input: string) => { valid: boolean } | ValidationFailure
 }
 
 async function loadGenerators(): Promise<Generators> {
@@ -111,13 +111,13 @@ describe.skipIf(!generatorsPresent)('Polish identifier generators', () => {
       error: 'unsupported-country',
     })
 
-    expect(api.generateDowodOsobisty(sequenceRng([0, 1, 18, 2, 3, 4, 5, 6]))).toBe('ABS123456')
-    expect(api.validateDowodOsobisty('ZZC108201').valid).toBe(true)
-    expect(api.validateDowodOsobisty('ZZC108202')).toEqual({ valid: false, error: 'invalid-checksum' })
+    expect(api.generateIdCardNumber(sequenceRng([0, 1, 18, 2, 3, 4, 5, 6]))).toBe('ABS123456')
+    expect(api.validateIdCardNumber('ZZC108201').valid).toBe(true)
+    expect(api.validateIdCardNumber('ZZC108202')).toEqual({ valid: false, error: 'invalid-checksum' })
 
-    expect(api.generatePaszport(sequenceRng([0, 0, 2, 3, 4, 5, 6, 7]))).toBe('AA3234567')
-    expect(api.validatePaszport('aa 3234567').valid).toBe(true)
-    expect(api.validatePaszport('AA3234568')).toEqual({ valid: false, error: 'invalid-checksum' })
+    expect(api.generatePassport(sequenceRng([0, 0, 2, 3, 4, 5, 6, 7]))).toBe('AA3234567')
+    expect(api.validatePassport('aa 3234567').valid).toBe(true)
+    expect(api.validatePassport('AA3234568')).toEqual({ valid: false, error: 'invalid-checksum' })
   })
 
   it('validates freshly generated identifiers', async () => {
@@ -128,7 +128,7 @@ describe.skipIf(!generatorsPresent)('Polish identifier generators', () => {
     expect(api.validateRegon(api.generateRegon(9)).valid).toBe(true)
     expect(api.validateRegon(api.generateRegon(14)).valid).toBe(true)
     expect(api.validateKrs(api.generateKrs()).valid).toBe(true)
-    expect(api.validateDowodOsobisty(api.generateDowodOsobisty()).valid).toBe(true)
-    expect(api.validatePaszport(api.generatePaszport()).valid).toBe(true)
+    expect(api.validateIdCardNumber(api.generateIdCardNumber()).valid).toBe(true)
+    expect(api.validatePassport(api.generatePassport()).valid).toBe(true)
   })
 })

@@ -3,7 +3,7 @@
  * Eleven PESEL cells, eight 2px gaps inside the parts and two 6px gaps between
  * parts leave 28px. At a 358px content box (a 390px viewport with 16px padding
  * on each side) the cell basis is 30px, so the eleven digits stay on one line.
- * The same floor still fits a 360px viewport. "kontrolna" needs about 4rem,
+ * The same floor still fits a 360px viewport. "check digit" needs about 4rem,
  * wider than its single cell, so each part is at least 4rem and the label wraps
  * onto its own lines instead of being clipped.
  *
