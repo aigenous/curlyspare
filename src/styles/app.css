@@ -131,7 +131,7 @@ code, .code {
 .site-header .search-trigger { min-width: 14rem; }
 @media (max-width: 51.99rem) {
   .site-header .search-trigger { min-width: 0; width: var(--control-h); padding: 0; justify-content: center; border-color: transparent; background: none; color: var(--color-text); }
-  .site-header .search-trigger > :not(.icon) { display: none; }
+  .site-header .search-trigger > .kbd { display: none; }
 }
 
 .site-footer { border-top: 1px solid var(--color-divider); padding-block: var(--space-7) var(--space-6); margin-top: var(--space-8); font-size: var(--text-sm); }

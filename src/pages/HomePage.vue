@@ -62,7 +62,10 @@ function inCategory(category: (typeof categories)[number]) {
             <path d="m20 20-3.5-3.5" />
           </svg>
           <span>{{ publishedToolSearchLabel(toolCount) }}</span>
-          <kbd class="kbd">Ctrl/⌘ K</kbd>
+          <kbd
+            class="kbd"
+            aria-hidden="true"
+          >Ctrl/⌘ K</kbd>
         </button>
         <nav
           v-if="chips.length > 0"

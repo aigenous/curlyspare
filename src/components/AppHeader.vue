@@ -40,7 +40,6 @@ const onHome = computed(() => route.path === '/')
         <button
           class="search-trigger"
           type="button"
-          aria-label="Szukaj"
           aria-keyshortcuts="Control+K Meta+K"
           @click="show"
         >
@@ -56,7 +55,7 @@ const onHome = computed(() => route.path === '/')
             />
             <path d="m20 20-3.5-3.5" />
           </svg>
-          <span>{{ t('search') }}</span>
+          <span class="sr-only header-search-label">{{ t('search') }}</span>
           <kbd
             class="kbd"
             aria-hidden="true"

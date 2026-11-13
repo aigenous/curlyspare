@@ -59,7 +59,10 @@ usePageMeta({
         <path d="m20 20-3.5-3.5" />
       </svg>
       <span>Szukaj narzędzia</span>
-      <kbd class="kbd">Ctrl/⌘ K</kbd>
+      <kbd
+        class="kbd"
+        aria-hidden="true"
+      >Ctrl/⌘ K</kbd>
     </button>
     <div class="row">
       <RouterLink
