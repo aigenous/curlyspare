@@ -53,7 +53,7 @@ const families = [
 </script>
 
 <template>
-  <article class="wrap prose">
+  <article class="wrap prose licences">
     <h1 class="h1">
       Licencje
     </h1>

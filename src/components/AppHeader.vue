@@ -40,6 +40,7 @@ const onHome = computed(() => route.path === '/')
         <button
           class="search-trigger"
           type="button"
+          aria-label="Szukaj"
           aria-keyshortcuts="Control+K Meta+K"
           @click="show"
         >

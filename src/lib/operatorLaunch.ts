@@ -11,10 +11,13 @@ export function operatorPlaceholderFields(operator: OperatorDetails): string[] {
 
 /**
  * Bracket tokens left in legal markdown after operator substitution.
- * Markdown links and the quoted `[TEST]` marker are copy, not fill-in tokens.
+ * HTML comments, markdown links, and the quoted `[TEST]` marker are copy, not fill-in tokens.
  */
 export function legalPlaceholderTokens(markdown: string): string[] {
-  const visible = markdown.replace(/\[[^[\]]+\]\([^)\n]*\)/g, '').replaceAll('[TEST]', '')
+  const visible = markdown
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/\[[^[\]]+\]\([^)\n]*\)/g, '')
+    .replaceAll('[TEST]', '')
   return [...new Set(visible.match(/\[[^[\]]+\]/g) ?? [])]
 }
 

@@ -57,6 +57,14 @@ describe('legal page placeholders', () => {
     expect(warn).not.toHaveBeenCalled()
   })
 
+  it('ignores placeholders that appear only inside HTML comments', () => {
+    const source = 'Gotowe. <!-- [PEŁNA NAZWA FIRMY] [ADRES SERWISU] --> Wynik „[TEST]”.'
+    const warn = vi.fn()
+    expect(legalPlaceholderTokens(source)).toEqual([])
+    expect(() => assertOperatorReadyForLaunch(filled, '1', warn, [source])).not.toThrow()
+    expect(warn).not.toHaveBeenCalled()
+  })
+
   it('warns and passes when a legal placeholder remains and the launch flag is unset', () => {
     const warn = vi.fn()
     expect(() => assertOperatorReadyForLaunch(filled, undefined, warn, [leftoverLegal])).not.toThrow()
