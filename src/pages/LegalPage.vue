@@ -1,26 +1,15 @@
-<script setup lang="ts">
-import { useHead } from '@unhead/vue'
+<script lang="ts">
 import { marked } from 'marked'
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { brand } from '../brand'
-import { pageHead } from '../composables/usePageMeta'
-import { t } from '../i18n'
 import { applyOperatorFields } from '../lib/operatorLaunch'
-import privacySource from '../content/legal/polityka-prywatnosci.md?raw'
-import termsSource from '../content/legal/regulamin.md?raw'
 
-type LegalPageId = 'terms' | 'privacy' | 'operator'
-
-const route = useRoute()
-const page = computed(() => route.meta.page as LegalPageId)
-
-function renderLegal(source: string): string {
+export function renderLegal(source: string): string {
   const withOperator = applyOperatorFields(source)
-  const normalized = withOperator.replace(
-    /^(## 8\. Informacja o cookies i pamięci przeglądarki) \{#cookies\}\s*$/m,
-    '$1',
-  )
+  const normalized = withOperator
+    .replace(
+      /^(## 8\. Informacja o cookies i pamięci przeglądarki) \{#cookies\}\s*$/m,
+      '$1',
+    )
+    .replace(/<!--[\s\S]*?-->/g, '')
   const parsed = marked.parse(normalized, { async: false, gfm: true })
   if (typeof parsed !== 'string') return ''
   return parsed.replace(
@@ -28,6 +17,22 @@ function renderLegal(source: string): string {
     '<h2 id="cookies">8. Informacja o cookies i pamięci przeglądarki</h2>',
   )
 }
+</script>
+
+<script setup lang="ts">
+import { useHead } from '@unhead/vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { brand } from '../brand'
+import { pageHead } from '../composables/usePageMeta'
+import { t } from '../i18n'
+import privacySource from '../content/legal/polityka-prywatnosci.md?raw'
+import termsSource from '../content/legal/regulamin.md?raw'
+
+type LegalPageId = 'terms' | 'privacy' | 'operator'
+
+const route = useRoute()
+const page = computed(() => route.meta.page as LegalPageId)
 
 const copy = computed(() => {
   switch (page.value) {
