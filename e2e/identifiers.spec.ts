@@ -97,11 +97,38 @@ test.describe('identifier screens', () => {
 
   test('ID card and passport screens generate values that pass their own check', async ({ page }) => {
     const api = await loadIdentifiers()
-    await page.goto('/generator-dowod-osobisty')
+    await page.goto('/numer-dowodu-osobistego')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Testowy numer dowodu osobistego – walidator i generator',
+    )
+    await expect(page).toHaveTitle('Testowy numer dowodu osobistego – walidator — DevNarzędzia')
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+      'content',
+      'Testowy numer dowodu osobistego – walidator i generator',
+    )
+    expect((await page.title()).toLowerCase()).not.toContain('generator dowodu')
+    await expect(page.locator('section.tool .id-test-notice p').nth(0)).toHaveText(
+      'Numer testowy – nie jest dokumentem ani jego wzorem.',
+    )
+    await expect(page.locator('section.tool .id-test-notice p').nth(1)).toHaveText('Zastrzeżenie poniżej ↓')
+    await expect(page.locator('section.tool .id-test-notice img')).toHaveCount(0)
+    await expect(page.locator('.disclaimer')).toContainText('nie jest to dokument ani jego wzór')
+    await page.getByLabel('Ile numerów').fill('101')
+    await page.getByRole('button', { name: 'Generuj' }).click()
+    await expect(page.getByRole('alert')).toHaveText('Podaj liczbę od 1 do 100.')
+    await page.getByLabel('Ile numerów').fill('1')
     await page.getByRole('button', { name: 'Generuj' }).click()
     const card = (await page.getByLabel('Wynik').inputValue()).trim()
-    expect(card).toMatch(/^[A-Z]{3} \d{6}$/)
-    expect(api.validateDowodOsobisty(card).valid).toBe(true)
+    expect(card).toMatch(/^\[TEST\] [A-Z]{3} \d{6}$/)
+    expect(api.validateDowodOsobisty(card.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByRole('button', { name: 'Pobierz CSV' }).click(),
+    ])
+    expect(download.suggestedFilename()).toBe('numer-dowodu-osobistego.csv')
+    const csv = await readDownload(download)
+    expect(csv).toContain('numer,dane_testowe')
+    expect(csv).toContain(card)
     await page.getByLabel('Seria i numer').fill('ABS123456')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
@@ -109,11 +136,21 @@ test.describe('identifier screens', () => {
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('alert')).toHaveText('Niepoprawny format lub suma kontrolna')
 
-    await page.goto('/generator-paszport')
+    await page.goto('/numer-paszportu')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Testowy numer paszportu – walidator i generator',
+    )
+    await expect(page).toHaveTitle('Testowy numer paszportu – walidator — DevNarzędzia')
+    await expect(page.locator('section.tool .id-test-notice p').nth(0)).toHaveText(
+      'Numer testowy – nie jest dokumentem ani jego wzorem.',
+    )
+    await expect(page.locator('section.tool .id-test-notice p').nth(1)).toHaveText('Zastrzeżenie poniżej ↓')
+    await expect(page.locator('section.tool .id-test-notice img')).toHaveCount(0)
+    await expect(page.locator('.disclaimer')).toContainText('nie jest to dokument ani jego wzór')
     await page.getByRole('button', { name: 'Generuj' }).click()
     const passport = (await page.getByLabel('Wynik').inputValue()).trim()
-    expect(passport).toMatch(/^[A-Z]{2} ?\d{7}$/)
-    expect(api.validatePaszport(passport).valid).toBe(true)
+    expect(passport).toMatch(/^\[TEST\] [A-Z]{2} \d{7}$/)
+    expect(api.validatePaszport(passport.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
     await page.getByLabel('Numer paszportu').fill('AA3234567')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
@@ -160,8 +197,12 @@ test.describe('identifier screens', () => {
     await page.goto('/walidator-iban')
     await page.getByRole('button', { name: 'Generuj' }).click()
     const value = (await page.getByLabel('Wynik').inputValue()).trim()
-    expect(value).toMatch(/^\d{2}(?: \d{4}){6}$/)
-    expect(api.validateNrb(value).valid).toBe(true)
+    expect(value.startsWith('[TEST] ')).toBe(true)
+    expect(value).toMatch(/^\[TEST\] \d{2}(?: \d{4}){6}$/)
+    expect(api.validateNrb(value.replace(/^\[TEST\]\s*/, '')).valid).toBe(true)
+    await page.getByLabel('IBAN lub NRB').fill(value)
+    await page.getByRole('button', { name: 'Sprawdź' }).click()
+    await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')
     await page.getByLabel('IBAN lub NRB').fill('09 1010 1010 0075 9122 2300 0000')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')

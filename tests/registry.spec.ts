@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   generatorDisclaimer,
   gtinDisclaimer,
+  idDocumentDisclaimer,
   isbnValidatorDisclaimer,
   personTestDisclaimer,
   vatValidatorDisclaimer,
@@ -66,12 +67,12 @@ describe('tool registry', () => {
       'generator-pesel',
       'generator-nip',
       'generator-regon',
-      'generator-dowod-osobisty',
-      'generator-paszport',
       'generator-krs',
       'walidator-iban',
     ])
     const own: Record<string, string> = {
+      'numer-dowodu-osobistego': idDocumentDisclaimer,
+      'numer-paszportu': idDocumentDisclaimer,
       'generator-ean': gtinDisclaimer,
       'walidator-vat-ue': vatValidatorDisclaimer,
       'walidator-vin': vinValidatorDisclaimer,
@@ -90,6 +91,23 @@ describe('tool registry', () => {
       }
       expect(tool.disclaimer, tool.slug).toBe(own[tool.slug])
       expect(tool.disclaimer, tool.slug).not.toBe(generatorDisclaimer)
+    }
+  })
+
+  it('gives the ID card and passport the dedicated disclaimer and no generator phrasing', () => {
+    const dedicated =
+      'Numer testowy o poprawnym formacie i sumie kontrolnej – nie jest to dokument ani jego wzór. Serwis nie tworzy obrazów, skanów ani danych dokumentów tożsamości. Numer może przypadkowo należeć do istniejącego dokumentu. Używanie go do podszywania się pod inną osobę, w formularzach urzędowych, bankowych lub przy weryfikacji tożsamości jest zabronione i może stanowić przestępstwo (m.in. art. 190a § 2, 270, 275, 286 i 297 Kodeksu karnego).'
+    expect(dedicated).toHaveLength(438)
+    expect(idDocumentDisclaimer).toBe(dedicated)
+    for (const slug of ['numer-dowodu-osobistego', 'numer-paszportu']) {
+      const tool = findTool(slug)
+      expect(tool, slug).toBeDefined()
+      if (!tool) return
+      expect(tool.disclaimer).toBe(dedicated)
+      for (const field of [tool.title, tool.description, ...tool.keywords]) {
+        expect(field.toLowerCase(), `${slug} ${field}`).not.toContain('generator dowodu')
+        expect(field.toLowerCase(), `${slug} ${field}`).not.toContain('generator paszportu')
+      }
     }
   })
 })
