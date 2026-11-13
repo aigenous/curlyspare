@@ -233,6 +233,16 @@ h2 {
   box-shadow: var(--shadow);
 }
 
+.id-test-notice {
+  display: grid;
+  gap: 0.2rem;
+  margin-bottom: 1rem;
+}
+
+.id-test-notice p {
+  margin: 0;
+}
+
 .disclaimer {
   margin-top: 1rem;
   padding: 0.9rem 1rem;

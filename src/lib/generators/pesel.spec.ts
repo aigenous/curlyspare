@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { formatIsoDate, fromEpochDay, toEpochDay, type CalendarDate } from './dates'
+import { formatIsoDate, toEpochDay, type CalendarDate } from './dates'
 import {
   generatePesel,
   generatePeselOnDate,
   generatePesels,
   parsePesel,
+  PESEL_DEFAULT_YEAR_RANGE,
   peselCheckDigit,
   randomPeselDate,
   validatePesel,
@@ -226,7 +227,11 @@ describe('PESEL parse and dated generation', () => {
       sum: 101,
       expected: 9,
     })
-    expect(parsePesel('44051401359999').digits).toHaveLength(11)
+    const overlong = parsePesel('44051401359999')
+    expect(overlong.digits).toEqual([4, 4, 0, 5, 1, 4, 0, 1, 3, 5, 9, 9, 9, 9])
+    expect(overlong.complete).toBe(false)
+    expect(overlong.valid).toBe(false)
+    expect(overlong.date).toBeUndefined()
   })
 
   it('round-trips both sexes across the PESEL centuries', () => {
@@ -252,8 +257,8 @@ describe('PESEL parse and dated generation', () => {
     }
   })
 
-  it('accepts a UTC date and draws a random sex through the shared generator', () => {
-    const pesel = generatePeselOnDate(new Date(Date.UTC(1990, 4, 12)), 'random', sequenceRng([0, 4, 5, 6, 1]))
+  it('draws a random sex through the shared generator', () => {
+    const pesel = generatePeselOnDate({ year: 1990, month: 5, day: 12 }, 'random', sequenceRng([0, 4, 5, 6, 1]))
     expect(parsePesel(pesel)).toMatchObject({
       valid: true,
       date: { year: 1990, month: 5, day: 12 },
@@ -262,16 +267,67 @@ describe('PESEL parse and dated generation', () => {
     expect(pesel.slice(6, 10)).toBe('4562')
   })
 
-  it('draws a uniform day from 1950-01-01 through 2010-12-31', () => {
-    const from = toEpochDay({ year: 1950, month: 1, day: 1 })
-    const to = toEpochDay({ year: 2010, month: 12, day: 31 })
-    expect(randomPeselDate(sequenceRng([0]))).toEqual(fromEpochDay(from))
-    expect(randomPeselDate(sequenceRng([to - from]))).toEqual(fromEpochDay(to))
+  it('uses the same default year range for generation and randomPeselDate', () => {
+    const from = toEpochDay(PESEL_DEFAULT_YEAR_RANGE.from)
+    const to = toEpochDay(PESEL_DEFAULT_YEAR_RANGE.to)
+    const span = to - from
+    expect(PESEL_DEFAULT_YEAR_RANGE).toEqual({
+      from: { year: 1950, month: 1, day: 1 },
+      to: { year: 2005, month: 12, day: 31 },
+    })
+    expect(randomPeselDate(sequenceRng([0]))).toEqual(PESEL_DEFAULT_YEAR_RANGE.from)
+    expect(randomPeselDate(sequenceRng([span]))).toEqual(PESEL_DEFAULT_YEAR_RANGE.to)
+    expect(validatePesel(generatePesel({}, sequenceRng([0, 0, 0, 0, 0, 0])))).toMatchObject({
+      valid: true,
+      birthDate: PESEL_DEFAULT_YEAR_RANGE.from,
+    })
+    expect(validatePesel(generatePesel({}, sequenceRng([span, 0, 0, 0, 0, 0])))).toMatchObject({
+      valid: true,
+      birthDate: PESEL_DEFAULT_YEAR_RANGE.to,
+    })
+  })
+
+  it('keeps calendar days under Europe/Warsaw, including 1900-01-01 and 2000-02-29', () => {
+    const previous = process.env.TZ
+    process.env.TZ = 'Europe/Warsaw'
+    try {
+      const newYear = new Date(1900, 0, 1)
+      expect(newYear.getUTCFullYear()).toBe(1899)
+      expect(newYear.getUTCMonth()).toBe(11)
+      expect(newYear.getUTCDate()).toBe(31)
+      const leap = new Date(2000, 1, 29)
+      expect(leap.getUTCFullYear()).toBe(2000)
+      expect(leap.getUTCMonth()).toBe(1)
+      expect(leap.getUTCDate()).toBe(28)
+
+      const dates: readonly CalendarDate[] = [
+        { year: 1800, month: 1, day: 1 },
+        { year: 1899, month: 12, day: 31 },
+        { year: 1900, month: 1, day: 1 },
+        { year: 1999, month: 12, day: 31 },
+        { year: 2000, month: 2, day: 29 },
+        { year: 2000, month: 3, day: 1 },
+        { year: 2099, month: 12, day: 31 },
+        { year: 2100, month: 1, day: 1 },
+        { year: 2200, month: 1, day: 1 },
+        { year: 2299, month: 1, day: 1 },
+        { year: 2299, month: 12, day: 31 },
+      ]
+      for (const date of dates) {
+        for (const sex of ['F', 'M'] as const satisfies readonly PeselSexCode[]) {
+          const pesel = generatePeselOnDate(date, sex, sequenceRng([0, 0, 0, 0]))
+          expect(parsePesel(pesel)).toMatchObject({ valid: true, date, sex })
+          expect(validatePesel(pesel)).toMatchObject({ valid: true, birthDate: date })
+        }
+      }
+    } finally {
+      process.env.TZ = previous ?? 'UTC'
+    }
   })
 
   it('rejects a date the PESEL calendar cannot encode', () => {
     expect(() => generatePeselOnDate({ year: 1990, month: 2, day: 31 }, 'F')).toThrow(RangeError)
-    expect(() => generatePeselOnDate(new Date(Number.NaN), 'M')).toThrow(RangeError)
+    expect(() => generatePeselOnDate({ year: 1900, month: 2, day: 29 }, 'M')).toThrow(RangeError)
   })
 })
 

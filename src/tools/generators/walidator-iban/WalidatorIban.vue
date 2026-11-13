@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import CopyButton from '../../../components/CopyButton.vue'
 import { formatIban, formatNrb, generateNrbs, validateIbanPl, validateNrb } from '../../../lib/generators'
 import CheckResult from '../CheckResult.vue'
+import { presentIdNumber, stripTestPrefix } from '../id-document-copy'
 import { COUNT_RANGE_ERROR, readCount, validationMessage } from '../messages'
 import { GENERATED_NUMBER_LABEL, VALID_NUMBER_LABEL } from '../verdicts'
 
@@ -25,7 +26,7 @@ function generate() {
   }
   try {
     const values = generateNrbs(parsedCount, { bank: bank.value.trim() === '' ? undefined : bank.value })
-    generated.value = values.map(formatNrb).join('\n')
+    generated.value = values.map((value) => presentIdNumber(formatNrb(value))).join('\n')
   } catch {
     error.value = 'Numer rozliczeniowy musi mieć 8 cyfr i poprawną cyfrę kontrolną. Puste pole losuje fikcyjny numer.'
   }
@@ -33,15 +34,16 @@ function generate() {
 
 function check() {
   verdictDetail.value = ''
-  const compact = probe.value.replace(/[\s-]/g, '').toUpperCase()
+  const value = stripTestPrefix(probe.value)
+  const compact = value.replace(/[\s-]/g, '').toUpperCase()
   if (/^[A-Z]{2}/.test(compact)) {
-    const iban = validateIbanPl(probe.value)
+    const iban = validateIbanPl(value)
     if (!iban.valid) {
       verdictError.value = true
       verdict.value = validationMessage(iban.error)
       return
     }
-    const nrb = validateNrb(probe.value)
+    const nrb = validateNrb(value)
     if (!nrb.valid) {
       verdictError.value = true
       verdict.value = validationMessage(nrb.error)
@@ -53,7 +55,7 @@ function check() {
     return
   }
 
-  const nrb = validateNrb(probe.value)
+  const nrb = validateNrb(value)
   verdictError.value = !nrb.valid
   if (!nrb.valid) {
     verdict.value = validationMessage(nrb.error)
