@@ -1,8 +1,8 @@
-/* CurlySpare — komponenty i układy. Wartości wyłącznie z tokens.css.
-   Klasy .is-hover / .is-focus / .is-active istnieją po to, żeby components.html
-   mógł pokazać stany obok siebie. */
+/* CurlySpare — components and layout. Values come only from tokens.css.
+   The .is-hover / .is-focus / .is-active classes exist so a component sheet
+   can show states side by side. */
 
-/* ── Baza ─────────────────────────────────────────────── */
+/* ── Base ─────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 5rem; }
 body {
@@ -35,7 +35,7 @@ a:hover, a.is-hover { color: var(--color-primary-hover); text-decoration-thickne
 
 .icon { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* ── Typografia ───────────────────────────────────────── */
+/* ── Typography ───────────────────────────────────────── */
 .h-display, .h1, .h2 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; }
 .h-display { font-size: var(--text-4xl); line-height: var(--leading-tight); letter-spacing: -.015em; }
 .h1 { font-size: var(--text-3xl); line-height: 1.1; letter-spacing: -.01em; }
@@ -46,7 +46,7 @@ a:hover, a.is-hover { color: var(--color-primary-hover); text-decoration-thickne
 .small { font-size: var(--text-sm); }
 .mono { font-family: var(--font-mono); }
 
-/* Zakreślacz: tekst na żółtym jest zawsze atramentowy, także w trybie ciemnym. */
+/* Highlighter: text on yellow is always ink, including in dark mode. */
 mark, .mark {
   background: linear-gradient(transparent 10%, var(--color-mark) 10% 92%, transparent 92%);
   color: var(--color-on-mark);
@@ -71,7 +71,7 @@ code, .code {
 .prose ul, .prose ol { padding-left: 1.25rem; }
 .prose li + li { margin-top: var(--space-2); }
 
-/* ── Układ ────────────────────────────────────────────── */
+/* ── Layout ───────────────────────────────────────────── */
 .wrap { width: min(100% - 2rem, var(--wrap)); margin-inline: auto; }
 .section { padding-block: var(--space-8); }
 .section--line { border-top: 1px solid var(--color-divider); }
@@ -83,7 +83,7 @@ code, .code {
 .grid-2 { display: grid; gap: var(--space-5); }
 @media (min-width: 48rem) { .grid-2 { grid-template-columns: 1fr 1fr; gap: var(--space-6) var(--space-7); } }
 
-/* ── Nagłówek i stopka serwisu ────────────────────────── */
+/* ── Site header and footer ───────────────────────────── */
 .site-header { position: sticky; top: 0; z-index: 20; background: var(--color-bg); border-bottom: 1px solid var(--color-divider); }
 .site-header__in { display: flex; align-items: center; gap: var(--space-2); min-height: 3.5rem; }
 .site-header__tools { margin-left: auto; display: flex; align-items: center; gap: var(--space-1); }
@@ -131,7 +131,9 @@ code, .code {
 .site-header .search-trigger { min-width: 14rem; }
 @media (max-width: 51.99rem) {
   .site-header .search-trigger { min-width: 0; width: var(--control-h); padding: 0; justify-content: center; border-color: transparent; background: none; color: var(--color-text); }
+  /* fix(a11y 2.5.3): keep the visible label as the accessible name; hide it visually instead of display:none */
   .site-header .search-trigger > .kbd { display: none; }
+  .site-header .search-trigger > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
 
 .site-footer { border-top: 1px solid var(--color-divider); padding-block: var(--space-7) var(--space-6); margin-top: var(--space-8); font-size: var(--text-sm); }
@@ -143,7 +145,7 @@ code, .code {
 .foot-links a:hover { text-decoration: underline; }
 .site-footer__legal { margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); color: var(--color-text-muted); }
 
-/* ── Przyciski ────────────────────────────────────────── */
+/* ── Buttons ──────────────────────────────────────────── */
 .btn {
   --_bg: var(--color-surface); --_fg: var(--color-text); --_bd: var(--color-border); --_bg-h: var(--color-surface-2);
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
@@ -163,7 +165,7 @@ code, .code {
 .btn--danger:hover, .btn--danger.is-hover { border-color: var(--color-error); }
 .btn--icon { width: var(--control-h); padding: 0; }
 .btn--block { width: 100%; }
-/* Wyłączony: przerywany obrys + kursor, nie sam kolor. */
+/* Disabled: a dashed outline and a cursor, not colour alone. */
 .btn:disabled, .btn[aria-disabled="true"] {
   --_bg: var(--color-surface-2); --_fg: var(--color-text-muted); --_bd: var(--color-border); --_bg-h: var(--color-surface-2);
   border-style: dashed; cursor: not-allowed; translate: none; box-shadow: none;
@@ -179,7 +181,7 @@ code, .code {
 @keyframes spin { to { rotate: 1turn; } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; animation-timing-function: steps(8); } }
 
-/* ── Pola formularzy ──────────────────────────────────── */
+/* ── Form fields ──────────────────────────────────────── */
 .field { display: grid; gap: .375rem; align-content: start; }
 .field__label, .label { font-weight: 700; }
 .field__hint { font-size: var(--text-sm); color: var(--color-text-muted); }
@@ -199,6 +201,8 @@ code, .code {
 .input[aria-invalid="true"], .select[aria-invalid="true"], .textarea[aria-invalid="true"] { border: 2px solid var(--color-error); }
 .input:disabled, .select:disabled, .textarea:disabled { background: var(--color-surface-2); color: var(--color-text-muted); border-style: dashed; cursor: not-allowed; }
 .input--mono { font: 700 1.25rem/1.2 var(--font-mono); letter-spacing: .1em; }
+/* fix: placeholder must not look like an entered value (regular weight, normal tracking, muted colour 7.08:1 light / 8.06:1 dark on surface) */
+.input--mono::placeholder { font-weight: 400; letter-spacing: normal; color: var(--color-text-muted); }
 .input-group { display: flex; gap: var(--space-2); }
 .input-group > .input { flex: 1; min-width: 0; }
 
@@ -225,7 +229,7 @@ code, .code {
 .check input:disabled:checked { background: var(--color-text-muted); border-color: var(--color-text-muted); border-style: solid; }
 .check:has(input:disabled) { color: var(--color-text-muted); cursor: not-allowed; }
 
-/* Przełącznik: stan pokazuje pozycja gałki i znak ✓ w gałce. */
+/* Switch: the state is the knob position and the check mark inside it. */
 .switch { display: flex; gap: var(--space-3); align-items: center; justify-content: space-between; min-height: var(--control-h); cursor: pointer; }
 .switch input {
   appearance: none; flex: none; width: 3rem; height: 1.75rem; margin: 0; position: relative; cursor: pointer;
@@ -254,7 +258,7 @@ code, .code {
 .seg input:checked + span::before { content: "✓"; font-family: var(--font-mono); }
 .seg input:focus-visible + span { outline: 3px solid var(--color-focus); outline-offset: 2px; }
 
-/* ── Zakładki ─────────────────────────────────────────── */
+/* ── Tabs ─────────────────────────────────────────────── */
 .tabs { display: flex; gap: var(--space-1); border-bottom: 1.5px solid var(--color-divider); }
 .tab {
   display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--control-h); padding: 0 var(--space-3);
@@ -264,19 +268,19 @@ code, .code {
 .tab:hover, .tab.is-hover { color: var(--color-text); border-bottom-color: var(--color-border); }
 .tab[aria-selected="true"] { color: var(--color-text); font-weight: 700; border-bottom-color: var(--color-primary); }
 
-/* ── Etykiety ─────────────────────────────────────────── */
+/* ── Tags ─────────────────────────────────────────────── */
 .tag {
   display: inline-flex; align-items: center; gap: .25rem; padding: .0625rem .5rem;
   font: 700 var(--text-xs)/1.5 var(--font-mono); white-space: nowrap;
   border: 1px solid var(--color-border); border-radius: var(--radius-cell); color: var(--color-text);
 }
-.tag--test { background: var(--color-mark); color: var(--color-on-mark); border-color: var(--color-mark-border); }
+.tag--test { background: var(--color-mark); color: var(--color-on-mark); border-color: var(--color-mark-border); } /* border was var(--color-on-mark) */
 .tag--concept { border-style: dashed; text-transform: uppercase; letter-spacing: .06em; }
 .tag--ok { color: var(--color-ok); border-color: var(--color-ok); background: var(--color-ok-soft); }
 .tag--error { color: var(--color-error); border-color: var(--color-error); background: var(--color-error-soft); }
 .tag .icon { width: .875rem; height: .875rem; stroke-width: 2.5; }
 
-/* ── Komunikaty ───────────────────────────────────────── */
+/* ── Messages ─────────────────────────────────────────── */
 .alert {
   display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); padding: var(--space-3) var(--space-4);
   border: 1.5px solid var(--_c, var(--color-primary)); border-left-width: 5px; border-radius: var(--radius-control);
@@ -298,23 +302,29 @@ code, .code {
 .toast--static { position: static; translate: none; display: inline-flex; animation: none; }
 @keyframes rise { from { opacity: 0; translate: -50% .5rem; } }
 
-/* ── Karty ────────────────────────────────────────────── */
+/* ── Cards ────────────────────────────────────────────── */
 .card { background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: var(--radius-panel); padding: var(--space-5); }
 .card--ink { border: 1.5px solid var(--color-text); }
 .card--paper { background-color: var(--color-bg); }
 
-/* Kratka: tło dekoracyjne, zawsze pod treścią. */
+/* Grid: a decorative background, always behind the content. */
 .paper {
   background-image:
     linear-gradient(var(--color-grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
-  background-size: var(--kratka) var(--kratka);
+  background-size: var(--grid-size) var(--grid-size);
   background-position: -1px -1px;
 }
 
-/* ── Anatomia wartości: kratki + klamry (sygnatura marki) ─ */
+/* ── Value anatomy: cells and braces (the brand mark) ─── */
 .anatomy { display: flex; gap: 6px; }
-.anatomy__part { flex: var(--n, 1) 1 0; min-width: 0; display: grid; gap: 4px; align-content: start; }
+.anatomy__part { flex: var(--n, 1) 1 0; min-width: 0; display: grid; gap: 4px; align-content: start; grid-template-columns: minmax(0, 1fr); }
+/* fix(390px): a 1-cell part (check digit) is narrower than its label; keep the cell inside the part and let the label grow leftwards. */
+.anatomy__part:last-child:not(:first-child) > .anatomy__label { justify-self: end; }
+/* fix(narrow anatomy): measured on the anatomy's own width (container query), so it works in the tool card, the landing demo and narrow state frames alike. */
+.anatomy { container-type: inline-size; }
+@container (max-width: 22rem) { .anatomy .anatomy__label { font-size: .75rem; } }
+@container (max-width: 18.5rem) { .anatomy .anatomy__label { font-size: .6875rem; } .anatomy .anatomy__part:last-child:not(:first-child) > .anatomy__label { margin-right: -.375rem; } }
 .cells { display: flex; gap: 2px; }
 .cell {
   flex: 1 1 0; min-width: 0; height: 2.5rem; display: grid; place-items: center;
@@ -325,7 +335,7 @@ code, .code {
 .cell--empty { border-style: dashed; color: var(--color-text-muted); font-weight: 400; }
 .cell--mark {
   background: linear-gradient(var(--color-mark), var(--color-mark)) no-repeat left / 100% 100% var(--color-surface);
-  color: var(--color-on-mark); border-color: var(--color-mark-border);
+  color: var(--color-on-mark); border-color: var(--color-mark-border); /* was var(--color-text) */
   animation: swipe var(--dur-slow) var(--ease);
 }
 @keyframes swipe { from { background-size: 0 100%; } }
@@ -342,9 +352,11 @@ code, .code {
 .calc { font: var(--text-sm)/1.9 var(--font-mono); overflow-wrap: anywhere; }
 .calc i { font-style: normal; color: var(--color-text-muted); }
 .calc b { font-weight: 700; }
+.calc__caveat { display: block; margin-top: var(--space-1); font-family: var(--font-body); color: var(--color-text-muted); } /* Lawyer 2026-11-13: caveat under every invalid-checksum calc */
 
 .status { display: flex; gap: var(--space-2); align-items: flex-start; font-weight: 700; line-height: 1.35; }
 .status .icon { margin-top: .05em; }
+.status__note { display: block; font-weight: 400; font-size: var(--text-sm); color: var(--color-text-muted); } /* approved second line under the status headline */
 .status--idle { font-weight: 400; color: var(--color-text-muted); }
 .status--ok { color: var(--color-ok); }
 .status--error { color: var(--color-error); }
@@ -353,7 +365,7 @@ code, .code {
 .facts dt { color: var(--color-text-muted); }
 .facts dd { font-weight: 600; }
 
-/* ── Spis narzędzi ────────────────────────────────────── */
+/* ── Tool index ───────────────────────────────────────── */
 .toc-groups { columns: 3 19rem; column-gap: var(--space-7); }
 .toc-group { break-inside: avoid; margin-bottom: var(--space-6); }
 .toc-group h3 { font: 700 var(--text-xl)/1.2 var(--font-display); padding-bottom: var(--space-2); border-bottom: 1.5px solid var(--color-text); }
@@ -374,7 +386,7 @@ code, .code {
 }
 .chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
-/* ── FAQ (natywne <details>) ──────────────────────────── */
+/* ── FAQ (native details) ─────────────────────────────── */
 .faq { max-width: var(--measure); border-top: 1.5px solid var(--color-text); }
 .faq details { border-bottom: 1px solid var(--color-divider); }
 .faq summary {
@@ -390,7 +402,7 @@ code, .code {
 
 .disclose > summary { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--control-h); font-weight: 700; color: var(--color-primary); cursor: pointer; }
 
-/* ── Okna: dialog i paleta poleceń ────────────────────── */
+/* ── Dialog and command palette ───────────────────────── */
 .dialog {
   width: min(100% - 2rem, 30rem); padding: 0; color: var(--color-text);
   background: var(--color-surface); border: 1.5px solid var(--color-text); border-radius: var(--radius-panel);
@@ -416,7 +428,7 @@ code, .code {
 .cmdk__empty { padding: var(--space-5) var(--space-4); }
 .cmdk__foot { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); padding: var(--space-3) var(--space-4); border-top: 1px solid var(--color-divider); font-size: var(--text-xs); color: var(--color-text-muted); }
 
-/* ── Tabela ───────────────────────────────────────────── */
+/* ── Table ────────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; border: 1px solid var(--color-divider); border-radius: var(--radius-panel); background: var(--color-surface); }
 .table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
 .table th, .table td { padding: var(--space-3) var(--space-4); text-align: left; vertical-align: top; border-bottom: 1px solid var(--color-divider); }
@@ -424,7 +436,7 @@ code, .code {
 .table tbody tr:last-child > * { border-bottom: 0; }
 .table tbody th { font-weight: 600; }
 
-/* ── Okruszki, kroki, szkielet, stan pusty ────────────── */
+/* ── Breadcrumbs, steps, skeleton, empty state ────────── */
 .crumbs { display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
 .crumbs li + li::before { content: "/"; margin-right: var(--space-2); }
 .crumbs a { color: var(--color-text-muted); }
@@ -443,25 +455,25 @@ code, .code {
 .empty { display: grid; gap: var(--space-3); justify-items: start; max-width: 28rem; }
 .empty .anatomy { width: min(100%, 13rem); }
 
-/* ── Strona główna ────────────────────────────────────── */
+/* ── Home page ────────────────────────────────────────── */
 .hero { position: relative; padding-block: var(--space-7) var(--space-8); }
 .hero::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
   background-image:
     linear-gradient(var(--color-grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
-  background-size: var(--kratka) var(--kratka);
+  background-size: var(--grid-size) var(--grid-size);
   mask-image: linear-gradient(#000 55%, transparent);
 }
 .hero__in { display: grid; gap: var(--space-7); align-items: center; }
-@media (min-width: 60rem) { .hero__in { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); } .hero { padding-block: var(--space-9); } }
+@media (min-width: 60rem) { .hero__in--with-demo { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); } .hero { padding-block: var(--space-9); } }
 .hero__copy { display: grid; gap: var(--space-5); justify-items: start; }
 
 .principles { display: grid; gap: var(--space-6) var(--space-7); }
 @media (min-width: 48rem) { .principles { grid-template-columns: 1fr 1fr; } }
 .principles > div { display: grid; gap: var(--space-2); align-content: start; padding-top: var(--space-4); border-top: 1.5px solid var(--color-text); }
 
-/* ── Strona narzędzia ─────────────────────────────────── */
+/* ── Tool page ────────────────────────────────────────── */
 .tool-page { display: grid; gap: var(--space-5); padding-block: var(--space-3) 0; }
 .tool-head { display: grid; gap: var(--space-2); }
 .tool-head .h1 { font-size: var(--text-xl); }
@@ -490,7 +502,7 @@ code, .code {
 .lead-mobile { color: var(--color-text-muted); }
 @media (min-width: 60rem) { .lead-mobile { display: none; } }
 
-/* ── Cennik ───────────────────────────────────────────── */
+/* ── Pricing ──────────────────────────────────────────── */
 .plans { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr)); }
 .plan { display: flex; flex-direction: column; gap: var(--space-4); }
 .plan__price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); }
@@ -500,7 +512,7 @@ code, .code {
 .plan li .icon { width: 1.125rem; height: 1.125rem; margin-top: .15em; color: var(--color-ok); }
 .plan .btn { margin-top: auto; }
 
-/* ── Logowanie, rejestracja, wdrożenie ────────────────── */
+/* ── Sign-in, sign-up, onboarding ─────────────────────── */
 .auth { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr; }
 .auth__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-4); }
 .auth__body { display: grid; }
@@ -519,7 +531,7 @@ code, .code {
 .pick-grid .seg, .pick-grid label { display: block; }
 .pick-grid span { min-height: 3rem; }
 
-/* ── Aplikacja (po zalogowaniu) ───────────────────────── */
+/* ── Application (after sign-in) ──────────────────────── */
 .app { display: grid; grid-template-columns: 15rem minmax(0, 1fr); min-height: 100dvh; }
 .app__side { position: sticky; top: 0; height: 100dvh; display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-3) var(--space-3) var(--space-4); border-right: 1px solid var(--color-divider); }
 .app__side .logo { padding-inline: var(--space-3); }
@@ -566,7 +578,8 @@ code, .code {
   .app__main { padding: var(--space-1) var(--space-4) 7rem; }
   .app__top .logo { display: inline-flex; }
   .app__top .search-trigger { flex: none; margin-left: auto; width: var(--control-h); padding: 0; justify-content: center; border-color: transparent; background: none; color: var(--color-text); }
-  .app__top .search-trigger > :not(.icon) { display: none; }
+  .app__top .search-trigger > .kbd { display: none; }
+  .app__top .search-trigger > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .app__top-end { margin-left: 0; }
   .app ~ .toast, .toast--app { bottom: 5rem; }
 }
@@ -576,7 +589,7 @@ code, .code {
 .notfound .anatomy { width: 13.5rem; }
 .notfound .cell { height: 4.5rem; font-size: 2.75rem; }
 
-/* ── Arkusz komponentów i stanów ──────────────────────── */
+/* ── Component and state sheet ────────────────────────── */
 .spec { display: grid; gap: var(--space-4); padding-block: var(--space-6); border-top: 1.5px solid var(--color-text); }
 @media (min-width: 60rem) { .spec { grid-template-columns: 13rem minmax(0, 1fr); gap: var(--space-6); } }
 .spec__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr)); gap: var(--space-4); align-items: start; }
@@ -585,4 +598,54 @@ code, .code {
 .spec__item > .field, .spec__item > .alert, .spec__item > .anatomy, .spec__item > .faq, .spec__item > .table-wrap, .spec__item > .steps, .spec__item > .tabs { justify-self: stretch; }
 .spec__cap { font: var(--text-xs)/1.4 var(--font-mono); color: var(--color-text-muted); }
 .swatch { height: 3.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-control); justify-self: stretch; }
-.frame { border: 1px dashed var(--color-border); border-radius: var(--radius-panel); padding: var(--space-5); background: var(--color-bg); justify-self: stretch; }
+.frame { border: 1px dashed var(--color-border); border-radius: var(--radius-panel); padding: var(--space-5); background: var(--color-bg); justify-self: stretch; min-width: 0; }
+/* fix: long button labels inside narrow frames wrap instead of pushing the card out (states.html at 1280) */
+.frame .btn { white-space: normal; text-align: center; }
+
+/* ToolNotice keeps .disclaimer so the existing notice test can find it.
+   The alert colours win over the older disclaimer card. */
+.tool-body > .disclaimer.tool-notice {
+  margin-top: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-warn);
+  border-left-width: 5px;
+  border-radius: var(--radius-control);
+  background: var(--color-warn-soft);
+  color: var(--color-text);
+}
+
+/* Wide tables become stacked cards at 390px. Each cell repeats its column name. */
+@media (max-width: 390px) {
+  .responsive-table { position: relative; overflow: visible; border: 0; background: transparent; }
+  .responsive-table .table,
+  .responsive-table tbody,
+  .responsive-table tr,
+  .responsive-table th,
+  .responsive-table td { display: block; width: auto; }
+  .responsive-table thead {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap;
+  }
+  .responsive-table tr {
+    margin-bottom: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1.5px solid var(--color-text);
+    border-radius: var(--radius-panel);
+    background: var(--color-surface);
+  }
+  .responsive-table tbody th,
+  .responsive-table td {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, 38%) minmax(0, 1fr);
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-divider);
+  }
+  .responsive-table tr > :last-child { border-bottom: 0; }
+  .responsive-table tbody th::before,
+  .responsive-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+}

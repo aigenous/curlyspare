@@ -3,8 +3,8 @@ import { computed, defineAsyncComponent, type Component } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { brand } from '../brand'
+import ToolPageFrame from '../components/tool/ToolPageFrame.vue'
 import { pageHead } from '../composables/usePageMeta'
-import { categoryLabel, t } from '../i18n'
 import { findTool } from '../registry'
 import { publishedSlugs } from '../registry/published'
 import IdDocumentGuide from '../tools/generators/IdDocumentGuide.vue'
@@ -47,54 +47,31 @@ useHead(() => {
 </script>
 
 <template>
-  <article
+  <ToolPageFrame
     v-if="tool"
-    class="wrap tool-legacy"
+    :tool="tool"
+    :draft="draft"
   >
-    <p
-      v-if="draft"
-      class="kicker"
-    >
-      {{ t('draftBadge') }}
-    </p>
-    <p class="kicker">
-      {{ categoryLabel(tool.category) }}
-    </p>
-    <h1 class="h1">
-      {{ tool.title }}
-    </h1>
-    <p class="lede">
-      {{ tool.description }}
-    </p>
-    <component
-      :is="idCopy ? 'section' : 'div'"
-      :class="idCopy ? 'tool panel' : 'panel'"
-    >
-      <div
-        v-if="idCopy"
-        class="id-test-notice"
-      >
-        <p
-          v-for="line in ID_TEST_NOTICE_LINES"
-          :key="line"
-        >
-          {{ line }}
-        </p>
-      </div>
-      <component
-        :is="AsyncTool"
-        v-if="AsyncTool"
-      />
-    </component>
-    <p
-      v-if="tool.disclaimer"
-      class="disclaimer"
-    >
-      {{ tool.disclaimer }}
-    </p>
-    <IdDocumentGuide
+    <div
       v-if="idCopy"
-      :page="idCopy"
+      class="id-test-notice"
+    >
+      <p
+        v-for="line in ID_TEST_NOTICE_LINES"
+        :key="line"
+      >
+        {{ line }}
+      </p>
+    </div>
+    <component
+      :is="AsyncTool"
+      v-if="AsyncTool"
     />
-  </article>
+    <template #after>
+      <IdDocumentGuide
+        v-if="idCopy"
+        :page="idCopy"
+      />
+    </template>
+  </ToolPageFrame>
 </template>
