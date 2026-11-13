@@ -28,6 +28,7 @@
   /* ── Kolor: zakreślacz (cyfra kontrolna, [TEST]) ─────── */
   --color-mark:    #FFD83D;
   --color-on-mark: #131A3A;
+  --color-mark-border: light-dark(#8A6700, #D9AB00); /* ochre, same hue as the highlighter (48°): ≥ 3:1 vs every surface in both themes */
 
   /* ── Kolor: stany (zawsze razem z ikoną i tekstem) ───── */
   --color-ok:         light-dark(#0A6640, #62D6A4);
