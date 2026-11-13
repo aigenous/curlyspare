@@ -1,0 +1,4 @@
+{
+  "_comment": "Redirects whose destination is not a public page yet. Move an entry into vercel.json once its destination is published.",
+  "redirects": []
+}
