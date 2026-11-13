@@ -46,5 +46,337 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/generator-nrb",
+      "destination": "/walidator-iban",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-nrb/",
+      "destination": "/walidator-iban",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-nrb.html",
+      "destination": "/walidator-iban",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-osoby-testowej",
+      "destination": "/generator-danych-testowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-osoby-testowej/",
+      "destination": "/generator-danych-testowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-osoby-testowej.html",
+      "destination": "/generator-danych-testowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-skrotow",
+      "destination": "/generator-sha256",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-skrotow/",
+      "destination": "/generator-sha256",
+      "statusCode": 301
+    },
+    {
+      "source": "/generator-skrotow.html",
+      "destination": "/generator-sha256",
+      "statusCode": 301
+    },
+    {
+      "source": "/znacznik-czasu",
+      "destination": "/unix-timestamp",
+      "statusCode": 301
+    },
+    {
+      "source": "/znacznik-czasu/",
+      "destination": "/unix-timestamp",
+      "statusCode": 301
+    },
+    {
+      "source": "/znacznik-czasu.html",
+      "destination": "/unix-timestamp",
+      "statusCode": 301
+    },
+    {
+      "source": "/kodowanie-hex",
+      "destination": "/hex-na-tekst",
+      "statusCode": 301
+    },
+    {
+      "source": "/kodowanie-hex/",
+      "destination": "/hex-na-tekst",
+      "statusCode": 301
+    },
+    {
+      "source": "/kodowanie-hex.html",
+      "destination": "/hex-na-tekst",
+      "statusCode": 301
+    },
+    {
+      "source": "/ucieczki-unicode",
+      "destination": "/escape-unicode",
+      "statusCode": 301
+    },
+    {
+      "source": "/ucieczki-unicode/",
+      "destination": "/escape-unicode",
+      "statusCode": 301
+    },
+    {
+      "source": "/ucieczki-unicode.html",
+      "destination": "/escape-unicode",
+      "statusCode": 301
+    },
+    {
+      "source": "/parser-adresu",
+      "destination": "/parser-url",
+      "statusCode": 301
+    },
+    {
+      "source": "/parser-adresu/",
+      "destination": "/parser-url",
+      "statusCode": 301
+    },
+    {
+      "source": "/parser-adresu.html",
+      "destination": "/parser-url",
+      "statusCode": 301
+    },
+    {
+      "source": "/koder-jwt",
+      "destination": "/generator-jwt",
+      "statusCode": 301
+    },
+    {
+      "source": "/koder-jwt/",
+      "destination": "/generator-jwt",
+      "statusCode": 301
+    },
+    {
+      "source": "/koder-jwt.html",
+      "destination": "/generator-jwt",
+      "statusCode": 301
+    },
+    {
+      "source": "/kompresja",
+      "destination": "/kompresja-gzip",
+      "statusCode": 301
+    },
+    {
+      "source": "/kompresja/",
+      "destination": "/kompresja-gzip",
+      "statusCode": 301
+    },
+    {
+      "source": "/kompresja.html",
+      "destination": "/kompresja-gzip",
+      "statusCode": 301
+    },
+    {
+      "source": "/wielkosc-liter",
+      "destination": "/zmiana-wielkosci-liter",
+      "statusCode": 301
+    },
+    {
+      "source": "/wielkosc-liter/",
+      "destination": "/zmiana-wielkosci-liter",
+      "statusCode": 301
+    },
+    {
+      "source": "/wielkosc-liter.html",
+      "destination": "/zmiana-wielkosci-liter",
+      "statusCode": 301
+    },
+    {
+      "source": "/licznik-tekstu",
+      "destination": "/licznik-znakow",
+      "statusCode": 301
+    },
+    {
+      "source": "/licznik-tekstu/",
+      "destination": "/licznik-znakow",
+      "statusCode": 301
+    },
+    {
+      "source": "/licznik-tekstu.html",
+      "destination": "/licznik-znakow",
+      "statusCode": 301
+    },
+    {
+      "source": "/slugify",
+      "destination": "/generator-slug",
+      "statusCode": 301
+    },
+    {
+      "source": "/slugify/",
+      "destination": "/generator-slug",
+      "statusCode": 301
+    },
+    {
+      "source": "/slugify.html",
+      "destination": "/generator-slug",
+      "statusCode": 301
+    },
+    {
+      "source": "/linie-tekstu",
+      "destination": "/sortowanie-alfabetyczne",
+      "statusCode": 301
+    },
+    {
+      "source": "/linie-tekstu/",
+      "destination": "/sortowanie-alfabetyczne",
+      "statusCode": 301
+    },
+    {
+      "source": "/linie-tekstu.html",
+      "destination": "/sortowanie-alfabetyczne",
+      "statusCode": 301
+    },
+    {
+      "source": "/jednostki-danych",
+      "destination": "/kalkulator-bajtow",
+      "statusCode": 301
+    },
+    {
+      "source": "/jednostki-danych/",
+      "destination": "/kalkulator-bajtow",
+      "statusCode": 301
+    },
+    {
+      "source": "/jednostki-danych.html",
+      "destination": "/kalkulator-bajtow",
+      "statusCode": 301
+    },
+    {
+      "source": "/chmod",
+      "destination": "/kalkulator-chmod",
+      "statusCode": 301
+    },
+    {
+      "source": "/chmod/",
+      "destination": "/kalkulator-chmod",
+      "statusCode": 301
+    },
+    {
+      "source": "/chmod.html",
+      "destination": "/kalkulator-chmod",
+      "statusCode": 301
+    },
+    {
+      "source": "/strefy-czasowe",
+      "destination": "/konwerter-stref-czasowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/strefy-czasowe/",
+      "destination": "/konwerter-stref-czasowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/strefy-czasowe.html",
+      "destination": "/konwerter-stref-czasowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/dni-robocze",
+      "destination": "/kalkulator-dni-roboczych",
+      "statusCode": 301
+    },
+    {
+      "source": "/dni-robocze/",
+      "destination": "/kalkulator-dni-roboczych",
+      "statusCode": 301
+    },
+    {
+      "source": "/dni-robocze.html",
+      "destination": "/kalkulator-dni-roboczych",
+      "statusCode": 301
+    },
+    {
+      "source": "/wyjasniacz-cron",
+      "destination": "/wyrazenie-cron",
+      "statusCode": 301
+    },
+    {
+      "source": "/wyjasniacz-cron/",
+      "destination": "/wyrazenie-cron",
+      "statusCode": 301
+    },
+    {
+      "source": "/wyjasniacz-cron.html",
+      "destination": "/wyrazenie-cron",
+      "statusCode": 301
+    },
+    {
+      "source": "/kalkulator-cidr",
+      "destination": "/kalkulator-podsieci",
+      "statusCode": 301
+    },
+    {
+      "source": "/kalkulator-cidr/",
+      "destination": "/kalkulator-podsieci",
+      "statusCode": 301
+    },
+    {
+      "source": "/kalkulator-cidr.html",
+      "destination": "/kalkulator-podsieci",
+      "statusCode": 301
+    },
+    {
+      "source": "/podglad-markdown",
+      "destination": "/edytor-markdown",
+      "statusCode": 301
+    },
+    {
+      "source": "/podglad-markdown/",
+      "destination": "/edytor-markdown",
+      "statusCode": 301
+    },
+    {
+      "source": "/podglad-markdown.html",
+      "destination": "/edytor-markdown",
+      "statusCode": 301
+    },
+    {
+      "source": "/systemy-liczbowe",
+      "destination": "/zamiana-systemow-liczbowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/systemy-liczbowe/",
+      "destination": "/zamiana-systemow-liczbowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/systemy-liczbowe.html",
+      "destination": "/zamiana-systemow-liczbowych",
+      "statusCode": 301
+    },
+    {
+      "source": "/konwerter-kolorow",
+      "destination": "/hex-na-rgb",
+      "statusCode": 301
+    },
+    {
+      "source": "/konwerter-kolorow/",
+      "destination": "/hex-na-rgb",
+      "statusCode": 301
+    },
+    {
+      "source": "/konwerter-kolorow.html",
+      "destination": "/hex-na-rgb",
+      "statusCode": 301
+    }
   ]
 }
