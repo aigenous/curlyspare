@@ -1,37 +1,49 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { onMounted, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { brand } from '../brand'
+import PeselDemo from '../components/landing/PeselDemo.vue'
 import { usePageMeta } from '../composables/usePageMeta'
 import { usePalette } from '../composables/usePalette'
-import { brand } from '../brand'
-import { categoryLabel, t } from '../i18n'
+import { t } from '../i18n'
+import { calculationPrinciple, homeDescription } from '../lib/landing/copy'
 import { publishedToolLeadStart, publishedToolSearchLabel } from '../lib/plural'
 import { publishedShortcuts } from '../lib/publishedShortcuts'
-import { categories } from '../registry'
+import { groupedLandingRows, legacyAnchorRedirect } from '../registry/catalogue'
 import { publicTools } from '../registry/published'
 
 const palette = usePalette()
+const route = useRoute()
+const router = useRouter()
 const publishedTools = publicTools()
 const toolCount = publishedTools.length
 const chips = publishedShortcuts()
+const sections = groupedLandingRows(publishedTools)
+const showDemo = publishedTools.some((tool) => tool.slug === 'generator-pesel')
 
 usePageMeta({
   title: `Narzędzia dla programistów — ${brand.name}`,
-  description: t('homeLede'),
+  description: homeDescription,
   path: '/',
 })
 
-function inCategory(category: (typeof categories)[number]) {
-  return publishedTools.filter((tool) => tool.category === category)
+function redirectLegacyHash() {
+  const next = legacyAnchorRedirect(route.hash)
+  if (!next) return
+  void router.replace({ hash: `#${next}` })
 }
+
+onMounted(redirectLegacyHash)
+watch(() => route.hash, redirectLegacyHash)
 </script>
 
 <template>
   <section class="hero">
-    <div class="wrap hero__in">
+    <div
+      class="wrap hero__in"
+      :class="{ 'hero__in--with-demo': showDemo }"
+    >
       <div class="hero__copy">
-        <p class="kicker">
-          {{ t('homeKicker') }}
-        </p>
         <h1 class="h-display">
           Narzędzia, które <mark>pokazują obliczenia</mark>.
         </h1>
@@ -39,9 +51,6 @@ function inCategory(category: (typeof categories)[number]) {
           {{ publishedToolLeadStart(toolCount) }} dla programistów, testerów i analityków: walidatory
           PESEL, NIP, REGON i IBAN, generatory danych testowych, JSON, Base64, regex i reszta. Bez
           logowania.
-        </p>
-        <p class="lead">
-          {{ t('homeLede') }}
         </p>
         <button
           class="search-trigger search-trigger--lg"
@@ -65,7 +74,7 @@ function inCategory(category: (typeof categories)[number]) {
           <kbd
             class="kbd"
             aria-hidden="true"
-          >Ctrl/⌘ K</kbd>
+          >Ctrl K</kbd>
         </button>
         <nav
           v-if="chips.length > 0"
@@ -83,6 +92,7 @@ function inCategory(category: (typeof categories)[number]) {
           </RouterLink>
         </nav>
       </div>
+      <PeselDemo v-if="showDemo" />
     </div>
   </section>
 
@@ -115,27 +125,27 @@ function inCategory(category: (typeof categories)[number]) {
         class="toc-groups"
       >
         <section
-          v-for="category in categories"
-          v-show="inCategory(category).length > 0"
-          :key="category"
+          v-for="section in sections"
+          :id="section.group.anchor"
+          :key="section.group.id"
           class="toc-group"
         >
-          <h3>{{ categoryLabel(category) }}</h3>
+          <h3>{{ section.group.label }}</h3>
           <ul class="toc">
             <li
-              v-for="tool in inCategory(category)"
-              :key="tool.slug"
+              v-for="row in section.rows"
+              :key="row.key"
             >
               <RouterLink
                 class="toc__link"
-                :to="`/${tool.slug}`"
+                :to="`/${row.slug}`"
               >
                 <span class="toc__top">
-                  <span class="toc__name">{{ tool.title }}</span>
+                  <span class="toc__name">{{ row.label }}</span>
                   <span class="toc__dots" />
-                  <span class="toc__kind">{{ categoryLabel(tool.category) }}</span>
+                  <span class="toc__kind">{{ row.kindLabel }}</span>
                 </span>
-                <span class="toc__desc">{{ tool.description }}</span>
+                <span class="toc__desc">{{ row.description }}</span>
               </RouterLink>
             </li>
           </ul>
@@ -162,10 +172,7 @@ function inCategory(category: (typeof categories)[number]) {
           <h3 class="h3">
             Pokazujemy obliczenia
           </h3>
-          <p>
-            Sam komunikat „niepoprawny” niczego nie wyjaśnia. Przy wyniku widzisz wagi, sumę
-            kontrolną i cyfrę, przy której numer przestaje się zgadzać.
-          </p>
+          <p>{{ calculationPrinciple }}</p>
         </div>
         <div>
           <h3 class="h3">
@@ -212,14 +219,14 @@ function inCategory(category: (typeof categories)[number]) {
       <div class="faq">
         <details>
           <summary>Czy narzędzia są darmowe?</summary>
-          <p>Tak. Wszystkie narzędzia są darmowe i działają bez konta.</p>
+          <p>Tak. Wszystkie narzędzia są darmowe i działają bez logowania.</p>
         </details>
         <details>
           <summary>Czy wpisane dane trafiają na serwer?</summary>
           <p>
             Narzędzia z dopiskiem o przetwarzaniu w przeglądarce liczą lokalnie i nie wysyłamy
             wpisanych danych na serwer. Mimo to do testów używaj danych testowych, a nie
-            prawdziwych.
+            prawdziwych: żadna strona w internecie nie zasługuje na ślepe zaufanie.
           </p>
         </details>
         <details>

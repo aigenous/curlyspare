@@ -179,7 +179,7 @@ test.describe('identifier screens', () => {
   test('IBAN validator accepts a Polish checksum and rejects another country', async ({ page }) => {
     await page.goto('/walidator-iban')
     await expect(page.locator('.disclaimer')).toContainText('wyłącznie do testowania')
-    await expect(page.getByText('Nie łączy się z bankiem')).toBeVisible()
+    await expect(page.locator('.tool-head .lead')).toContainText('Nie łączy się z bankiem')
     await page.getByLabel('IBAN').fill('PL61109010140000071219812874')
     await page.getByRole('button', { name: 'Sprawdź' }).click()
     await expect(page.getByRole('status')).toHaveText('Poprawny format i suma kontrolna')

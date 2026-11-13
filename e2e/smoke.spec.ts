@@ -16,7 +16,7 @@ test('home is Polish and lists every registered tool', async ({ page }) => {
   await expect(page).toHaveTitle(shellPages[0].title)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(shellPages[0].heading)
   for (const tool of tools) {
-    await expect(page.getByRole('link', { name: new RegExp(`^${escapeRegExp(tool.title)}(?:\\s|$)`) })).toBeVisible()
+    await expect(page.locator(`a.toc__link[href="/${tool.slug}"]`).first()).toBeVisible()
   }
 })
 
@@ -35,7 +35,7 @@ for (const tool of tools) {
     await page.goto(`/${tool.slug}`)
     await expect(page).toHaveTitle(idDocumentDocumentTitle(tool.slug) ?? `${tool.title} — CurlySpare`)
     await expect(page.getByRole('heading', { level: 1, name: tool.title })).toBeVisible()
-    await expect(page.getByText(tool.description)).toBeVisible()
+    await expect(page.locator('.tool-head .lead')).toHaveText(tool.description)
     expect(errors).toEqual([])
   })
 }
@@ -84,7 +84,3 @@ test('sitemap lists every tool slug and the shell pages', async ({ request }) =>
   }
   expect(xml).not.toContain('/404')
 })
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
