@@ -22,6 +22,24 @@ function concretePaths(paths: readonly string[]): string[] {
   return paths.filter((path) => !path.includes(':') && !path.includes('*'))
 }
 
+/** Strip HTML comments from Lawyer markdown before it is bundled as a raw import. */
+export function stripLegalComments(): Plugin {
+  return {
+    name: 'strip-legal-html-comments',
+    enforce: 'pre',
+    load(id) {
+      const queryAt = id.indexOf('?')
+      const filename = queryAt === -1 ? id : id.slice(0, queryAt)
+      const query = queryAt === -1 ? '' : id.slice(queryAt + 1)
+      if (!new URLSearchParams(query).has('raw')) return null
+      const normalized = filename.replaceAll('\\', '/')
+      if (!/\/src\/content\/legal\/[^/]+\.md$/.test(normalized)) return null
+      const stripped = readFileSync(filename, 'utf8').replace(/<!--[\s\S]*?-->/g, '')
+      return `export default ${JSON.stringify(stripped)}`
+    },
+  }
+}
+
 function operatorLaunchGuard(): Plugin {
   return {
     name: 'operator-launch-guard',
@@ -94,7 +112,7 @@ export default defineConfig(({ mode }) => {
   const prerendered = [...shellPaths, ...visibleToolPaths(showDrafts), '/404']
 
   return {
-    plugins: [vue(), operatorLaunchGuard(), publishThirdPartyLicenses(), previewNotFound()],
+    plugins: [stripLegalComments(), vue(), operatorLaunchGuard(), publishThirdPartyLicenses(), previewNotFound()],
     ssgOptions: {
       dirStyle: 'flat',
       includedRoutes(paths) {

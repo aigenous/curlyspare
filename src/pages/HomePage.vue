@@ -5,27 +5,20 @@ import { usePalette } from '../composables/usePalette'
 import { brand } from '../brand'
 import { categoryLabel, t } from '../i18n'
 import { publishedToolLeadStart, publishedToolSearchLabel } from '../lib/plural'
+import { publishedShortcuts } from '../lib/publishedShortcuts'
 import { categories } from '../registry'
 import { publicTools } from '../registry/published'
 
 const palette = usePalette()
 const publishedTools = publicTools()
 const toolCount = publishedTools.length
+const chips = publishedShortcuts()
 
 usePageMeta({
   title: `Narzędzia dla programistów — ${brand.name}`,
   description: t('homeLede'),
   path: '/',
 })
-
-const chips = [
-  { slug: 'generator-pesel', label: 'PESEL' },
-  { slug: 'generator-nip', label: 'NIP' },
-  { slug: 'walidator-iban', label: 'IBAN' },
-  { slug: 'formatowanie-json', label: 'JSON' },
-  { slug: 'kodowanie-base64', label: 'Base64' },
-  { slug: 'generator-uuid', label: 'UUID' },
-].filter((chip) => publishedTools.some((tool) => tool.slug === chip.slug))
 
 function inCategory(category: (typeof categories)[number]) {
   return publishedTools.filter((tool) => tool.category === category)

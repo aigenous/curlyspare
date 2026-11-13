@@ -56,6 +56,14 @@ jobs:
         run: bash scripts/check-dist-fonts.sh dist
         env:
           REQUIRE_DESIGN_FONTS: '1'
+      - name: Self-test dist HTML comments
+        run: bash scripts/check-dist-html-comments.sh --self-test
+      - name: Check dist HTML comments
+        run: bash scripts/check-dist-html-comments.sh dist
+      - name: Self-test dist internal links
+        run: node scripts/check-dist-internal-links.mjs --self-test
+      - name: Check dist internal links
+        run: node scripts/check-dist-internal-links.mjs dist
       - uses: actions/upload-artifact@v4
         with:
           name: dist

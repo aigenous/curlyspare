@@ -3,8 +3,10 @@ import { RouterLink } from 'vue-router'
 import LogoMark from './LogoMark.vue'
 import { brand } from '../brand'
 import { t } from '../i18n'
+import { publishedShortcuts } from '../lib/publishedShortcuts'
 
 const operatorLine = `${brand.operator.name}, ${brand.operator.legalForm}, NIP ${brand.operator.nip}`
+const shortcuts = publishedShortcuts()
 </script>
 
 <template>
@@ -26,23 +28,17 @@ const operatorLine = `${brand.operator.name}, ${brand.operator.legalForm}, NIP $
             gospodarczej Piotra Szewczyka.
           </p>
         </div>
-        <nav aria-label="Narzędzia w stopce">
+        <nav
+          v-if="shortcuts.length > 0"
+          aria-label="Narzędzia w stopce"
+        >
           <h2>Narzędzia</h2>
           <ul class="foot-links">
-            <li>
-              <RouterLink to="/generator-pesel">PESEL</RouterLink>
-            </li>
-            <li>
-              <RouterLink to="/generator-nip">NIP</RouterLink>
-            </li>
-            <li>
-              <RouterLink to="/walidator-iban">IBAN</RouterLink>
-            </li>
-            <li>
-              <RouterLink to="/formatowanie-json">JSON</RouterLink>
-            </li>
-            <li>
-              <RouterLink to="/#narzedzia">Wszystkie narzędzia</RouterLink>
+            <li
+              v-for="shortcut in shortcuts"
+              :key="shortcut.slug"
+            >
+              <RouterLink :to="`/${shortcut.slug}`">{{ shortcut.label }}</RouterLink>
             </li>
           </ul>
         </nav>

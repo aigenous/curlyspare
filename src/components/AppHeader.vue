@@ -57,7 +57,10 @@ const onHome = computed(() => route.path === '/')
             <path d="m20 20-3.5-3.5" />
           </svg>
           <span>{{ t('search') }}</span>
-          <kbd class="kbd">Ctrl/⌘ K</kbd>
+          <kbd
+            class="kbd"
+            aria-hidden="true"
+          >Ctrl/⌘ K</kbd>
         </button>
         <button
           class="btn btn--ghost btn--icon"
