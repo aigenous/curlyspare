@@ -2,7 +2,7 @@ import { site, type OperatorDetails } from '../site'
 
 const placeholderToken = /\[[^[\]]+\]/
 
-/** Fields whose values still contain a Lawyer placeholder such as [ADRES]. */
+/** Fields whose values still contain a Lawyer placeholder, such as the address fill-in. */
 export function operatorPlaceholderFields(operator: OperatorDetails): string[] {
   return Object.entries(operator)
     .filter((entry): entry is [string, string] => typeof entry[1] === 'string' && placeholderToken.test(entry[1]))
@@ -48,7 +48,7 @@ export function assertOperatorReadyForLaunch(
   warn(message)
 }
 
-/** Drop Lawyer's operator tokens into a legal draft. Other brackets, including [ADRES SERWISU], stay put. */
+/** Drop Lawyer's operator tokens into a legal draft. Other brackets, including the site-address fill-in, stay put. */
 export function applyOperatorFields(source: string, operator: OperatorDetails = site.operator): string {
   return source
     .replaceAll('[E-MAIL KONTAKTOWY]', operator.email)

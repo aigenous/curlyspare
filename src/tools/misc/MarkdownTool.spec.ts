@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest'
 import { createApp, nextTick } from 'vue'
 import MarkdownTool from './MarkdownTool.vue'
 
-describe('podgląd markdown', () => {
-  it('zaczyna przykładowe nagłówki od h2', async () => {
+describe('markdown preview', () => {
+  it('starts the sample headings at h2', async () => {
     const host = document.createElement('div')
     document.body.append(host)
     const app = createApp(MarkdownTool)
@@ -19,7 +19,7 @@ describe('podgląd markdown', () => {
     host.remove()
   })
 
-  it('trzyma obrazy zewnętrzne zablokowane, dopóki przełącznik jest wyłączony', async () => {
+  it('keeps external images blocked until the switch is on', async () => {
     const host = document.createElement('div')
     document.body.append(host)
     const stored = Object.keys(localStorage)

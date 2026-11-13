@@ -45,10 +45,10 @@ const STREETS = [
 /** Same marker in CSV and JSON, so a downloaded file is obviously test data. */
 export const TEST_DATA_MARKER = 'tak'
 
-/** Regulamin: copied lines use this prefix, unchanged. */
+/** Terms of use: copied lines use this prefix, unchanged. */
 export const TEST_COPY_PREFIX = '[TEST]'
 
-/** Regulamin: CSV column and JSON field use this name, unchanged. */
+/** Terms of use: the CSV column and JSON field use this name, unchanged. */
 export const TEST_DATA_FIELD = 'dane_testowe'
 
 export const TEST_PERSON_CSV_HEADER =
