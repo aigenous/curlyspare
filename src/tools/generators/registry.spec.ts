@@ -66,7 +66,7 @@ describe('generator registry', () => {
     expect(tool).toBeDefined()
     if (!tool) return
     const here = dirname(fileURLToPath(import.meta.url))
-    const screen = readFileSync(join(here, 'generator-osoby-testowej/GeneratorOsobyTestowej.vue'), 'utf8')
+    const screen = readFileSync(join(here, 'test-person-generator/TestPersonGenerator.vue'), 'utf8')
     const copy = [tool.title, tool.description, tool.disclaimer ?? '', ...tool.keywords, screen]
       .join('\n')
       .toLowerCase()

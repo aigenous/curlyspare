@@ -9,7 +9,7 @@ function mount(text: string) {
   const app = createApp(CopyButton, { text })
   app.mount(host)
   const button = host.querySelector('button')
-  if (!button) throw new Error('Brak przycisku kopiowania.')
+  if (!button) throw new Error('Copy button is missing.')
   return { host, app, button }
 }
 
@@ -21,7 +21,7 @@ function setClipboard(writeText: (value: string) => Promise<void>) {
 }
 
 describe('CopyButton', () => {
-  it('nie kopiuje pustego wyniku i zostaje przy „Kopiuj”', async () => {
+  it('does not copy an empty result and stays on „Kopiuj”', async () => {
     const writeText = vi.fn(() => Promise.resolve())
     setClipboard(writeText)
     const { host, app, button } = mount('')
@@ -36,7 +36,7 @@ describe('CopyButton', () => {
     host.remove()
   })
 
-  it('pokazuje sukces dopiero, gdy writeText się powiedzie', async () => {
+  it('shows success only after writeText resolves', async () => {
     const writeText = vi.fn((value: string) => {
       expect(value).toBe('abc')
       return Promise.resolve()
@@ -53,7 +53,7 @@ describe('CopyButton', () => {
     await nextTick()
   })
 
-  it('pokazuje polski błąd, gdy writeText się nie powiedzie, i nie pisze „Skopiowano”', async () => {
+  it('shows the Polish error when writeText rejects, and does not write „Skopiowano”', async () => {
     const writeText = vi.fn(() => Promise.reject(new Error('odmowa')))
     const execCommand = vi.fn(() => true)
     document.execCommand = execCommand

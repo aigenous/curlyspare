@@ -32,13 +32,13 @@ async function settled(host: HTMLElement) {
   const input = host.querySelector('input')
   const dialog = host.querySelector('[role="dialog"]')
   if (!(input instanceof HTMLInputElement) || !(dialog instanceof HTMLElement)) {
-    throw new Error('Brak palety.')
+    throw new Error('Palette is missing.')
   }
   return { input, dialog }
 }
 
 describe('command palette', () => {
-  it('używa wzorca combobox i łapie fokus wewnątrz dialogu', async () => {
+  it('uses the combobox pattern and traps focus inside the dialog', async () => {
     const { host, app, opener } = mount()
     const { input, dialog } = await settled(host)
 
@@ -63,7 +63,7 @@ describe('command palette', () => {
     expect(input.getAttribute('aria-activedescendant')).not.toBe(before)
 
     const close = [...dialog.querySelectorAll('button')].find((button) => button.textContent?.includes('Zamknij'))
-    if (!close) throw new Error('Brak przycisku zamknięcia.')
+    if (!close) throw new Error('Close button is missing.')
     input.focus()
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }))
     expect(document.activeElement).toBe(close)
@@ -79,7 +79,7 @@ describe('command palette', () => {
     opener.remove()
   })
 
-  it('zamyka się klawiszem Escape na dialogu, a nie na oknie', async () => {
+  it('closes on Escape from the dialog, not from the window', async () => {
     const onClose = vi.fn()
     const { host, app, opener } = mount(onClose)
     const { dialog } = await settled(host)

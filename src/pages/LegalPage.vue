@@ -26,7 +26,7 @@ import { useRoute } from 'vue-router'
 import { brand } from '../brand'
 import { pageHead } from '../composables/usePageMeta'
 import { t } from '../i18n'
-import privacySource from '../content/legal/polityka-prywatnosci.md?raw'
+import privacySource from '../content/legal/privacy-policy.md?raw'
 import termsSource from '../content/legal/regulamin.md?raw'
 
 type LegalPageId = 'terms' | 'privacy' | 'operator'

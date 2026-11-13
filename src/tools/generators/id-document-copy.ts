@@ -41,7 +41,7 @@ export interface IdDocumentPage {
 
 const copyStep = 'Skopiuj wynik albo pobierz plik CSV lub JSON.'
 
-export const dowodPage: IdDocumentPage = {
+export const idCardPage: IdDocumentPage = {
   slug: 'numer-dowodu-osobistego',
   h1: 'Testowy numer dowodu osobistego – walidator i generator',
   lead: 'Sprawdź, czy seria i numer dowodu mają poprawny format i cyfrę kontrolną, albo wygeneruj numer testowy.',
@@ -85,7 +85,7 @@ export const dowodPage: IdDocumentPage = {
   breadcrumb: ['Strona główna', 'Dane testowe PL', 'Testowy numer dowodu osobistego'],
 }
 
-export const paszportPage: IdDocumentPage = {
+export const passportPage: IdDocumentPage = {
   slug: 'numer-paszportu',
   h1: 'Testowy numer paszportu – walidator i generator',
   lead: 'Sprawdź, czy numer paszportu ma poprawny format i cyfrę kontrolną, albo wygeneruj numer testowy.',
@@ -130,8 +130,8 @@ export const paszportPage: IdDocumentPage = {
 }
 
 const pages: Record<IdDocumentSlug, IdDocumentPage> = {
-  'numer-dowodu-osobistego': dowodPage,
-  'numer-paszportu': paszportPage,
+  'numer-dowodu-osobistego': idCardPage,
+  'numer-paszportu': passportPage,
 }
 
 export function isIdDocumentSlug(slug: string): slug is IdDocumentSlug {

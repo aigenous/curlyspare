@@ -1,4 +1,26 @@
-/* Shell additions that sit on top of the design stylesheet. */
+/* Shell additions that sit on top of the design stylesheet.
+   These names are still read by the existing tool screens. */
+:root {
+  --bg: var(--color-bg);
+  --bg-elevated: var(--color-surface);
+  --ink: var(--color-text);
+  --ink-muted: var(--color-text-muted);
+  --line: var(--color-divider);
+  --primary: var(--color-primary);
+  --navy: var(--color-text);
+  --primary-soft: var(--color-primary-soft);
+  --button-bg: var(--color-primary);
+  --button-fg: var(--color-on-primary);
+  --button-bg-hover: var(--color-primary-hover);
+  --focus: var(--color-focus);
+  --danger: var(--color-error);
+  --danger-soft: var(--color-error-soft);
+  --shadow: var(--shadow-raise);
+  --radius: var(--radius-panel);
+  --font: var(--font-body);
+  --mono: var(--font-mono);
+  --header-h: 3.5rem;
+}
 
 .site {
   min-height: 100vh;
@@ -36,6 +58,14 @@ h2 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   align-items: end;
+}
+
+.hero .row,
+.card .row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  grid-template-columns: unset;
 }
 
 .prose h1 {
@@ -85,12 +115,12 @@ h2 {
   padding-left: 1.2rem;
 }
 
+.tool-body .prose {
+  padding-block: 0;
+}
+
 @media (min-width: 60rem) {
   .site-footer__cols {
     grid-template-columns: 1.6fr 1fr 1fr;
-  }
-
-  .hero__in {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
