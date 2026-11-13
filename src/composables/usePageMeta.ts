@@ -6,6 +6,7 @@ export interface PageMetaInput {
   description: string
   path: string
   robots?: string
+  ogTitle?: string
 }
 
 export function pageHead(input: PageMetaInput) {
@@ -15,7 +16,7 @@ export function pageHead(input: PageMetaInput) {
     htmlAttrs: { lang: 'pl' },
     meta: [
       { name: 'description', content: input.description },
-      { property: 'og:title', content: input.title },
+      { property: 'og:title', content: input.ogTitle ?? input.title },
       { property: 'og:description', content: input.description },
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: url },
